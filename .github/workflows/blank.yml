@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: 	CF-EXT-LODUR
+    runs-on: 	cf-win-pbo
     steps:
     - uses: actions/checkout@v2
 
