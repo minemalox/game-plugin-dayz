@@ -1,0 +1,11 @@
+name = "CFTools GameLabs";
+picture = "GameLabs/GUI/Assets/logo.edds";
+logo = "GameLabs/GUI/Assets/logo.edds";
+logoSmall = "GameLabs/GUI/Assets/logo.edds";
+logoOver = "GameLabs/GUI/Assets/logo.edds";
+tooltip = "CFTools GameLabs";
+overview = "Improving your experience";
+action = "https://cftools.cloud";
+author = "CFTools Software UG (haftungsbeschraenkt)";
+authorID = "76561198410213019";
+version = "0.0.1";

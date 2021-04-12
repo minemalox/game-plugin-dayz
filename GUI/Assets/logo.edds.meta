@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{AE94143AED6322E7}GameLabs/Assets/logo.edds"
+ Author "philipp"
+ ChangeDate -1595626869
+ Configurations {
+  PNGResourceClass PC {
+   SourceFile "logo.png"
+  }
+  PNGResourceClass XBOX_ONE : PC {
+  }
+  PNGResourceClass PS4 : PC {
+  }
+  PNGResourceClass LINUX : PC {
+  }
+ }
+}
