@@ -140,6 +140,28 @@ class LaunchServerClient: DayZProjectManager
 	}
 }
 
+[WorkbenchPluginAttribute("-> Launch Server", "Launches Server", "", "", {"ResourceManager", "ScriptEditor"})]
+class LaunchServer: DayZProjectManager
+{
+	string BatchFile;
+	string BatchFile1;
+	string BatchFile2;
+
+	void LaunchServer()
+	{
+		BatchFile = GetWorkDriveDirectory() + "Batchfiles\\Exit.bat";
+		BatchFile1 = GetWorkDriveDirectory() + "Batchfiles\\ZBinarizeDeploy.bat";
+		BatchFile2 = GetWorkDriveDirectory() + "Batchfiles\\LaunchServer.bat";
+	}
+	
+	override void Run()
+	{
+		RunDayZBat(BatchFile, true);
+		RunDayZBat(BatchFile1, true);
+		RunDayZBat(BatchFile2, true);	
+	}
+}
+
 
 [WorkbenchPluginAttribute("-> Edit Project", "Edit Project", "", "", {"ResourceManager", "ScriptEditor"})]
 class DayZProjectManager: DayZTool

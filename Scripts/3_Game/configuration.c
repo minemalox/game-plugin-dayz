@@ -1,15 +1,27 @@
 class GameLabsConfiguration {
-    bool connectionVerification = true;
-    string serverId;
-    string apiKey;
+    private bool debugEnabled = false;
+    private bool connectionVerification = true;
+
+    private string serverId = "";
+    private string apiKey = "";
+
+    [NonSerialized()]
+    private const string path = "$profile:gamelabs.cfg";
 
     void GameLabsConfiguration() {
-        // TODO: Create
+        // TODO: Ensure configuration structure
     }
 
-
-
-        this.LoadConfiguration()
-            JsonFileLoader<CannabisPlusConfigManager>.JsonLoadFile(m_CPConfigPath, settings);
+    bool CheckDiskPresence() {
+        return FileExist(this.path);
     }
+
+    void LoadFromDisk() {
+        JsonFileLoader<GameLabsConfiguration>.JsonLoadFile(this.path, this);
+    }
+
+    string GetServerId() { return this.serverId; }
+    string GetApiKey() { return this.apiKey; }
+    bool GetConnectionVerificationStatus() { return this.connectionVerification; }
+    bool GetDebugStatus() { return this.debugEnabled; }
 };
