@@ -1,5 +1,7 @@
 modded class MissionServer {
     private ref GameLabsCore gameLabs;
+
+    private ref GameLabsRPC gameLabsRPC;
     private ref GameLabsReporter gameLabsReporter;
 
     void MissionServer() {
@@ -16,7 +18,7 @@ modded class MissionServer {
             GetGame().RequestExit(1);
             return;
         } else {
-            this.gameLabs.GetLogger().Debug("Loaded (MissionServer)");
+            this.gameLabs.GetLogger().Debug("Loaded MissionServer");
         }
 
         int apiRegisterStatus = this.gameLabs.GetApi().Register();
@@ -69,22 +71,34 @@ modded class MissionServer {
                 m_player.DropItem(item);
             }
             item = ItemBase.Cast(m_player.GetHumanInventory().CreateInHands("CFToolsShirt"));
-            m_player.DropItem(item);
         }
 
         super.EquipCharacter(char_data);
     }
 
     private void _Setup() {
+        this.gameLabsRPC = new GameLabsRPC();
         this.gameLabsReporter = new GameLabsReporter();
     }
 };
 
 modded class MissionGameplay {
     private ref GameLabsCore gameLabs;
+    private ref GameLabsClient gameLabsClient;
+
+    private ref GameLabsRPC gameLabsRPC;
 
     void MissionGameplay() {
         this.gameLabs = GetGameLabs();
-        this.gameLabs.GetLogger().Info("Loaded. (MissionServer)");
+        this.gameLabsClient = new GameLabsClient();
+
+        this.gameLabsRPC = new GameLabsRPC();
+        this.gameLabs.GetLogger().Info("Loaded MissionGameplay");
+    }
+
+    override void OnInit() {
+        super.OnInit();
+        this.gameLabs.GetLogger().Info("OnInit");
+        this.gameLabsClient.StartSynchronization();
     }
 };

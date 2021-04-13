@@ -24,6 +24,18 @@ class _Callback : RestCallback {
 
 };
 
+class _LogPlayer {
+    string id;
+
+    vector position;
+
+    float health = -1;
+    float water = -1;
+    float energy = -1;
+    int bleedingSources = -1;
+};
+
+
 // Register: /v1/auth/register
 class _Payload_Register : _Payload {
     string serverId;
@@ -43,7 +55,22 @@ class _Response_Register : _Response {
 class _Payload_ServerPoll : _Payload {
     float serverFps;
 
-    void _Payload_ServerPoll(float serverFps) { this.serverFps = serverFps; }
+    int aiCount;
+    int animalCount;
+    int vehicleCount;
+
+    int aiActive;
+
+    void _Payload_ServerPoll(bool isFirst = false) {
+        this.serverFps = GetGameLabs().GetServerFPS();
+
+        this.aiCount = GetGameLabs().GetAICount();
+        this.animalCount = GetGameLabs().GetAnimalCount();
+        this.vehicleCount = GetGameLabs().GetVehicleCount();
+
+        if(!isFirst) this.aiActive = GetGameLabs().GetAIActiveCount();
+        else this.aiActive = 0;
+    }
     string ToJson() { return JsonFileLoader<_Payload_ServerPoll>.JsonMakeData(this); }
 };
 class ServerPollItem {
@@ -54,5 +81,192 @@ class ServerPollItem {
 class _Response_ServerPoll : _Response {
     array<ref ServerPollItem> actions;
     void _Response_ServerPoll(string content) { JsonFileLoader<_Response_ServerPoll>.JsonLoadData(content, this); }
+};
+// ************************
+
+// Register: /v1/server/events
+class _ServerEvent {
+    string id;
+    string className;
+    vector position;
+
+    void _ServerEvent(ref _Event _event) {
+        this.id = _event.ToString();
+        this.className = _event.Class();
+        this.position = _event.Ref().GetPosition();
+    }
+};
+class _Payload_ServerEvents : _Payload {
+    bool initial;
+    ref array<ref _ServerEvent> added = new array<ref _ServerEvent>();
+    ref array<ref _ServerEvent> updated = new array<ref _ServerEvent>();
+
+    void _Payload_ServerEvents(bool initial, ref array<ref _Event> added, ref array<ref _Event> updated) {
+        this.initial = initial;
+
+        for(int i = 0; i < added.Count(); i++) {
+            this.added.Insert(new _ServerEvent(added.Get(i)));
+        }
+        for(int y = 0; y < updated.Count(); y++) {
+            this.updated.Insert(new _ServerEvent(updated.Get(y)));
+        }
+    }
+    string ToJson() { return JsonFileLoader<_Payload_ServerEvents>.JsonMakeData(this); }
+};
+class _Response_ServerEvents : _Response {
+    void _Response_ServerEvents(string content) { JsonFileLoader<_Response_ServerEvents>.JsonLoadData(content, this); }
+};
+// ************************
+
+// Register: /v1/server/vehicles
+class _ServerVehicle {
+    string id;
+    string className;
+    vector position;
+
+    int health;
+    int speed;
+
+    void _ServerVehicle(ref _Vehicle vehicle) {
+        this.id = vehicle.ToString();
+        this.className = vehicle.Class();
+        this.position = vehicle.Ref().GetPosition();
+
+        this.health = vehicle.Ref().GetHealth();
+        this.speed = Car.Cast(vehicle.Ref()).GetSpeedometer();
+    }
+};
+class _Payload_ServerVehicles : _Payload {
+    bool initial;
+    ref array<ref _ServerVehicle> added = new array<ref _ServerVehicle>();
+    ref array<ref _ServerVehicle> updated = new array<ref _ServerVehicle>();
+    ref array<ref _ServerVehicle> removed = new array<ref _ServerVehicle>();
+
+    void _Payload_ServerVehicles(bool initial, ref array<ref _Vehicle> added, ref array<ref _Vehicle> updated, ref array<ref _Vehicle> removed) {
+        this.initial = initial;
+
+        for(int i = 0; i < added.Count(); i++) {
+            this.added.Insert(new _ServerVehicle(added.Get(i)));
+        }
+        for(int x = 0; x < updated.Count(); x++) {
+            this.updated.Insert(new _ServerVehicle(updated.Get(x)));
+        }
+        for(int y = 0; y < removed.Count(); y++) {
+            this.removed.Insert(new _ServerVehicle(removed.Get(y)));
+        }
+    }
+    string ToJson() { return JsonFileLoader<_Payload_ServerVehicles>.JsonMakeData(this); }
+};
+
+class _Response_ServerVehicles : _Response {
+    void _Response_ServerVehicles(string content) { JsonFileLoader<_Response_ServerVehicles>.JsonLoadData(content, this); }
+};
+// ************************
+
+
+// Register: /v1/server/players
+class _ServerPlayer {
+    string id;
+    int loggingOut = 0;
+
+    int health;
+    string item;
+    vector position;
+
+    // Constructor is in reporter.c to circumvent layer limitations
+};
+class _Payload_ServerPlayers : _Payload {
+    bool initial;
+    ref array<ref _ServerPlayer> updated = new array<ref _ServerPlayer>();
+
+    void _Payload_ServerPlayers(bool initial, ref array<ref _ServerPlayer> updated) {
+        this.initial = initial;
+        this.updated = updated;
+    }
+    string ToJson() { return JsonFileLoader<_Payload_ServerPlayers>.JsonMakeData(this); }
+};
+
+class _Response_ServerPlayers : _Response {
+    void _Response_ServerPlayers(string content) { JsonFileLoader<_Response_ServerPlayers>.JsonLoadData(content, this); }
+};
+// ************************
+
+// Register: /v1/player/death
+class _Payload_PlayerDeath : _Payload {
+    string weapon;
+    float distance;
+
+    ref _LogPlayer player;
+    ref _LogPlayer murderer;
+
+    void _Payload_PlayerDeath(ref _LogPlayer player, ref _LogPlayer murderer, string weapon) {
+        this.player = player;
+        this.murderer = murderer;
+
+        if(weapon) this.weapon = weapon;
+        if(this.murderer) {
+            this.distance = vector.Distance(player.position, murderer.position);
+        }
+    }
+    string ToJson() { return JsonFileLoader<_Payload_PlayerDeath>.JsonMakeData(this); }
+};
+// ************************
+
+// Register: /v1/player/damage
+class _Payload_PlayerDamage : _Payload {
+    string weapon;
+    string zone;
+    float distance;
+
+    ref _LogPlayer player;
+    ref _LogPlayer murderer;
+
+    void _Payload_PlayerDamage(ref _LogPlayer player, ref _LogPlayer murderer, Object weapon, float distance, string zone) {
+        this.player = player;
+        this.murderer = murderer;
+
+        this.zone = zone;
+        this.distance = distance;
+        if(weapon) this.weapon = weapon.GetType();
+        if(this.murderer) {
+            this.distance = vector.Distance(player.position, murderer.position);
+        }
+    }
+    string ToJson() { return JsonFileLoader<_Payload_PlayerDamage>.JsonMakeData(this); }
+};
+// ************************
+
+// Register: /v1/item/interact
+class _Payload_ItemInteract : _Payload {
+    string item;
+    string target;
+    string action;
+
+    ref _LogPlayer player;
+
+
+    void _Payload_ItemInteract(ref _LogPlayer player, string item, string target, string action) {
+        this.player = player;
+
+        this.item = item;
+        this.target = target;
+        this.action = action;
+    }
+    string ToJson() { return JsonFileLoader<_Payload_ItemInteract>.JsonMakeData(this); }
+};
+// ************************
+
+// Register: /v1/item/place
+class _Payload_ItemPlace : _Payload {
+    string item;
+
+    ref _LogPlayer player;
+
+    void _Payload_ItemPlace(ref _LogPlayer player, string item) {
+        this.player = player;
+
+        this.item = item;
+    }
+    string ToJson() { return JsonFileLoader<_Payload_ItemPlace>.JsonMakeData(this); }
 };
 // ************************
