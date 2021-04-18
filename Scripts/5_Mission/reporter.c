@@ -1,6 +1,9 @@
 class _ServerPlayerEx : _ServerPlayer {
+    string name;
     void _ServerPlayerEx(PlayerBase player) {
         this.id = player.GetIdentity().GetPlainId(); // Steam64
+        this.name = player.GetIdentity().GetName();
+
         this.position = player.GetPosition();
 
         this.health = player.GetHealth( "GlobalHealth","Health" );
@@ -15,7 +18,7 @@ class _ServerPlayerEx : _ServerPlayer {
 class _Callback_ServerPoll : _Callback {
     override void OnError(int errorCode) {
         GetGameLabs().GetLogger().Error(string.Format("ServerPoll errorCode(%1)", errorCode));
-        if(errorCode == 6) {
+        if(errorCode == 6 || errorCode == 5) {
             // Server side error, only thrown when either offline or authentication error
             GetGameLabs().GetLogger().Error(string.Format("GameLabs API error, reauthenticating..."));
             int registerStatus = GetGameLabs().GetApi().Register();
@@ -53,16 +56,19 @@ class GameLabsReporter {
 
     void GameLabsReporter() {
         this.timerPoll = new Timer(CALL_CATEGORY_SYSTEM);
-        this.timerPoll.Run(5, this, "activePolling", NULL, true);
+        this.timerPoll.Run(GetGameLabs().GetMetricsInterval(), this, "activePolling", NULL, true);
 
-        this.timerServer = new Timer(CALL_CATEGORY_SYSTEM);
-        this.timerServer.Run(10, this, "serverReporting", NULL, true);
-        this.serverReporting();
-        this.isFirstReport = false;
+        if(GetGameLabs().IsReportingEnabled()) {
+            this.timerServer = new Timer(CALL_CATEGORY_SYSTEM);
+            this.timerServer.Run(GetGameLabs().GetReportingInterval(), this, "serverReporting", NULL, true);
+            this.serverReporting();
+            this.isFirstReport = false;
+        }
     }
 
     private void activePolling() {
         ref _Payload_ServerPoll payload = new ref _Payload_ServerPoll(this.isFirstEventsReport);
+        GetGameLabs().GetApi().Enable(); // Enable to check if api is back
         GetGameLabs().GetApi().ServerPoll(new _Callback_ServerPoll(), payload);
         if(this.isFirstEventsReport) this.isFirstEventsReport = false;
     }
@@ -99,8 +105,9 @@ class GameLabsReporter {
         for ( int x = 0; x < players.Count(); x++ ) {
             updatedPlayers.Insert(new _ServerPlayerEx(players.Get(x)));
         }
-
-        ref _Payload_ServerPlayers payloadPlayers = new _Payload_ServerPlayers(isFirstReport, updatedPlayers);
-        GetGameLabs().GetApi().ServerPlayers(new _Callback_ServerDummy(), payloadPlayers);
+        if(players.Count()) {
+            ref _Payload_ServerPlayers payloadPlayers = new _Payload_ServerPlayers(isFirstReport, updatedPlayers);
+            GetGameLabs().GetApi().ServerPlayers(new _Callback_ServerDummy(), payloadPlayers);
+        }
     }
 };

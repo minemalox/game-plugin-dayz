@@ -44,9 +44,22 @@ class _Payload_Register : _Payload {
     void _Payload_Register(string serverId, string apiKey) { this.serverId = serverId; this.apiKey = apiKey; }
     string ToJson() { return JsonFileLoader<_Payload_Register>.JsonMakeData(this); }
 };
+class _Response_Register_Features {
+    int allowReporting = 2;
+    int statisticsReporting = 2;
 
+    int metricsInterval = 5;
+    int reportingInterval = 10;
+};
 class _Response_Register : _Response {
     string authKey;
+
+    int modLicensingStatus = 1;
+    string modLicensingOffender;
+
+    _Response_Register_Features features;
+
+    array<ref string> monitoredActions;
     void _Response_Register(string content) { JsonFileLoader<_Response_Register>.JsonLoadData(content, this); }
 };
 // ************************
@@ -99,16 +112,16 @@ class _ServerEvent {
 class _Payload_ServerEvents : _Payload {
     bool initial;
     ref array<ref _ServerEvent> added = new array<ref _ServerEvent>();
-    ref array<ref _ServerEvent> updated = new array<ref _ServerEvent>();
+    ref array<ref _ServerEvent> removed = new array<ref _ServerEvent>();
 
-    void _Payload_ServerEvents(bool initial, ref array<ref _Event> added, ref array<ref _Event> updated) {
+    void _Payload_ServerEvents(bool initial, ref array<ref _Event> added, ref array<ref _Event> removed) {
         this.initial = initial;
 
         for(int i = 0; i < added.Count(); i++) {
             this.added.Insert(new _ServerEvent(added.Get(i)));
         }
-        for(int y = 0; y < updated.Count(); y++) {
-            this.updated.Insert(new _ServerEvent(updated.Get(y)));
+        for(int y = 0; y < removed.Count(); y++) {
+            this.removed.Insert(new _ServerEvent(removed.Get(y)));
         }
     }
     string ToJson() { return JsonFileLoader<_Payload_ServerEvents>.JsonMakeData(this); }

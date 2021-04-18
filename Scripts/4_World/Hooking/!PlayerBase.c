@@ -3,6 +3,7 @@
 modded class PlayerBase extends ManBase {
     override void EEKilled(Object killer) {
         super.EEKilled(killer);
+        if(!GetGameLabs().IsStatReportingEnabled()) return;
 
         ref _Payload_PlayerDeath payload;
         ref _LogPlayerEx logObjectMurderer;
@@ -30,6 +31,7 @@ modded class PlayerBase extends ManBase {
 
     override void EEHitBy(TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos, float speedCoef) {
         super.EEHitBy(damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
+        if(!GetGameLabs().IsStatReportingEnabled()) return;
 
         ref _Payload_PlayerDamage payload;
         ref _LogPlayerEx logObjectMurderer;

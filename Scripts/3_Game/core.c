@@ -6,10 +6,18 @@ class GameLabsCore {
     private ref GameLabsConfiguration configuration;
 
     bool errorFlag = false;
+    string modLicensingOffender;
+
     private int _computedServerFps = 0;
     private int _computedAI = 0;
     private int _computedAnimals = 0;
     private int _computedVehicles = 0;
+
+    private int _metricsInterval = 5;
+    private int _reportingInterval = 10;
+    private bool _reportingEnabled = false;
+    private bool _reportStatistics = false;
+    private ref array <ref string> _monitoredActions = new array<ref string>;
 
     private ref array<ref _AI> _serverAI = new array<ref _AI>;
     private ref array<ref _Event> _serverEvents = new array<ref _Event>;
@@ -56,7 +64,6 @@ class GameLabsCore {
         GetGame().RPCSingleParam(NULL, GameLabsRPCS.RQ_SERVERFPS, NULL, true);
     }
 
-    // Special get+setters
     int GetServerFPS() { return this._computedServerFps; }
     void SetServerFPS(int fpsValue) { this._computedServerFps = fpsValue; }
 
@@ -138,6 +145,42 @@ class GameLabsCore {
                 this._serverEventsBufferRemoved.Insert(this._serverEvents.Get(i));
                 this._serverEvents.Remove(i);
             }
+        }
+    }
+
+    int GetMetricsInterval() { return this._metricsInterval; }
+    int GetReportingInterval() { return this._reportingInterval; }
+    bool IsReportingEnabled() { return this._reportingEnabled; }
+    bool IsStatReportingEnabled() { return this._reportStatistics; }
+    bool IsMonitoredAction(string action) { if(this._monitoredActions.Find(action) == -1) {return false;} else {return true;}  }
+
+    // Private calls, do not access
+    void _PropagateFeatures(ref _Response_Register registerResponse) {
+        if(registerResponse.modLicensingStatus == 1) {
+            this.errorFlag = true;
+            this.modLicensingOffender = registerResponse.modLicensingOffender;
+            this.GetLogger().Error(string.Format("Server is not authorized to use %1, contact mod author for details", this.modLicensingOffender));
+            return;
+        }
+
+        this._monitoredActions = registerResponse.monitoredActions;
+
+        this._metricsInterval = registerResponse.features.metricsInterval;
+        this._reportingInterval = registerResponse.features.reportingInterval;
+
+        if(registerResponse.features.allowReporting == 2) {
+            this.GetLogger().Debug("allowReporting = 2 => Reporting enabled");
+            this._reportingEnabled = true;
+        } else {
+            this.GetLogger().Debug("allowReporting != 2 => Reporting NOT enabled");
+            this._reportingEnabled = false;
+        }
+        if(registerResponse.features.statisticsReporting == 2) {
+            this.GetLogger().Debug("statisticsReporting = 2 => Statistics enabled");
+            this._reportStatistics = true;
+        } else {
+            this.GetLogger().Debug("statisticsReporting != 2 => Statistics NOT enabled");
+            this._reportStatistics = false;
         }
     }
 };

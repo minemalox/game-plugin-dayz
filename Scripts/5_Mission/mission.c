@@ -24,6 +24,15 @@ modded class MissionServer {
         int apiRegisterStatus = this.gameLabs.GetApi().Register();
         this.gameLabs.GetLogger().Debug(string.Format("apiRegisterStatus=%1", apiRegisterStatus));
         if(apiRegisterStatus == 2) { // Credentials OK
+            if(this.gameLabs.errorFlag) { // Mod licensing error
+                shutdownTitle = string.Format("Server not authorized to use %1", this.gameLabs.modLicensingOffender);
+                shutdownContent = "Contact the mod author for details";
+                Print(shutdownHeader); Print(shutdownTitle); Print(shutdownContent); Print(shutdownFooter);
+                PrintToRPT(shutdownHeader); PrintToRPT(shutdownTitle); PrintToRPT(shutdownContent); PrintToRPT(shutdownFooter);
+                GetGame().AdminLog(shutdownHeader); GetGame().AdminLog(shutdownTitle); GetGame().AdminLog(shutdownContent); GetGame().AdminLog(shutdownFooter);
+                GetGame().RequestExit(1);
+                return;
+            }
             this.gameLabs.GetApi().Enable();
             int apiStatus = this.gameLabs.GetApi().Verify();
             if(apiStatus == 1) {

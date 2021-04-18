@@ -1,5 +1,7 @@
 /*
- * Since BI can not properly integrate full header support, but headers are encrypted, auth key resides in Content-Type
+ * GameLabs core web api
+ *
+ * REST style is not available due to header limitations
  */
 
 class GameLabsAPI {
@@ -30,13 +32,15 @@ class GameLabsAPI {
     bool IsEnabled() { return this.active; }
 
     int Register() {
-        this.restContext.SetHeader("application/json");
+        this.restContext.SetHeader("application/json"); // Expected for auth request
 
         ref _Payload_Register payload = new ref _Payload_Register(this.serverId, this.apiKey);
-        _Response_Register response = new _Response_Register(this.restContext.POST_now("/v1/auth/register", payload.ToJson()));
+        ref _Response_Register response = new _Response_Register(this.restContext.POST_now("/v1/auth/register", payload.ToJson()));
         if(response.status == 2) {
+            GetGameLabs()._PropagateFeatures(response); // Access features outside of API class
+
             this.authKey = response.authKey;
-            this.restContext.SetHeader(this.authKey);
+            this.restContext.SetHeader(this.authKey); // Currently setting to Content-Type; DZ does not allow to set custom headers
             GetGameLabs().GetLogger().Debug(string.Format("authKey=%1", this.authKey));
         }
         return response.status;

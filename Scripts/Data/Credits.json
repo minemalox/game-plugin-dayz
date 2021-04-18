@@ -1,12 +1,13 @@
 {
     "Departments": [
         {
-            "DepartmentName": "CFTools Software UG (haftungsbeschraenkt)",
+            "DepartmentName": "GameLabs",
             "Sections": [
                 {
                     "SectionName": "Developers",
                     "SectionLines": [
                         "philipp"
+                    ]
                 }
             ]
         }

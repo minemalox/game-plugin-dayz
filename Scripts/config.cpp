@@ -23,10 +23,10 @@ class CfgMods
 		action = "";
 		hideName = 0;
 		hidePicture = 1;
-		name = "CFTools GameLabs";
-		credits = "CFTools Software UG (haftungsbeschraenkt)";
+		name = "GameLabs";
+		credits = "philipp";
 		creditsJson = "GameLabs/Scripts/Data/Credits.json";
-		author = "CFTools Software UG (haftungsbeschraenkt)";
+		author = "philipp";
 		authorID = "0"; 
 		version = "0.1"; 
 		extra = 0;

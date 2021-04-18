@@ -1,10 +1,14 @@
 modded class PluginAdminLog extends PluginBase {
     void OnContinouousAction(ActionData action_data) {
         super.OnContinouousAction(action_data);
+        if(!GetGameLabs().IsStatReportingEnabled()) return;
 
         string item;
         string target;
         string action = action_data.m_Action.Type().ToString();
+        if(!GetGameLabs().IsMonitoredAction(action)) {
+            GetGameLabs().GetLogger().Debug(string.Format("action=%1 flagged as forbidden by API, not logging", action));
+        }
 
         PlayerBase player = PlayerBase.Cast(action_data.m_Player);
 
@@ -34,6 +38,7 @@ modded class PluginAdminLog extends PluginBase {
 
     void OnPlacementComplete(Man player, ItemBase item) {
         super.OnPlacementComplete(player, item);
+        if(!GetGameLabs().IsStatReportingEnabled()) return;
 
         PlayerBase _player = PlayerBase.Cast(player);
 
