@@ -5,7 +5,7 @@
  */
 
 class GameLabsAPI {
-    private static const string baseUrl = "https://api.cftools.cloud/gamelabs/dz";
+    private static const string baseUrl = "https://api.cftools.local/gamelabs/dz";
 
     private ref RestApi restApi;
     private ref RestContext restContext;

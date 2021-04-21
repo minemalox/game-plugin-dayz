@@ -16,7 +16,7 @@ modded class PlayerBase extends ManBase {
             weapon = EntityAI.Cast(killer);
             murderer = PlayerBase.Cast(weapon.GetHierarchyParent());
         }
-        GetGameLabs().GetLogger().Info(string.Format("EEKilled(this=%1, killer=%2, weapon=%3, murderer=%4)", this, killer, weapon, murderer));
+        GetGameLabs().GetLogger().Debug(string.Format("EEKilled(this=%1, killer=%2, weapon=%3, murderer=%4)", this, killer, weapon, murderer));
 
         if(murderer) {
             logObjectMurderer = new _LogPlayerEx(murderer);
@@ -24,7 +24,7 @@ modded class PlayerBase extends ManBase {
         } else if(this == killer) { // Suicide, potentially Environmental death
             if(weapon) {
                 payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, killer.GetType());
-            } else if(DayZPlayerImplement.Cast(this).CommitedSuicide()) {
+            } else if(DayZPlayerImplement.Cast(this).CommitedSuicide() || this.CommitedSuicide()) {
                 payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Suicide");
             }
             else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Environment");

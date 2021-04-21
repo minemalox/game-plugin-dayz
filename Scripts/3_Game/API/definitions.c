@@ -91,9 +91,11 @@ class ServerPollItem {
     string action;
     string target;
     string parameter;
+    float x;
+    float y;
 };
 class _Response_ServerPoll : _Response {
-    array<ref ServerPollItem> actions;
+    array<ServerPollItem> orders;
     void _Response_ServerPoll(string content) { JsonFileLoader<_Response_ServerPoll>.JsonLoadData(content, this); }
 };
 // ************************
@@ -185,6 +187,7 @@ class _Response_ServerVehicles : _Response {
 // Register: /v1/server/players
 class _ServerPlayer {
     string id;
+    string name;
     int loggingOut = 0;
 
     int health;

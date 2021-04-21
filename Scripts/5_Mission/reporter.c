@@ -1,5 +1,4 @@
 class _ServerPlayerEx : _ServerPlayer {
-    string name;
     void _ServerPlayerEx(PlayerBase player) {
         if(player.GetIdentity() != NULL) {
             this.id = player.GetIdentity().GetPlainId(); // Steam64
@@ -41,7 +40,13 @@ class _Callback_ServerPoll : _Callback {
 
     override void OnSuccess(string data, int dataSize) {
         _Response_ServerPoll response = new _Response_ServerPoll(data);
-        GetGameLabs().GetLogger().Debug(string.Format("ServerPoll OnSuccess(%1)", response));
+        GetGameLabs().GetLogger().Debug(string.Format("ServerPoll OnSuccess(%1) : %2", response, data));
+
+        ServerPollItem order;
+        for ( int i = 0; i < response.orders.Count(); i++ ) {
+            order = response.orders.Get(i);
+            if(order.action == "teleport") GetGameLabs()._TeleportPlayer(order.target, order.x, order.y);
+        }
     };
 };
 

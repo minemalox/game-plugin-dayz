@@ -183,6 +183,27 @@ class GameLabsCore {
             this._reportStatistics = false;
         }
     }
+
+    Man GetPlayerBySteam64(string steam64) {
+        ref array<Man> players = new array<Man>;
+        GetGame().GetPlayers( players );
+
+        for ( int x = 0; x < players.Count(); x++ ) {
+            if(players.Get(x).GetIdentity().GetPlainId() == steam64) return players.Get(x);
+        }
+        return NULL;
+    }
+
+    void _TeleportPlayer(string steam64, float x, float y) {
+        Man player = this.GetPlayerBySteam64(steam64);
+        if(player == NULL) return;
+        this.GetLogger().Debug(string.Format("[Order] Teleporting %1 to %2, %3", steam64, x, y));
+        vector position;
+        position[0] = x;
+        position[1] = GetGame().SurfaceY(x, y) + 0.2;
+        position[2] = y;
+        player.SetPosition(position);
+    }
 };
 
 // Public interface access
