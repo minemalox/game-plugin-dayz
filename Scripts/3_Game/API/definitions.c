@@ -29,8 +29,9 @@ class _LogPlayer {
 
     vector position;
 
-    float health = -1;
     float water = -1;
+    float blood = -1;
+    float health = -1;
     float energy = -1;
     int bleedingSources = -1;
 };
@@ -106,16 +107,18 @@ class _ServerEvent {
     void _ServerEvent(ref _Event _event) {
         this.id = _event.ToString();
         this.className = _event.Class();
-        this.position = _event.Ref().GetPosition();
+        if(_event.Ref() != NULL) {
+            this.position = _event.Ref().GetPosition();
+        }
     }
 };
 class _Payload_ServerEvents : _Payload {
-    bool initial;
+    int initial;
     ref array<ref _ServerEvent> added = new array<ref _ServerEvent>();
     ref array<ref _ServerEvent> removed = new array<ref _ServerEvent>();
 
     void _Payload_ServerEvents(bool initial, ref array<ref _Event> added, ref array<ref _Event> removed) {
-        this.initial = initial;
+        if(initial) { this.initial = 1; } else { this.initial = 0; }
 
         for(int i = 0; i < added.Count(); i++) {
             this.added.Insert(new _ServerEvent(added.Get(i)));
@@ -143,20 +146,22 @@ class _ServerVehicle {
     void _ServerVehicle(ref _Vehicle vehicle) {
         this.id = vehicle.ToString();
         this.className = vehicle.Class();
-        this.position = vehicle.Ref().GetPosition();
+        if(vehicle != NULL) {
+            this.position = vehicle.Ref().GetPosition();
 
-        this.health = vehicle.Ref().GetHealth();
-        this.speed = Car.Cast(vehicle.Ref()).GetSpeedometer();
+            this.health = vehicle.Ref().GetHealth();
+            this.speed = Car.Cast(vehicle.Ref()).GetSpeedometer();
+        }
     }
 };
 class _Payload_ServerVehicles : _Payload {
-    bool initial;
+    int initial;
     ref array<ref _ServerVehicle> added = new array<ref _ServerVehicle>();
     ref array<ref _ServerVehicle> updated = new array<ref _ServerVehicle>();
     ref array<ref _ServerVehicle> removed = new array<ref _ServerVehicle>();
 
     void _Payload_ServerVehicles(bool initial, ref array<ref _Vehicle> added, ref array<ref _Vehicle> updated, ref array<ref _Vehicle> removed) {
-        this.initial = initial;
+        if(initial) { this.initial = 1; } else { this.initial = 0; }
 
         for(int i = 0; i < added.Count(); i++) {
             this.added.Insert(new _ServerVehicle(added.Get(i)));
@@ -189,11 +194,11 @@ class _ServerPlayer {
     // Constructor is in reporter.c to circumvent layer limitations
 };
 class _Payload_ServerPlayers : _Payload {
-    bool initial;
+    int initial;
     ref array<ref _ServerPlayer> updated = new array<ref _ServerPlayer>();
 
     void _Payload_ServerPlayers(bool initial, ref array<ref _ServerPlayer> updated) {
-        this.initial = initial;
+        if(initial) { this.initial = 1; } else { this.initial = 0; }
         this.updated = updated;
     }
     string ToJson() { return JsonFileLoader<_Payload_ServerPlayers>.JsonMakeData(this); }

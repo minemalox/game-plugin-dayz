@@ -1,17 +1,20 @@
 class _ServerPlayerEx : _ServerPlayer {
     string name;
     void _ServerPlayerEx(PlayerBase player) {
-        this.id = player.GetIdentity().GetPlainId(); // Steam64
-        this.name = player.GetIdentity().GetName();
+        if(player.GetIdentity() != NULL) {
+            this.id = player.GetIdentity().GetPlainId(); // Steam64
+            this.name = player.GetIdentity().GetName();
+        }
 
-        this.position = player.GetPosition();
+        if(player != NULL) {
+            this.position = player.GetPosition();
+            this.health = player.GetHealth("GlobalHealth", "Health");
+            if(GetGame().GetMission().IsPlayerDisconnecting(player))
+                this.loggingOut = 1;
+        }
 
-        this.health = player.GetHealth( "GlobalHealth","Health" );
         if(player.GetItemInHands())
             this.item = player.GetItemInHands().GetType();
-
-        if(GetGame().GetMission().IsPlayerDisconnecting(player))
-            this.loggingOut = 1;
     };
 };
 
@@ -46,6 +49,7 @@ class _Callback_ServerDummy : _Callback {};
 
 class GameLabsReporter {
     private int lastSent = 0;
+    private int lastReportedPlayerCount = 0;
 
     private bool isFirstReport = true;
     private bool isFirstEventsReport = true;
@@ -61,8 +65,6 @@ class GameLabsReporter {
         if(GetGameLabs().IsReportingEnabled()) {
             this.timerServer = new Timer(CALL_CATEGORY_SYSTEM);
             this.timerServer.Run(GetGameLabs().GetReportingInterval(), this, "serverReporting", NULL, true);
-            this.serverReporting();
-            this.isFirstReport = false;
         }
     }
 
@@ -75,7 +77,7 @@ class GameLabsReporter {
 
     private void serverReporting() {
         if(GetGameLabs()._serverEventsBufferAdded.Count() || GetGameLabs()._serverEventsBufferRemoved.Count()) {
-            ref _Payload_ServerEvents payloadEvents = new _Payload_ServerEvents(isFirstReport, GetGameLabs()._serverEventsBufferAdded, GetGameLabs()._serverEventsBufferRemoved);
+            ref _Payload_ServerEvents payloadEvents = new _Payload_ServerEvents(this.isFirstReport, GetGameLabs()._serverEventsBufferAdded, GetGameLabs()._serverEventsBufferRemoved);
 
             GetGameLabs().GetApi().ServerEvents(new _Callback_ServerDummy(), payloadEvents);
 
@@ -90,7 +92,7 @@ class GameLabsReporter {
         }
 
         if(GetGameLabs()._serverEventsBufferAdded.Count() || GetGameLabs()._serverEventsBufferRemoved.Count() || updated.Count()) {
-            ref _Payload_ServerVehicles payloadVehicles = new _Payload_ServerVehicles(isFirstReport, GetGameLabs()._serverVehiclesBufferAdded, updated, GetGameLabs()._serverVehiclesBufferRemoved);
+            ref _Payload_ServerVehicles payloadVehicles = new _Payload_ServerVehicles(this.isFirstReport, GetGameLabs()._serverVehiclesBufferAdded, updated, GetGameLabs()._serverVehiclesBufferRemoved);
 
             GetGameLabs().GetApi().ServerVehicles(new _Callback_ServerDummy(), payloadVehicles);
 
@@ -105,9 +107,12 @@ class GameLabsReporter {
         for ( int x = 0; x < players.Count(); x++ ) {
             updatedPlayers.Insert(new _ServerPlayerEx(players.Get(x)));
         }
-        if(players.Count()) {
-            ref _Payload_ServerPlayers payloadPlayers = new _Payload_ServerPlayers(isFirstReport, updatedPlayers);
+        if(players.Count() || players.Count() != this.lastReportedPlayerCount) {
+            this.lastReportedPlayerCount = players.Count();
+            ref _Payload_ServerPlayers payloadPlayers = new _Payload_ServerPlayers(this.isFirstReport, updatedPlayers);
             GetGameLabs().GetApi().ServerPlayers(new _Callback_ServerDummy(), payloadPlayers);
         }
+
+        if(this.isFirstReport) this.isFirstReport = false;
     }
 };

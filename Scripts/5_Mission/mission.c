@@ -80,6 +80,30 @@ modded class MissionServer {
                 m_player.DropItem(item);
             }
             item = ItemBase.Cast(m_player.GetHumanInventory().CreateInHands("CFToolsShirt"));
+            /* ********** Weapon for testing - Remove for production build ************ */
+
+            EntityAI weapon = item.GetInventory().CreateInInventory("Deagle_Gold");
+            m_player.SetQuickBarEntityShortcut(weapon, 0, true);
+            EntityAI scope = weapon.GetInventory().CreateAttachment( "PistolOptic" );
+            scope.GetInventory().CreateAttachment("Battery9V");
+            weapon.GetInventory().CreateAttachment( "PistolSuppressor" );
+            weapon.GetInventory().CreateInInventory("Mag_Deagle_9rnd");
+            m_player.GetInventory().CreateInInventory("Ammo_357");
+            m_player.GetInventory().CreateInInventory("Ammo_357");
+            m_player.SpawnEntityOnGroundPos("Mag_Deagle_9rnd", m_player.GetPosition());
+            m_player.SpawnEntityOnGroundPos("Mag_Deagle_9rnd", m_player.GetPosition());
+
+            weapon = m_player.GetInventory().CreateInInventory("Saiga");
+            m_player.SetQuickBarEntityShortcut(weapon, 1, true);
+            weapon.GetInventory().CreateInInventory( "Saiga_Bttstck" );
+            scope = weapon.GetInventory().CreateAttachment( "KobraOptic" );
+            scope.GetInventory().CreateAttachment("Battery9V");
+            m_player.GetInventory().CreateInInventory("Ammo_12gaPellets");
+            m_player.GetInventory().CreateInInventory("Ammo_12gaPellets");
+            m_player.SpawnEntityOnGroundPos("Mag_Saiga_Drum20Rnd", m_player.GetPosition());
+            m_player.SpawnEntityOnGroundPos("Mag_Saiga_Drum20Rnd", m_player.GetPosition());
+
+            /* ************************************************************************ */
         }
 
         super.EquipCharacter(char_data);

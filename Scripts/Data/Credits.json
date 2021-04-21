@@ -1,10 +1,10 @@
 {
     "Departments": [
         {
-            "DepartmentName": "GameLabs",
+            "DepartmentName": "CFTools",
             "Sections": [
                 {
-                    "SectionName": "Developers",
+                    "SectionName": "GameLabs Developers",
                     "SectionLines": [
                         "philipp"
                     ]

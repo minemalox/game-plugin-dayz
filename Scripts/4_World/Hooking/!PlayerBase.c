@@ -16,12 +16,19 @@ modded class PlayerBase extends ManBase {
             weapon = EntityAI.Cast(killer);
             murderer = PlayerBase.Cast(weapon.GetHierarchyParent());
         }
+        GetGameLabs().GetLogger().Info(string.Format("EEKilled(this=%1, killer=%2, weapon=%3, murderer=%4)", this, killer, weapon, murderer));
 
         if(murderer) {
             logObjectMurderer = new _LogPlayerEx(murderer);
             payload = new _Payload_PlayerDeath(logObjectPlayer, logObjectMurderer, killer.GetType());
-        } else if(this == killer) { // Environmental death
-            payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Environment");
+        } else if(this == killer) { // Suicide, potentially Environmental death
+            if(weapon) {
+                payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, killer.GetType());
+            } else if(DayZPlayerImplement.Cast(this).CommitedSuicide()) {
+                payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Suicide");
+            }
+            else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Environment");
+
         } else { // Infected
             payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Infected");
         }
@@ -32,6 +39,7 @@ modded class PlayerBase extends ManBase {
     override void EEHitBy(TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos, float speedCoef) {
         super.EEHitBy(damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
         if(!GetGameLabs().IsStatReportingEnabled()) return;
+        if(!this.IsAlive()) return;
 
         ref _Payload_PlayerDamage payload;
         ref _LogPlayerEx logObjectMurderer;
@@ -41,14 +49,10 @@ modded class PlayerBase extends ManBase {
         if(source) {
             murderer = PlayerBase.Cast(source.GetHierarchyParent());
         }
+        if(!source || !murderer) return;
 
-        if(murderer) {
-            logObjectMurderer = new _LogPlayerEx(murderer);
-            payload = new _Payload_PlayerDamage(logObjectPlayer, logObjectMurderer, source, damageResult.GetDamage(dmgZone, "Health"), dmgZone);
-        } else {
-            payload = new _Payload_PlayerDamage(logObjectPlayer, NULL, source, damageResult.GetDamage(dmgZone, "Health"), dmgZone);
-        }
-
+        logObjectMurderer = new _LogPlayerEx(murderer);
+        payload = new _Payload_PlayerDamage(logObjectPlayer, logObjectMurderer, source, damageResult.GetDamage(dmgZone, "Health"), dmgZone);
         GetGameLabs().GetApi().PlayerDamage(new _Callback(), payload);
     };
 };

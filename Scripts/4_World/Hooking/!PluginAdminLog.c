@@ -8,6 +8,7 @@ modded class PluginAdminLog extends PluginBase {
         string action = action_data.m_Action.Type().ToString();
         if(!GetGameLabs().IsMonitoredAction(action)) {
             GetGameLabs().GetLogger().Debug(string.Format("action=%1 flagged as forbidden by API, not logging", action));
+            return;
         }
 
         PlayerBase player = PlayerBase.Cast(action_data.m_Player);

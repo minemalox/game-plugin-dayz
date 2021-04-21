@@ -24,9 +24,9 @@ class CfgMods
 		hideName = 0;
 		hidePicture = 1;
 		name = "GameLabs";
-		credits = "philipp";
+		credits = "GameLabs";
 		creditsJson = "GameLabs/Scripts/Data/Credits.json";
-		author = "philipp";
+		author = "GameLabs by CFTools";
 		authorID = "0"; 
 		version = "0.1"; 
 		extra = 0;
