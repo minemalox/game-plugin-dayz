@@ -237,17 +237,18 @@ class _Payload_PlayerDeath : _Payload {
 class _Payload_PlayerDamage : _Payload {
     string weapon;
     string zone;
+    float damage;
     float distance;
 
     ref _LogPlayer player;
     ref _LogPlayer murderer;
 
-    void _Payload_PlayerDamage(ref _LogPlayer player, ref _LogPlayer murderer, Object weapon, float distance, string zone) {
+    void _Payload_PlayerDamage(ref _LogPlayer player, ref _LogPlayer murderer, Object weapon, float damage, string zone) {
         this.player = player;
         this.murderer = murderer;
 
         this.zone = zone;
-        this.distance = distance;
+        this.damage = damage;
         if(weapon) this.weapon = weapon.GetType();
         if(this.murderer) {
             this.distance = vector.Distance(player.position, murderer.position);

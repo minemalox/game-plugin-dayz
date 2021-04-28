@@ -81,41 +81,48 @@ modded class MissionServer {
                 m_player.DropItem(item);
             }
             item = ItemBase.Cast(m_player.GetHumanInventory().CreateInHands("CFToolsShirt"));
-            /* ********** Weapon for testing - Remove for production build ************ */
-            // Swag
-            m_player.GetHumanInventory().CreateInInventory("MilitaryBeret_UN");
-            m_player.GetHumanInventory().CreateInInventory("AviatorGlasses");
-            m_player.GetHumanInventory().CreateInInventory("OMNOGloves_Gray");
-            EntityAI bp = m_player.GetInventory().CreateInInventory("SmershBag");
-            // Why not
-            EntityAI belt = m_player.GetHumanInventory().CreateInInventory("MilitaryBelt");
-            EntityAI sheath = belt.GetInventory().CreateInInventory("NylonKnifeSheath");
-            sheath.GetInventory().CreateInInventory("CombatKnife");
 
-            EntityAI weapon;
-            // Scout
-            weapon = m_player.GetInventory().CreateInInventory("Scout");
-            m_player.SetQuickBarEntityShortcut(weapon, 0, true);
-            EntityAI scope = weapon.GetInventory().CreateAttachment( "ACOGOptic" );
-            // Saiga
-            weapon = m_player.GetInventory().CreateInInventory("Saiga");
-            m_player.SetQuickBarEntityShortcut(weapon, 1, true);
-            weapon.GetInventory().CreateInInventory( "Saiga_Bttstck" );
-            scope = weapon.GetInventory().CreateAttachment( "KobraOptic" );
-            scope.GetInventory().CreateAttachment("Battery9V");
+            /* ***** Start server with -gamelabstesting parameter for test loadout ***** */
+            string tmp;
+            if(GetGame().CommandlineGetParam("gamelabstesting", tmp)) {
+                EntityAI weapon;
 
-            // Mags
-            bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
-            bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
-            bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
-            bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
-            bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
-            bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
-            bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
-            bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
-            bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
-            bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
+                m_player.GetHumanInventory().CreateInInventory("MilitaryBeret_UN");
+                m_player.GetHumanInventory().CreateInInventory("AviatorGlasses");
+                m_player.GetHumanInventory().CreateInInventory("OMNOGloves_Gray");
+                EntityAI bp = m_player.GetInventory().CreateInInventory("SmershBag");
+                EntityAI belt = m_player.GetHumanInventory().CreateInInventory("MilitaryBelt");
+                EntityAI sheath = belt.GetInventory().CreateInInventory("NylonKnifeSheath");
+                sheath.GetInventory().CreateInInventory("CombatKnife");
 
+                // Scout
+                weapon = m_player.GetInventory().CreateInInventory("Scout");
+                m_player.SetQuickBarEntityShortcut(weapon, 0, true);
+                EntityAI scope = weapon.GetInventory().CreateAttachment( "ACOGOptic" );
+
+                // Saiga
+                weapon = m_player.GetInventory().CreateInInventory("Saiga");
+                m_player.SetQuickBarEntityShortcut(weapon, 1, true);
+                weapon.GetInventory().CreateInInventory( "Saiga_Bttstck" );
+                scope = weapon.GetInventory().CreateAttachment( "KobraOptic" );
+                scope.GetInventory().CreateAttachment("Battery9V");
+
+                // Mags
+                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
+                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
+            }
             /* ************************************************************************ */
         }
     }
