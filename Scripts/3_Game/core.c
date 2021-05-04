@@ -1,5 +1,5 @@
 class GameLabsCore {
-    private const string modControlledVersionIdentifier = "0.0";
+    private const string modControlledVersionIdentifier = "1.0";
 
     private ref GameLabsAPI api;
     private ref GameLabsLogger logger;
@@ -185,8 +185,8 @@ class GameLabsCore {
     }
 
     Man GetPlayerBySteam64(string steam64) {
-        ref array<Man> players = new array<Man>;
-        GetGame().GetPlayers( players );
+        array<Man> players = new array<Man>;
+        GetGame().GetWorld().GetPlayerList( players );
 
         for ( int x = 0; x < players.Count(); x++ ) {
             if(players.Get(x).GetIdentity().GetPlainId() == steam64) return players.Get(x);
@@ -204,6 +204,43 @@ class GameLabsCore {
         position[2] = y;
         player.SetPosition(position);
     }
+
+    /*
+     * TODO: Refactor for 4_World
+    void _HealPlayer(string steam64) {
+        Man man = this.GetPlayerBySteam64(steam64);
+        if(man == NULL) return;
+        PlayerBase player = PlayerBase.Cast(man);
+        this.GetLogger().Debug(string.Format("[Order] Healing %1", steam64));
+        player.SetHealth( player.GetMaxHealth( "", "" ) );
+        player.SetHealth( "","Blood", player.GetMaxHealth( "", "Blood" ) );
+        player.GetStatHeatComfort().Set(player.GetStatHeatComfort().GetMax());
+        player.GetStatTremor().Set(player.GetStatTremor().GetMin());
+        player.GetStatWet().Set(player.GetStatWet().GetMin());
+        player.GetStatEnergy().Set(player.GetStatEnergy().GetMax());
+        player.GetStatWater().Set(player.GetStatWater().GetMax());
+        player.GetStatDiet().Set(player.GetStatDiet().GetMax());
+        player.GetStatSpecialty().Set(player.GetStatSpecialty().GetMax());
+        player.SetBleedingBits(0);
+        player.SetHealth(0.0);
+    }
+
+    void _KillPlayer(string steam64) {
+        Man man = this.GetPlayerBySteam64(steam64);
+        if(man == NULL) return;
+        PlayerBase player = PlayerBase.Cast(man);
+        this.GetLogger().Debug(string.Format("[Order] Killing %1", steam64));
+        player.SetHealth(0);
+    }
+
+    void _SpawnItemForPlayer(string steam64, string item) {
+        Man man = this.GetPlayerBySteam64(steam64);
+        if(man == NULL) return;
+        PlayerBase player = PlayerBase.Cast(man);
+        this.GetLogger().Debug(string.Format("[Order] Spawning %1 for %2", item, steam64));
+        player.SpawnEntityOnGroundPos(player, entity.GetPosition());
+    }
+     */
 };
 
 // Public interface access

@@ -8,16 +8,6 @@ class _Response {
         string error;
 
         void _Response(string content) { JsonFileLoader<_Response>.JsonLoadData(content, this); }
-
-        /*
-         * void _Response(string content) {
-            this._content = content;
-
-            JsonSerializer serializer = new JsonSerializer(); // This allows for generic unpacking without overriding everything
-            serializer.ReadFromString(this, this._content, this._jsonError);
-            GetGameLabs().GetLogger().Debug(string.Format("Response: %1", this._content));
-        }
-         */
 };
 
 class _Callback : RestCallback {
@@ -189,6 +179,7 @@ class _ServerPlayer {
     string id;
     string name;
     int loggingOut = 0;
+    int insideVehicle = 0;
 
     int health;
     string item;
@@ -215,16 +206,18 @@ class _Response_ServerPlayers : _Response {
 // Register: /v1/player/death
 class _Payload_PlayerDeath : _Payload {
     string weapon;
+    string weaponNiceName;
     float distance;
 
     ref _LogPlayer player;
     ref _LogPlayer murderer;
 
-    void _Payload_PlayerDeath(ref _LogPlayer player, ref _LogPlayer murderer, string weapon) {
+    void _Payload_PlayerDeath(ref _LogPlayer player, ref _LogPlayer murderer, string weapon, string weaponNiceName) {
         this.player = player;
         this.murderer = murderer;
 
         if(weapon) this.weapon = weapon;
+        if(weaponNiceName) this.weaponNiceName = weaponNiceName;
         if(this.murderer) {
             this.distance = vector.Distance(player.position, murderer.position);
         }
@@ -290,5 +283,22 @@ class _Payload_ItemPlace : _Payload {
         this.item = item;
     }
     string ToJson() { return JsonFileLoader<_Payload_ItemPlace>.JsonMakeData(this); }
+};
+// ************************
+
+// Register: /v1/player/chat
+class _Payload_PlayerChat : _Payload {
+    string channel;
+    string message;
+
+    ref _LogPlayer player;
+
+    void _Payload_PlayerChat(ref _LogPlayer player, string channel, string message) {
+        this.player = player;
+
+        this.channel = channel;
+        this.message = message;
+    }
+    string ToJson() { return JsonFileLoader<_Payload_PlayerChat>.JsonMakeData(this); }
 };
 // ************************

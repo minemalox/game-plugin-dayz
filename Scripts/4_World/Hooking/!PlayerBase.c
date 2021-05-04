@@ -20,17 +20,19 @@ modded class PlayerBase extends ManBase {
 
         if(murderer) {
             logObjectMurderer = new _LogPlayerEx(murderer);
-            payload = new _Payload_PlayerDeath(logObjectPlayer, logObjectMurderer, killer.GetType());
+            payload = new _Payload_PlayerDeath(logObjectPlayer, logObjectMurderer, killer.GetType(), killer.GetDisplayName());
         } else if(this == killer) { // Suicide, potentially Environmental death
             if(weapon) {
-                payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, killer.GetType());
+                payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, killer.GetType(), killer.GetDisplayName());
             } else if(DayZPlayerImplement.Cast(this).CommitedSuicide() || this.CommitedSuicide()) {
-                payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Suicide");
+                weapon = this.GetItemInHands();
+                if(weapon) payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Suicide", weapon.GetType());
+                else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Suicide", "");
             }
-            else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Environment");
+            else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Environment", "");
 
         } else { // Infected
-            payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Infected");
+            payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Infected", "");
         }
 
         GetGameLabs().GetApi().PlayerDeath(new _Callback(), payload);

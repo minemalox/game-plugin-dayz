@@ -10,6 +10,9 @@ class _ServerPlayerEx : _ServerPlayer {
             this.health = player.GetHealth("GlobalHealth", "Health");
             if(GetGame().GetMission().IsPlayerDisconnecting(player))
                 this.loggingOut = 1;
+
+            if(player.IsInVehicle())
+                this.insideVehicle = 1;
         }
 
         if(player.GetItemInHands())
@@ -23,14 +26,7 @@ class _Callback_ServerPoll : _Callback {
         if(errorCode == 6 || errorCode == 5) {
             // Server side error, only thrown when either offline or authentication error
             GetGameLabs().GetLogger().Error(string.Format("GameLabs API error, reauthenticating..."));
-            int registerStatus = GetGameLabs().GetApi().Register();
-            if(registerStatus == 2) {
-                GetGameLabs().GetLogger().Error(string.Format("GameLabs API Re-Enabled"));
-                GetGameLabs().GetApi().Enable();
-            } else {
-                GetGameLabs().GetLogger().Error(string.Format("GameLabs API Disabled"));
-                GetGameLabs().GetApi().Disable();
-            }
+            GetGameLabs().GetApi().RegisterAsync();
         }
     };
 
@@ -42,10 +38,51 @@ class _Callback_ServerPoll : _Callback {
         _Response_ServerPoll response = new _Response_ServerPoll(data);
         GetGameLabs().GetLogger().Debug(string.Format("ServerPoll OnSuccess(%1) : %2", response, data));
 
+        Man man;
+        PlayerBase player;
         ServerPollItem order;
         for ( int i = 0; i < response.orders.Count(); i++ ) {
             order = response.orders.Get(i);
             if(order.action == "teleport") GetGameLabs()._TeleportPlayer(order.target, order.x, order.y);
+            // TODO: Add new abstraction layer in 4_World
+            else if(order.action == "kill") {
+                GetGameLabs().GetLogger().Debug(string.Format("[Order] Healing %1", order.target));
+                // GetGameLabs()._KillPlayer(order.target);
+                man = GetGameLabs().GetPlayerBySteam64(order.target);
+                if(man != NULL) {
+                    player = PlayerBase.Cast(man);
+
+                    player.SetHealth(player.GetMaxHealth("", ""));
+                    player.SetHealth("", "Blood", player.GetMaxHealth("", "Blood"));
+                    player.GetStatHeatComfort().Set(player.GetStatHeatComfort().GetMax());
+                    player.GetStatTremor().Set(player.GetStatTremor().GetMin());
+                    player.GetStatWet().Set(player.GetStatWet().GetMin());
+                    player.GetStatEnergy().Set(player.GetStatEnergy().GetMax());
+                    player.GetStatWater().Set(player.GetStatWater().GetMax());
+                    player.GetStatDiet().Set(player.GetStatDiet().GetMax());
+                    player.GetStatSpecialty().Set(player.GetStatSpecialty().GetMax());
+                    player.SetBleedingBits(0);
+                    player.SetHealth(0.0);
+                }
+            }
+            else if(order.action == "heal") {
+                GetGameLabs().GetLogger().Debug(string.Format("[Order] Killing %1", order.target));
+                // GetGameLabs()._HealPlayer(order.target);
+                man = GetGameLabs().GetPlayerBySteam64(order.target);
+                if(man != NULL) {
+                    player = PlayerBase.Cast(man);
+                    player.SetHealth(0);
+                }
+            }
+            else if(order.action == "spawn") {
+                GetGameLabs().GetLogger().Debug(string.Format("[Order] Spawning %1 for %2", order.parameter, order.target));
+                // GetGameLabs()._SpawnItemForPlayer(order.target, order.item);
+                man = GetGameLabs().GetPlayerBySteam64(order.target);
+                if(man != NULL) {
+                    player = PlayerBase.Cast(man);
+                    player.SpawnEntityOnGroundPos(order.parameter, player.GetPosition());
+                }
+            }
         }
     };
 };
@@ -81,7 +118,7 @@ class GameLabsReporter {
     }
 
     private void serverReporting() {
-        if(GetGameLabs()._serverEventsBufferAdded.Count() || GetGameLabs()._serverEventsBufferRemoved.Count()) {
+        if(GetGameLabs()._serverEventsBufferAdded.Count() || GetGameLabs()._serverEventsBufferRemoved.Count() || this.isFirstReport) {
             ref _Payload_ServerEvents payloadEvents = new _Payload_ServerEvents(this.isFirstReport, GetGameLabs()._serverEventsBufferAdded, GetGameLabs()._serverEventsBufferRemoved);
 
             GetGameLabs().GetApi().ServerEvents(new _Callback_ServerDummy(), payloadEvents);
@@ -96,7 +133,7 @@ class GameLabsReporter {
             if(vehicle.HasUpdated()) updated.Insert(vehicle);
         }
 
-        if(GetGameLabs()._serverEventsBufferAdded.Count() || GetGameLabs()._serverEventsBufferRemoved.Count() || updated.Count()) {
+        if(GetGameLabs()._serverEventsBufferAdded.Count() || GetGameLabs()._serverEventsBufferRemoved.Count() || updated.Count() || this.isFirstReport) {
             ref _Payload_ServerVehicles payloadVehicles = new _Payload_ServerVehicles(this.isFirstReport, GetGameLabs()._serverVehiclesBufferAdded, updated, GetGameLabs()._serverVehiclesBufferRemoved);
 
             GetGameLabs().GetApi().ServerVehicles(new _Callback_ServerDummy(), payloadVehicles);
@@ -112,7 +149,7 @@ class GameLabsReporter {
         for ( int x = 0; x < players.Count(); x++ ) {
             updatedPlayers.Insert(new _ServerPlayerEx(players.Get(x)));
         }
-        if(players.Count() || players.Count() != this.lastReportedPlayerCount) {
+        if(players.Count() || players.Count() != this.lastReportedPlayerCount || this.isFirstReport) {
             this.lastReportedPlayerCount = players.Count();
             ref _Payload_ServerPlayers payloadPlayers = new _Payload_ServerPlayers(this.isFirstReport, updatedPlayers);
             GetGameLabs().GetApi().ServerPlayers(new _Callback_ServerDummy(), payloadPlayers);

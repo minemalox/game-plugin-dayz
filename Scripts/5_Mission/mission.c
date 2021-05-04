@@ -64,10 +64,12 @@ modded class MissionServer {
         }
     }
 
+    /*
     void ~MissionServer() {
         this.gameLabs.GetLogger().Debug("Gracefully closing core logger");
         this.gameLabs.GetLogger().Close();
     }
+     */
 
     override void EquipCharacter(MenuDefaultCharacterData char_data) {
         super.EquipCharacter(char_data);
@@ -80,7 +82,8 @@ modded class MissionServer {
             if(item) {
                 m_player.DropItem(item);
             }
-            item = ItemBase.Cast(m_player.GetHumanInventory().CreateInHands("CFToolsShirt"));
+            item = ItemBase.Cast(m_player.GetHumanInventory().CreateInHands("Hoodie_CFTools"));
+            item = ItemBase.Cast(m_player.GetHumanInventory().CreateInInventory("MilitaryBeret_CFTools"));
 
             /* ***** Start server with -gamelabstesting parameter for test loadout ***** */
             string tmp;
@@ -130,10 +133,18 @@ modded class MissionServer {
     private void _Setup() {
         this.gameLabsRPC = new GameLabsRPC();
         this.gameLabsReporter = new GameLabsReporter();
+
+        #ifdef EXPANSIONMOD
+        this.gameLabs.GetLogger().Info("Detected DayZ Expansion (ifdef)");
+        #endif
+    }
+
+    override void OnEvent(EventType eventTypeId, Param params) {
+        super.OnEvent(eventTypeId, params);
     }
 };
 
-modded class MissionGameplay {
+modded class MissionGameplay extends MissionBase {
     private ref GameLabsCore gameLabs;
     private ref GameLabsClient gameLabsClient;
 
@@ -151,5 +162,15 @@ modded class MissionGameplay {
         super.OnInit();
         this.gameLabs.GetLogger().Info("OnInit");
         this.gameLabsClient.StartSynchronization();
+    }
+
+    override void OnEvent(EventType eventTypeId, Param params) {
+        super.OnEvent(eventTypeId, params);
+
+        if(eventTypeId == ChatMessageEventTypeID) {
+            ChatMessageEventParams chatParams = ChatMessageEventParams.Cast(params);
+            if(chatParams.param1 < 128) return;
+            this.gameLabsClient.SyncExpansionChat(chatParams);
+        }
     }
 };

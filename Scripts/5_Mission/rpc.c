@@ -1,3 +1,5 @@
+
+
 class GameLabsRPC {
     void GameLabsRPC() {
         GetDayZGame().Event_OnRPC.Insert( OnRPC );
@@ -25,12 +27,47 @@ class GameLabsRPC {
         }
     }
 
+    PlayerBase GetPlayerByIdentity(PlayerIdentity identity) {
+        ref array<Man> players = new array<Man>;
+        GetGame().GetPlayers( players );
+
+        for( int i = 0; i < players.Count(); i++) {
+            PlayerBase player;
+            Class.CastTo(player, players.Get(i));
+            if(player) {
+                if(player.GetIdentity().GetPlainId() == identity.GetPlainId()) return player;
+            }
+        }
+        return NULL;
+    }
+
     private void HandleServerRPC(PlayerIdentity sender, Object target, int rpc_type, ParamsReadContext ctx) {
         switch(rpc_type) {
             case GameLabsRPCS.RQ_SERVERFPS: {
-                ref Param1<float> payload = new Param1<float>(GetGameLabs().GetServerFPS());
-                GetGame().RPCSingleParam(null, GameLabsRPCS.RE_SERVERFPS, payload, true, sender);
-                break;
+                ref Param1<float> payloadRQServerFps = new Param1<float>(GetGameLabs().GetServerFPS());
+                GetGame().RPCSingleParam(null, GameLabsRPCS.RE_SERVERFPS, payloadRQServerFps, true, sender);
+                return;
+            }
+            case GameLabsRPCS.SY_EXPANSIONCHAT: {
+                ChatMessageEventParams data;
+                if(!ctx.Read(data)) return;
+                if(!sender) return;
+
+                PlayerBase player = GetPlayerByIdentity(sender);
+                if(!player) return;
+
+                string channel;
+                if(data.param1 == 128) {
+                    channel = "side";
+                } else if(data.param1 == 256){
+                    channel = "team";
+                } else {
+                    channel = "external";
+                }
+
+                ref _LogPlayerEx logObjectPlayer = new _LogPlayerEx(player);
+                ref _Payload_PlayerChat payloadExpansionChat = new _Payload_PlayerChat(logObjectPlayer, channel, data.param3);
+                GetGameLabs().GetApi().PlayerChat(new _Callback(), payloadExpansionChat);
             }
         }
     }

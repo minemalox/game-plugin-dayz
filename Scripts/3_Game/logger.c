@@ -14,10 +14,12 @@ class GameLabsLogger {
         this._Setup();
     }
 
+    /*
     void ~GameLabsLogger() {
         this._WriteClosingLine();
         CloseFile(this.fh);
     }
+     */
 
     void Debug(string message) {
         if(!this.allowDebug) return;
