@@ -50,7 +50,7 @@ class GameLabsAPI {
         this.restApi = CreateRestApi();
         this.restContext = this.restApi.GetRestContext(this.baseUrl);
 
-        this.restApi.EnableDebug(false);
+        this.restApi.EnableDebug(true);
     }
 
     void Enable() { this.active = true; }
@@ -92,46 +92,46 @@ class GameLabsAPI {
 
     void ServerPoll(ref Managed cb, ref _Payload_ServerPoll payload) {
         if(!this.IsEnabled()) return;
-        this.restContext.POST(cb, "/v1/server/poll", payload.ToJson());
+        this.restContext.POST(RestCallback.Cast(cb), "/v1/server/poll", payload.ToJson());
     }
 
     void ServerEvents(ref Managed cb, ref _Payload_ServerEvents payload) {
         if(!this.IsEnabled()) return;
-        this.restContext.POST(cb, "/v1/server/events", payload.ToJson());
+        this.restContext.POST(RestCallback.Cast(cb), "/v1/server/events", payload.ToJson());
     }
 
     void ServerVehicles(ref Managed cb, ref _Payload_ServerVehicles payload) {
         if(!this.IsEnabled()) return;
-        this.restContext.POST(cb, "/v1/server/vehicles", payload.ToJson());
+        this.restContext.POST(RestCallback.Cast(cb), "/v1/server/vehicles", payload.ToJson());
     }
 
     void ServerPlayers(ref Managed cb, ref _Payload_ServerPlayers payload) {
         if(!this.IsEnabled()) return;
-        this.restContext.POST(cb, "/v1/server/players", payload.ToJson());
+        this.restContext.POST(RestCallback.Cast(cb), "/v1/server/players", payload.ToJson());
     }
 
     void PlayerDeath(ref Managed cb, ref _Payload_PlayerDeath payload) {
         if(!this.IsEnabled()) return;
-        this.restContext.POST(cb, "/v1/player/death", payload.ToJson());
+        this.restContext.POST(RestCallback.Cast(cb), "/v1/player/death", payload.ToJson());
     }
 
     void PlayerDamage(ref Managed cb, ref _Payload_PlayerDamage payload) {
         if(!this.IsEnabled()) return;
-        this.restContext.POST(cb, "/v1/player/damage", payload.ToJson());
+        this.restContext.POST(RestCallback.Cast(cb), "/v1/player/damage", payload.ToJson());
     }
 
     void PlayerChat(ref Managed cb, ref _Payload_PlayerChat payload) {
         if(!this.IsEnabled()) return;
-        this.restContext.POST(cb, "/v1/player/chat", payload.ToJson());
+        this.restContext.POST(RestCallback.Cast(cb), "/v1/player/chat", payload.ToJson());
     }
 
     void ItemInteract(ref Managed cb, ref _Payload_ItemInteract payload) {
         if(!this.IsEnabled()) return;
-        this.restContext.POST(cb, "/v1/item/interact", payload.ToJson());
+        this.restContext.POST(RestCallback.Cast(cb), "/v1/item/interact", payload.ToJson());
     }
 
     void ItemPlace(ref Managed cb, ref _Payload_ItemPlace payload) {
         if(!this.IsEnabled()) return;
-        this.restContext.POST(cb, "/v1/item/place", payload.ToJson());
+        this.restContext.POST(RestCallback.Cast(cb), "/v1/item/place", payload.ToJson());
     }
 };

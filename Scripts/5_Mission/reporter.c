@@ -90,6 +90,9 @@ class _Callback_ServerPoll : _Callback {
 class _Callback_ServerDummy : _Callback {};
 
 class GameLabsReporter {
+    private bool processReporting = true;
+
+    private int effectiveInterval = 10;
     private int lastSent = 0;
     private int lastReportedPlayerCount = 0;
 
@@ -105,12 +108,22 @@ class GameLabsReporter {
         this.timerPoll.Run(GetGameLabs().GetMetricsInterval(), this, "activePolling", NULL, true);
 
         if(GetGameLabs().IsReportingEnabled()) {
+            this.effectiveInterval = GetGameLabs().GetReportingInterval();
             this.timerServer = new Timer(CALL_CATEGORY_SYSTEM);
             this.timerServer.Run(GetGameLabs().GetReportingInterval(), this, "serverReporting", NULL, true);
         }
     }
 
+    void Disable() {
+        this.processReporting = false;
+        GetGameLabs().GetLogger().Info("(Reporter) Disabled");
+        this.timerPoll.Stop();
+        this.timerServer.Stop();
+        GetGameLabs().GetLogger().Debug("(Reporter) Timers gracefully closed");
+    }
+
     private void activePolling() {
+        if(!this.processReporting || !GetGameLabs()) return;
         ref _Payload_ServerPoll payload = new ref _Payload_ServerPoll(this.isFirstEventsReport);
         GetGameLabs().GetApi().Enable(); // Enable to check if api is back
         GetGameLabs().GetApi().ServerPoll(new _Callback_ServerPoll(), payload);
@@ -118,6 +131,7 @@ class GameLabsReporter {
     }
 
     private void serverReporting() {
+        if(!this.processReporting  || !GetGameLabs()) return;
         if(GetGameLabs()._serverEventsBufferAdded.Count() || GetGameLabs()._serverEventsBufferRemoved.Count() || this.isFirstReport) {
             ref _Payload_ServerEvents payloadEvents = new _Payload_ServerEvents(this.isFirstReport, GetGameLabs()._serverEventsBufferAdded, GetGameLabs()._serverEventsBufferRemoved);
 
@@ -142,16 +156,18 @@ class GameLabsReporter {
             GetGameLabs()._serverVehiclesBufferRemoved.Clear();
         }
 
+        PlayerBase player;
         ref array<Man> players = new array<Man>;
         GetGame().GetPlayers( players );
 
         ref array<ref _ServerPlayer> updatedPlayers = new array<ref _ServerPlayer>();
         for ( int x = 0; x < players.Count(); x++ ) {
-            updatedPlayers.Insert(new _ServerPlayerEx(players.Get(x)));
+            player = PlayerBase.Cast(players.Get(x));
+            updatedPlayers.Insert(new _ServerPlayerEx(player));
         }
         if(players.Count() || players.Count() != this.lastReportedPlayerCount || this.isFirstReport) {
             this.lastReportedPlayerCount = players.Count();
-            ref _Payload_ServerPlayers payloadPlayers = new _Payload_ServerPlayers(this.isFirstReport, updatedPlayers);
+            ref _Payload_ServerPlayers payloadPlayers = new _Payload_ServerPlayers(this.isFirstReport, this.effectiveInterval, updatedPlayers);
             GetGameLabs().GetApi().ServerPlayers(new _Callback_ServerDummy(), payloadPlayers);
         }
 

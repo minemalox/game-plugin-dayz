@@ -64,12 +64,15 @@ modded class MissionServer {
         }
     }
 
-    /*
+
     void ~MissionServer() {
+        if(this.gameLabsReporter) {
+            this.gameLabsReporter.Disable();
+        }
+        this.gameLabs.Exit();
         this.gameLabs.GetLogger().Debug("Gracefully closing core logger");
         this.gameLabs.GetLogger().Close();
     }
-     */
 
     override void EquipCharacter(MenuDefaultCharacterData char_data) {
         super.EquipCharacter(char_data);
@@ -90,7 +93,6 @@ modded class MissionServer {
             if(GetGame().CommandlineGetParam("gamelabstesting", tmp)) {
                 EntityAI weapon;
 
-                m_player.GetHumanInventory().CreateInInventory("MilitaryBeret_UN");
                 m_player.GetHumanInventory().CreateInInventory("AviatorGlasses");
                 m_player.GetHumanInventory().CreateInInventory("OMNOGloves_Gray");
                 EntityAI bp = m_player.GetInventory().CreateInInventory("SmershBag");
@@ -138,24 +140,27 @@ modded class MissionServer {
         this.gameLabs.GetLogger().Info("Detected DayZ Expansion (ifdef)");
         #endif
     }
-
-    override void OnEvent(EventType eventTypeId, Param params) {
-        super.OnEvent(eventTypeId, params);
-    }
 };
 
 modded class MissionGameplay extends MissionBase {
+    private string name;
     private ref GameLabsCore gameLabs;
     private ref GameLabsClient gameLabsClient;
 
     private ref GameLabsRPC gameLabsRPC;
 
     void MissionGameplay() {
+        GetGame().GetPlayerName(this.name);
         this.gameLabs = GetGameLabs();
         this.gameLabsClient = new GameLabsClient();
 
         this.gameLabsRPC = new GameLabsRPC();
         this.gameLabs.GetLogger().Info("Loaded MissionGameplay");
+    }
+
+    void ~MissionGameplay() {
+        this.gameLabs.Exit();
+        this.gameLabsClient.Disable();
     }
 
     override void OnInit() {
@@ -170,6 +175,7 @@ modded class MissionGameplay extends MissionBase {
         if(eventTypeId == ChatMessageEventTypeID) {
             ChatMessageEventParams chatParams = ChatMessageEventParams.Cast(params);
             if(chatParams.param1 < 128) return;
+            if(this.name != chatParams.param2) return;
             this.gameLabsClient.SyncExpansionChat(chatParams);
         }
     }

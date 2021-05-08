@@ -11,7 +11,9 @@ class _Response {
 };
 
 class _Callback : RestCallback {
-
+    override void OnError(int errorCode) {};
+    override void OnTimeout() {};
+    override void OnSuccess(string data, int dataSize) {};
 };
 
 class _LogPlayer {
@@ -31,8 +33,18 @@ class _LogPlayer {
 class _Payload_Register : _Payload {
     string serverId;
     string apiKey;
+    string localPort;
 
-    void _Payload_Register(string serverId, string apiKey) { this.serverId = serverId; this.apiKey = apiKey; }
+    void _Payload_Register(string serverId, string apiKey) {
+        this.serverId = serverId;
+        this.apiKey = apiKey;
+        string tmp;
+        if(GetGame().CommandlineGetParam("port", tmp)) {
+            this.localPort = tmp;
+        } else {
+            this.localPort = "0";
+        }
+    }
     string ToJson() { return JsonFileLoader<_Payload_Register>.JsonMakeData(this); }
 };
 class _Response_Register_Features {
@@ -99,7 +111,7 @@ class _ServerEvent {
     void _ServerEvent(ref _Event _event) {
         this.id = _event.ToString();
         this.className = _event.Class();
-        if(_event.Ref() != NULL) {
+        if(_event.Ref() != NULL && _event.Ref() != NULL) {
             this.position = _event.Ref().GetPosition();
         }
     }
@@ -138,7 +150,7 @@ class _ServerVehicle {
     void _ServerVehicle(ref _Vehicle vehicle) {
         this.id = vehicle.ToString();
         this.className = vehicle.Class();
-        if(vehicle != NULL) {
+        if(vehicle != NULL && vehicle.Ref() != NULL) {
             this.position = vehicle.Ref().GetPosition();
 
             this.health = vehicle.Ref().GetHealth();
@@ -189,10 +201,12 @@ class _ServerPlayer {
 };
 class _Payload_ServerPlayers : _Payload {
     int initial;
+    int interval;
     ref array<ref _ServerPlayer> updated = new array<ref _ServerPlayer>();
 
-    void _Payload_ServerPlayers(bool initial, ref array<ref _ServerPlayer> updated) {
+    void _Payload_ServerPlayers(bool initial, int interval, ref array<ref _ServerPlayer> updated) {
         if(initial) { this.initial = 1; } else { this.initial = 0; }
+        this.interval = interval;
         this.updated = updated;
     }
     string ToJson() { return JsonFileLoader<_Payload_ServerPlayers>.JsonMakeData(this); }

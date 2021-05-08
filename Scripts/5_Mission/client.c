@@ -1,8 +1,9 @@
 class GameLabsClient {
     /*
-     * TODO: PoC. This is inefficient beyond reasonable doubt, implement proper sync
+     * TODO: PoC
      */
 
+    private bool processReporting = true;
     ref Timer timerSync;
 
     void StartSynchronization() {
@@ -10,12 +11,19 @@ class GameLabsClient {
         this.timerSync.Run(5, this, "clientSync", NULL, true);
     }
 
+    void Disable() {
+        this.processReporting = false;
+        GetGameLabs().GetLogger().Info("(Client) Disabled");
+        this.timerSync.Stop();
+        GetGameLabs().GetLogger().Debug("(Client) Timers gracefully closed");
+    }
+
     void SyncExpansionChat(ChatMessageEventParams params) {
         GetGame().RPCSingleParam(NULL, GameLabsRPCS.SY_EXPANSIONCHAT, params, true);
-        //GetGame().RPC(NULL, GameLabsRPCS.SY_EXPANSIONCHAT, params, true, NULL);
     }
 
     private void clientSync() {
+        if(!this.processReporting) return;
         GetGameLabs().RequestServerFPS();
     }
 };

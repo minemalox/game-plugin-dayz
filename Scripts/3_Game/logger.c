@@ -43,7 +43,11 @@ class GameLabsLogger {
     }
 
     private void Write(string level, string message) {
-        FPrintln(this.fh, string.Format("%1 | [%2] %3", this.GetISO8601DT(), level, message));
+        string logged = string.Format("%1 | [%2] %3", this.GetISO8601DT(), level, message);
+        FPrintln(this.fh, logged);
+        if(this.allowDebug) {
+            Print(string.Format("[GameLabs-Debug] %1", logged));
+        }
     }
 
     private string GetISO8601DT() {

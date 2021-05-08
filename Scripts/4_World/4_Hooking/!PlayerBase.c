@@ -3,6 +3,7 @@
 modded class PlayerBase extends ManBase {
     override void EEKilled(Object killer) {
         super.EEKilled(killer);
+        if(!GetGame().IsServer()) return;
         if(!GetGameLabs().IsStatReportingEnabled()) return;
 
         ref _Payload_PlayerDeath payload;
@@ -24,7 +25,7 @@ modded class PlayerBase extends ManBase {
         } else if(this == killer) { // Suicide, potentially Environmental death
             if(weapon) {
                 payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, killer.GetType(), killer.GetDisplayName());
-            } else if(DayZPlayerImplement.Cast(this).CommitedSuicide() || this.CommitedSuicide()) {
+            } else if(this.CommitedSuicide() || this.CommitedSuicide()) {
                 weapon = this.GetItemInHands();
                 if(weapon) payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Suicide", weapon.GetType());
                 else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Suicide", "");
@@ -40,6 +41,7 @@ modded class PlayerBase extends ManBase {
 
     override void EEHitBy(TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos, float speedCoef) {
         super.EEHitBy(damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
+        if(!GetGame().IsServer()) return;
         if(!GetGameLabs().IsStatReportingEnabled()) return;
         if(!this.IsAlive()) return;
 

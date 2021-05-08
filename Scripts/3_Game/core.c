@@ -5,6 +5,9 @@ class GameLabsCore {
     private ref GameLabsLogger logger;
     private ref GameLabsConfiguration configuration;
 
+    private bool blockProcessing = false;
+    private bool isServer = false;
+
     bool errorFlag = false;
     string modLicensingOffender;
 
@@ -29,8 +32,30 @@ class GameLabsCore {
     ref array<ref _Vehicle> _serverVehiclesBufferAdded = new array<ref _Vehicle>;
     ref array<ref _Vehicle> _serverVehiclesBufferRemoved = new array<ref _Vehicle>;
 
+    void Exit() {
+        this.blockProcessing = true;
+        if(this.logger) this.logger.Info("(Core) Attempting graceful exit");
+        this._serverAI.Clear();
+        this._serverEvents.Clear();
+        this._serverVehicles.Clear();
+        this._serverEventsBufferAdded.Clear();
+        this._serverEventsBufferRemoved.Clear();
+        this._serverVehiclesBufferAdded.Clear();
+        this._serverVehiclesBufferRemoved.Clear();
+        if(this.logger) this.logger.Debug("(Core) All ref holding buffers cleared");
+    }
+
+    bool IsProcessingBlocked() {
+        return this.blockProcessing;
+    }
+
+    bool IsServer() {
+        return this.isServer;
+    }
+
     void GameLabsCore() {
         // TODO: Complete bootstrapping
+        this.isServer = GetGame().IsServer();
         this.configuration = GameLabsConfiguration();
         if(!this.configuration.CheckDiskPresence()) {
             // Shut down when no config is present on server
@@ -101,9 +126,11 @@ class GameLabsCore {
         return this._serverAI;
     }
     void RegisterAI(ref _AI _reference) {
+        if(IsProcessingBlocked()) return;
         this._serverAI.Insert(_reference);
     }
     void RemoveAI(ref _AI _reference) {
+            if(IsProcessingBlocked()) return;
         for(int i = 0; i < this._serverAI.Count(); i++) {
             if(this._serverAI.Get(i) == _reference) {
                 this._serverAI.Remove(i);
@@ -115,10 +142,12 @@ class GameLabsCore {
         return this._serverVehicles;
     }
     void RegisterVehicle(ref _Vehicle _reference) {
+        if(IsProcessingBlocked()) return;
         this._serverVehicles.Insert(_reference);
         this._serverVehiclesBufferAdded.Insert(_reference);
     }
     void RemoveVehicle(ref _Vehicle _reference) {
+        if(IsProcessingBlocked()) return;
         for(int i = 0; i < this._serverVehicles.Count(); i++) {
             if(this._serverVehicles.Get(i) == _reference) {
                 this._serverVehiclesBufferRemoved.Insert(_reference);
@@ -131,6 +160,7 @@ class GameLabsCore {
         return this._serverEvents;
     }
     void RegisterEvent(ref _Event _reference) {
+        if(IsProcessingBlocked()) return;
         for(int i = 0; i < this._serverEvents.Count(); i++) {
             if(this._serverEvents.Get(i).Equals(_reference)) {
                 return;
@@ -140,6 +170,7 @@ class GameLabsCore {
         this._serverEventsBufferAdded.Insert(_reference);
     }
     void RemoveEvent(ref _Event _reference) {
+        if(IsProcessingBlocked()) return;
         for(int i = 0; i < this._serverEvents.Count(); i++) {
             if(this._serverEvents.Get(i) == _reference) {
                 this._serverEventsBufferRemoved.Insert(this._serverEvents.Get(i));

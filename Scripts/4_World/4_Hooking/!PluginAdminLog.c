@@ -43,7 +43,7 @@ modded class PluginAdminLog extends PluginBase {
 
         PlayerBase _player = PlayerBase.Cast(player);
 
-        ref _LogPlayerEx logObjectPlayer = new _LogPlayerEx(player);
+        ref _LogPlayerEx logObjectPlayer = new _LogPlayerEx(_player);
         ref _Payload_ItemPlace payload = new _Payload_ItemPlace(logObjectPlayer, item.GetType());
         GetGameLabs().GetApi().ItemPlace(new _Callback(), payload);
     };
