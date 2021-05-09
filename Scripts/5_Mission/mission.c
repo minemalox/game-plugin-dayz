@@ -4,6 +4,11 @@ modded class MissionServer {
     private ref GameLabsRPC gameLabsRPC;
     private ref GameLabsReporter gameLabsReporter;
 
+    void InvokeOnConnect(PlayerBase player, PlayerIdentity identity) {
+        super.InvokeOnConnect(player, identity);
+        player.GameLabs_OnConnect(identity.GetPlainId(), identity.GetName());
+    }
+
     void MissionServer() {
         this.gameLabs = GetGameLabs();
         string shutdownHeader, shutdownTitle, shutdownContent, shutdownFooter;
@@ -77,8 +82,7 @@ modded class MissionServer {
     override void EquipCharacter(MenuDefaultCharacterData char_data) {
         super.EquipCharacter(char_data);
 
-        PlayerIdentity identity = m_player.GetIdentity();
-        if(identity.GetId() == "2XAdLQ7Sr0EYZXmMRn7pC8emM5z0JhHAMCvk4mQFuOE=") {
+        if(m_player.GetPlainId() == "76561198084367441") {
             this.gameLabs.GetLogger().Warn("Granting re-spawned player CFTools staff shirt");
 
             ItemBase item = ItemBase.Cast(m_player.GetItemInHands());

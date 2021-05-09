@@ -1,6 +1,20 @@
-
-
 modded class PlayerBase extends ManBase {
+    private string gl_steam64 = "";
+    private string gl_name = "Survivor";
+
+    string GetPlainId() {
+        return this.gl_steam64;
+    }
+
+    string GetPlayerName() {
+        return this.gl_name;
+    }
+
+    void GameLabs_OnConnect(string steam64, string name) {
+        this.gl_steam64 = steam64;
+        this.gl_name = name;
+    }
+
     override void EEKilled(Object killer) {
         super.EEKilled(killer);
         if(!GetGame().IsServer()) return;
