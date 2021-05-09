@@ -1,6 +1,6 @@
 class _LogPlayerEx : _LogPlayer {
     void _LogPlayerEx(PlayerBase player) {
-        this.id = player.GetIdentity().GetPlainId();
+        this.id = player.GetPlainId();
 
         this.position = player.GetPosition();
 

@@ -35,7 +35,7 @@ class GameLabsRPC {
             PlayerBase player;
             Class.CastTo(player, players.Get(i));
             if(player) {
-                if(player.GetIdentity().GetPlainId() == identity.GetPlainId()) return player;
+                if(player.GetPlainId() == identity.GetPlainId()) return player;
             }
         }
         return NULL;
