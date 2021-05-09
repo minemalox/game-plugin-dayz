@@ -69,7 +69,7 @@ class GameLabsCore {
             this.configuration.LoadFromDisk();
             this.logger = GameLabsLogger("GameLabsCore", this.GetDebugStatus());
 
-            this.api = GameLabsAPI(this.configuration.GetServerId(), this.configuration.GetApiKey());
+            this.api = GameLabsAPI(this.configuration.GetServerId(), this.configuration.GetApiKey(), this.configuration.GetBaseURL());
         }
     }
 
@@ -215,16 +215,9 @@ class GameLabsCore {
         }
     }
 
-    Man GetPlayerBySteam64(string steam64) {
-        array<Man> players = new array<Man>;
-        GetGame().GetWorld().GetPlayerList( players );
-
-        for ( int x = 0; x < players.Count(); x++ ) {
-            if(players.Get(x).GetIdentity().GetPlainId() == steam64) return players.Get(x);
-        }
-        return NULL;
-    }
-
+    /*
+     * TODO: Refactor for 4_World
+     *
     void _TeleportPlayer(string steam64, float x, float y) {
         Man player = this.GetPlayerBySteam64(steam64);
         if(player == NULL) return;
@@ -236,8 +229,6 @@ class GameLabsCore {
         player.SetPosition(position);
     }
 
-    /*
-     * TODO: Refactor for 4_World
     void _HealPlayer(string steam64) {
         Man man = this.GetPlayerBySteam64(steam64);
         if(man == NULL) return;

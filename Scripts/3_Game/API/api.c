@@ -31,7 +31,7 @@ class _Callback_RegisterAsync : _Callback {
 };
 
 class GameLabsAPI {
-    private static const string baseUrl = "https://api.cftools.local/gamelabs/dz";
+    private string baseUrl;
 
     private ref RestApi restApi;
     private ref RestContext restContext;
@@ -43,14 +43,16 @@ class GameLabsAPI {
 
     private bool active = false;
 
-    void GameLabsAPI(string serverId, string apiKey) {
+    void GameLabsAPI(string serverId, string apiKey, string baseUrl) {
         this.serverId = serverId;
         this.apiKey = apiKey;
+
+        this.baseUrl = baseUrl;
 
         this.restApi = CreateRestApi();
         this.restContext = this.restApi.GetRestContext(this.baseUrl);
 
-        this.restApi.EnableDebug(true);
+        this.restApi.EnableDebug(false);
     }
 
     void Enable() { this.active = true; }
