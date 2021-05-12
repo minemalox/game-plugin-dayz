@@ -4,10 +4,18 @@ modded class MissionServer {
     private ref GameLabsRPC gameLabsRPC;
     private ref GameLabsReporter gameLabsReporter;
 
-    void InvokeOnConnect(PlayerBase player, PlayerIdentity identity) {
+    override void OnEvent(EventType eventTypeId, Param params) {
+        super.OnEvent(eventTypeId, params);
+        if (eventTypeId == ClientNewEventTypeID) {
+            m_player.GameLabs_MakeReady(m_player.GetIdentity().GetPlainId(), m_player.GetIdentity().GetName());
+            this.PrivilegedEquip();
+        }
+    };
+
+    override void InvokeOnConnect(PlayerBase player, PlayerIdentity identity) {
         super.InvokeOnConnect(player, identity);
         player.GameLabs_OnConnect(identity.GetPlainId(), identity.GetName());
-    }
+    };
 
     void MissionServer() {
         this.gameLabs = GetGameLabs();
@@ -79,11 +87,9 @@ modded class MissionServer {
         this.gameLabs.GetLogger().Close();
     }
 
-    override void EquipCharacter(MenuDefaultCharacterData char_data) {
-        super.EquipCharacter(char_data);
-
-        if(m_player.GetPlainId() == "76561198084367441") {
-            this.gameLabs.GetLogger().Warn("Granting re-spawned player CFTools staff shirt");
+    private void PrivilegedEquip() {
+        if(m_player.GetPlainId() && m_player.GetPlainId() == "76561198084367441") {
+            this.gameLabs.GetLogger().Warn(string.Format("(Re-Spawn) Granting %1<name=%2;steam64=%3> CFTools staff equipment", m_player, m_player.GetPlayerName(), m_player.GetPlainId()));
 
             ItemBase item = ItemBase.Cast(m_player.GetItemInHands());
             if(item) {
