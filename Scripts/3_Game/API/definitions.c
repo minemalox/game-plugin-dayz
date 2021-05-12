@@ -97,7 +97,7 @@ class ServerPollItem {
     float y;
 };
 class _Response_ServerPoll : _Response {
-    array<ServerPollItem> orders;
+    ref array<ServerPollItem> orders;
     void _Response_ServerPoll(string content) { JsonFileLoader<_Response_ServerPoll>.JsonLoadData(content, this); }
 };
 // ************************
