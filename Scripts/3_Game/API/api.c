@@ -31,10 +31,10 @@ class _Callback_RegisterAsync : _Callback {
 };
 
 class GameLabsAPI {
-    private string baseUrl;
+    private string baseUrl = "https://api.cftools.cloud/gamelabs/dz";
 
-    private ref RestApi restApi;
-    private ref RestContext restContext;
+    private RestApi restApi;
+    private RestContext restContext;
     private ref JsonSerializer jsonSerializer = new JsonSerializer();
 
     private string serverId;
@@ -43,11 +43,11 @@ class GameLabsAPI {
 
     private bool active = false;
 
-    void GameLabsAPI(string serverId, string apiKey, string baseUrl) {
+    void GameLabsAPI(string serverId, string apiKey, string baseUrl = "https://api.cftools.cloud/gamelabs/dz") {
         this.serverId = serverId;
         this.apiKey = apiKey;
 
-        this.baseUrl = baseUrl;
+        if(baseUrl) this.baseUrl = baseUrl;
 
         this.restApi = CreateRestApi();
         this.restContext = this.restApi.GetRestContext(this.baseUrl);
