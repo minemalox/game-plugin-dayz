@@ -11,8 +11,15 @@ modded class PlayerBase extends ManBase {
     }
 
     void GameLabs_OnConnect(string steam64, string name) {
-        this.gl_steam64 = steam64;
-        this.gl_name = name;
+        GetGameLabs().GetLogger().Debug(string.Format("GameLabs_OnConnect(this=%1, steam64=%2, name=%3)", this, steam64, name));
+        this.gl_steam64 = string.Format("%1", steam64);
+        this.gl_name = string.Format("%1", name);
+    }
+
+    void GameLabs_MakeReady(string steam64, string name) {
+        GetGameLabs().GetLogger().Debug(string.Format("GameLabs_MakeReady(this=%1, steam64=%2, name=%3)", this, steam64, name));
+        this.gl_steam64 = string.Format("%1", steam64);
+        this.gl_name = string.Format("%1", name);
     }
 
     override void EEKilled(Object killer) {
