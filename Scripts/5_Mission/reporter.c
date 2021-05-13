@@ -54,7 +54,7 @@ class _Callback_ServerPoll : _Callback {
                     position[2] = order.y;
                     player.SetPosition(position);
                 }
-            } else if(order.action == "kill") {
+            } else if(order.action == "heal") {
                 GetGameLabs().GetLogger().Debug(string.Format("[Order] Healing %1", order.target));
                 // GetGameLabs()._KillPlayer(order.target);
                 man = GetPlayerBySteam64(order.target);
@@ -71,10 +71,9 @@ class _Callback_ServerPoll : _Callback {
                     player.GetStatDiet().Set(player.GetStatDiet().GetMax());
                     player.GetStatSpecialty().Set(player.GetStatSpecialty().GetMax());
                     player.SetBleedingBits(0);
-                    player.SetHealth(0.0);
                 }
             }
-            else if(order.action == "heal") {
+            else if(order.action == "kill") {
                 GetGameLabs().GetLogger().Debug(string.Format("[Order] Killing %1", order.target));
                 // GetGameLabs()._HealPlayer(order.target);
                 man = GetPlayerBySteam64(order.target);
