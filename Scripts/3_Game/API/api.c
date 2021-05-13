@@ -49,6 +49,7 @@ class GameLabsAPI {
         this.apiKey = apiKey;
 
         if(baseUrl) this.baseUrl = baseUrl;
+        if(storeUrl) this.storeUrl = storeUrl;
 
         this.restApi = CreateRestApi();
         this.restContext = this.restApi.GetRestContext(this.baseUrl);
