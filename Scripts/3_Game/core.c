@@ -185,6 +185,12 @@ class GameLabsCore {
     bool IsStatReportingEnabled() { return this._reportStatistics; }
     bool IsMonitoredAction(string action) { if(this._monitoredActions.Find(action) == -1) {return false;} else {return true;}  }
 
+    void AddMonitoredAction(string action) {
+        if(this.IsMonitoredAction(action)) return;
+        this._monitoredActions.Insert(action);
+        this.GetLogger().Warn(string.Format("\"%1\" has been added as monitored action by a third party application", action));
+    }
+
     // Private calls, do not access
     void _PropagateFeatures(ref _Response_Register registerResponse) {
         if(registerResponse.modLicensingStatus == 1) {
