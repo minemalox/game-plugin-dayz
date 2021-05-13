@@ -6,6 +6,7 @@ class GameLabsConfiguration {
     private string apiKey = "";
 
     private string baseUrl = "https://api.cftools.cloud/gamelabs/dz";
+    private string storeUrl = "https://api.cftools.cloud/gamelabs/dz";
 
     [NonSerialized()]
     private const string path = "$profile:gamelabs.cfg";
@@ -25,6 +26,7 @@ class GameLabsConfiguration {
     string GetServerId() { return this.serverId; }
     string GetApiKey() { return this.apiKey; }
     string GetBaseURL() { return this.baseUrl; }
+    string GetStoreURL() { return this.storeUrl; }
     bool GetConnectionVerificationStatus() { return this.connectionVerification; }
     bool GetDebugStatus() { return this.debugEnabled; }
 };

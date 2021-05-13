@@ -69,7 +69,7 @@ class GameLabsCore {
             this.configuration.LoadFromDisk();
             this.logger = GameLabsLogger("GameLabsCore", this.GetDebugStatus());
 
-            this.api = GameLabsAPI(this.configuration.GetServerId(), this.configuration.GetApiKey(), this.configuration.GetBaseURL());
+            this.api = GameLabsAPI(this.configuration.GetServerId(),this.configuration.GetApiKey(),this.configuration.GetBaseURL(),this.configuration.GetStoreURL());
         }
     }
 
