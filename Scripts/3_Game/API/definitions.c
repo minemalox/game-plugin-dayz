@@ -105,11 +105,13 @@ class _Response_ServerPoll : _Response {
 // Register: /v1/server/events
 class _ServerEvent {
     string id;
+    string icon;
     string className;
     vector position;
 
     void _ServerEvent(ref _Event _event) {
         this.id = _event.ToString();
+        this.icon = _event.Icon();
         this.className = _event.Class();
         if(_event.Ref() != NULL && _event.Ref() != NULL) {
             this.position = _event.Ref().GetPosition();

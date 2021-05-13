@@ -41,11 +41,13 @@ class _Vehicle {
 
 class _Event {
     private string id;
+    private string icon;
     private string className;
     private Object _reference;
-    void _Event(string className, Object _reference) { this.className = className; this._reference = _reference; this.id = EntityAI.Cast(this._reference).GetNetworkIDString(); }
+    void _Event(string className, string icon, Object _reference) {this.className = className; this.icon = icon; this._reference = _reference; this.id = EntityAI.Cast(this._reference).GetNetworkIDString(); }
     string GetID() { return this.id; }
     string Class() { return this.className; }
+    string Icon() { return this.icon; }
     Object Ref() { return this._reference; }
     bool Equals(_Event other) {
         if(this._reference == NULL) return false;
