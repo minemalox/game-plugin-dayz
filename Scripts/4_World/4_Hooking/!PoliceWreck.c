@@ -1,5 +1,5 @@
 class Land_Wreck_hb01_aban1_police extends House {
-    ref _Event _registeredInstance = new _Event(this.GetType(), this);
+    ref _Event _registeredInstance = new _Event(this.GetType(), "car", this);
 
     override void EEInit() {
         super.EEInit();
