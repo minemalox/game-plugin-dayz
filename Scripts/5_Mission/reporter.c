@@ -95,6 +95,19 @@ class _Callback_ServerPoll : _Callback {
                     }
                 }
             }
+            else if(order.action == "spawnat") {
+                vector position;
+                position[0] = order.x;
+                position[1] = GetGame().SurfaceY(order.x, order.y) + 0.1;
+                position[2] = order.y;
+
+                GetGameLabs().GetLogger().Debug(string.Format("[Order] Spawning %1 at %2 (x%3)", order.parameter, position, order.quantity));
+
+                if(order.quantity == 1) GetGame().CreateObjectEx(order.parameter, position, ECE_PLACE_ON_SURFACE);
+                else {
+                    for (q = 1; q <= order.quantity; q++) GetGame().CreateObjectEx(order.parameter, position, ECE_PLACE_ON_SURFACE);
+                }
+            }
         }
     };
 };
