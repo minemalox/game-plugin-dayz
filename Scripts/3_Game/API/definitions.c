@@ -78,6 +78,11 @@ class _Payload_ServerPoll : _Payload {
 
     int aiActive;
 
+    float overcast;
+    float rain;
+    float fog;
+    float windspeed;
+
     void _Payload_ServerPoll(bool isFirst = false) {
         this.serverFps = GetGameLabs().GetServerFPS();
 
@@ -87,6 +92,16 @@ class _Payload_ServerPoll : _Payload {
 
         if(!isFirst) this.aiActive = GetGameLabs().GetAIActiveCount();
         else this.aiActive = 0;
+
+        Weather weather = GetGame().GetWeather();
+        if(weather) {
+            // Percentages 0-100
+            this.overcast = weather.GetOvercast().GetActual()*100;
+            this.rain = weather.GetRain().GetActual()*100;
+            this.fog = weather.GetFog().GetActual()*100;
+            // Windspeed in km/h
+            this.windspeed = weather.GetWindSpeed();
+        }
     }
     string ToJson() { return JsonFileLoader<_Payload_ServerPoll>.JsonMakeData(this); }
 };
