@@ -109,6 +109,7 @@ class ServerPollItem {
     string action;
     string target;
     string parameter;
+    int quantity = 1;
     float x;
     float y;
 };

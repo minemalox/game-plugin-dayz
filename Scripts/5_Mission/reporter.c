@@ -39,6 +39,7 @@ class _Callback_ServerPoll : _Callback {
         Man man;
         PlayerBase player;
         ServerPollItem order;
+        int q;
         for ( int i = 0; i < response.orders.Count(); i++ ) {
             order = response.orders.Get(i);
             // TODO: Add new abstraction layer in 4_World
@@ -83,12 +84,15 @@ class _Callback_ServerPoll : _Callback {
                 }
             }
             else if(order.action == "spawn") {
-                GetGameLabs().GetLogger().Debug(string.Format("[Order] Spawning %1 for %2", order.parameter, order.target));
+                GetGameLabs().GetLogger().Debug(string.Format("[Order] Spawning %1 for %2 (x%3)", order.parameter, order.target, order.quantity));
                 // GetGameLabs()._SpawnItemForPlayer(order.target, order.item);
                 man = GetPlayerBySteam64(order.target);
                 if(man != NULL) {
                     player = PlayerBase.Cast(man);
-                    player.SpawnEntityOnGroundPos(order.parameter, player.GetPosition());
+                    if(order.quantity == 1) player.SpawnEntityOnGroundPos(order.parameter, player.GetPosition());
+                    else {
+                        for (q = 1; q <= order.quantity; q++) player.SpawnEntityOnGroundPos(order.parameter, player.GetPosition());
+                    }
                 }
             }
         }
