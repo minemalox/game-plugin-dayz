@@ -44,7 +44,7 @@ class _Callback_ServerPoll : _Callback {
             order = response.orders.Get(i);
             // TODO: Add new abstraction layer in 4_World
             if(order.action == "teleport") { //GetGameLabs()._TeleportPlayer(order.target, order.x, order.y);
-                GetGameLabs().GetLogger().Debug(string.Format("[Order] Teleporting %1 to %2, %3", order.target, order.x, order.y));
+                GetGameLabs().GetLogger().Warn(string.Format("[Order] Teleporting %1 to %2, %3", order.target, order.x, order.y));
                 man = GetPlayerBySteam64(order.target);
                 if(man != NULL) {
                     player = PlayerBase.Cast(man);
@@ -56,7 +56,7 @@ class _Callback_ServerPoll : _Callback {
                     player.SetPosition(position);
                 }
             } else if(order.action == "heal") {
-                GetGameLabs().GetLogger().Debug(string.Format("[Order] Healing %1", order.target));
+                GetGameLabs().GetLogger().Warn(string.Format("[Order] Healing %1", order.target));
                 // GetGameLabs()._KillPlayer(order.target);
                 man = GetPlayerBySteam64(order.target);
                 if(man != NULL) {
@@ -75,7 +75,7 @@ class _Callback_ServerPoll : _Callback {
                 }
             }
             else if(order.action == "kill") {
-                GetGameLabs().GetLogger().Debug(string.Format("[Order] Killing %1", order.target));
+                GetGameLabs().GetLogger().Warn(string.Format("[Order] Killing %1", order.target));
                 // GetGameLabs()._HealPlayer(order.target);
                 man = GetPlayerBySteam64(order.target);
                 if(man != NULL) {
@@ -84,7 +84,7 @@ class _Callback_ServerPoll : _Callback {
                 }
             }
             else if(order.action == "spawn") {
-                GetGameLabs().GetLogger().Debug(string.Format("[Order] Spawning %1 for %2 (x%3)", order.parameter, order.target, order.quantity));
+                GetGameLabs().GetLogger().Warn(string.Format("[Order] Spawning %1 for %2 (x%3)", order.parameter, order.target, order.quantity));
                 // GetGameLabs()._SpawnItemForPlayer(order.target, order.item);
                 man = GetPlayerBySteam64(order.target);
                 if(man != NULL) {
@@ -101,7 +101,7 @@ class _Callback_ServerPoll : _Callback {
                 position[1] = GetGame().SurfaceY(order.x, order.y) + 0.1;
                 position[2] = order.y;
 
-                GetGameLabs().GetLogger().Debug(string.Format("[Order] Spawning %1 at %2 (x%3)", order.parameter, position, order.quantity));
+                GetGameLabs().GetLogger().Warn(string.Format("[Order] Spawning %1 at %2 (x%3)", order.parameter, position, order.quantity));
 
                 if(order.quantity == 1) GetGame().CreateObjectEx(order.parameter, position, ECE_PLACE_ON_SURFACE);
                 else {
