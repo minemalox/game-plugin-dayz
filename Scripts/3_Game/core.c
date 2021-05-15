@@ -130,7 +130,7 @@ class GameLabsCore {
         this._serverAI.Insert(_reference);
     }
     void RemoveAI(ref _AI _reference) {
-            if(IsProcessingBlocked()) return;
+        if(IsProcessingBlocked()) return;
         for(int i = 0; i < this._serverAI.Count(); i++) {
             if(this._serverAI.Get(i) == _reference) {
                 this._serverAI.Remove(i);
