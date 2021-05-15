@@ -31,6 +31,7 @@ class _LogPlayer {
 
 // Register: /v1/auth/register
 class _Payload_Register : _Payload {
+    string version = GetGameLabs().GetVersionIdentifier();
     string serverId;
     string apiKey;
     string localPort;
