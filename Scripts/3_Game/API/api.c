@@ -49,16 +49,7 @@ class GameLabsAPI {
         this.apiKey = apiKey;
 
         if(baseUrl) this.baseUrl = baseUrl;
-        GetGameLabs().GetLogger().Debug(string.Format("baseUrl=%1", baseUrl));
-        if(this.baseUrl != "https://api.cftools.cloud/gamelabs/dz") {
-            GetGameLabs().GetLogger().Warn(string.Format("API Base URL has been modified, your data may get compromised! (%1)", this.baseUrl));
-        }
-
         if(storeUrl) this.storeUrl = storeUrl;
-        GetGameLabs().GetLogger().Debug(string.Format("storeUrl=%1", storeUrl));
-        if(this.storeUrl != "https://api.cftools.cloud/gamelabs/dz") {
-            GetGameLabs().GetLogger().Warn(string.Format("API Store URL has been modified, your data may get compromised! (%1)", this.storeUrl));
-        }
 
         this.restApi = CreateRestApi();
         this.restContext = this.restApi.GetRestContext(this.baseUrl);
