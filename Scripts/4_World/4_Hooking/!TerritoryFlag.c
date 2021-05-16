@@ -1,5 +1,5 @@
 modded class TerritoryFlag {
-    ref _Event _registeredInstance = new _Event("TerritoryFlag", "flag", this);
+    ref _Event _registeredInstance = new _Event("TerritoryFlag", "pennant", this);
 
     void TerritoryFlag () {
         if(!GetGameLabs()) return;
