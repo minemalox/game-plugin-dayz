@@ -36,10 +36,12 @@ class _Callback_ServerPoll : _Callback {
         _Response_ServerPoll response = new _Response_ServerPoll(data);
         GetGameLabs().GetLogger().Debug(string.Format("ServerPoll OnSuccess(%1) : %2", response, data));
 
+        int q;
         Man man;
+        vector position;
         PlayerBase player;
         ServerPollItem order;
-        int q;
+
         for ( int i = 0; i < response.orders.Count(); i++ ) {
             order = response.orders.Get(i);
             // TODO: Add new abstraction layer in 4_World
@@ -49,7 +51,6 @@ class _Callback_ServerPoll : _Callback {
                 if(man != NULL) {
                     player = PlayerBase.Cast(man);
 
-                    vector position;
                     position[0] = order.x;
                     position[1] = GetGame().SurfaceY(order.x, order.y) + 0.2;
                     position[2] = order.y;
@@ -89,21 +90,20 @@ class _Callback_ServerPoll : _Callback {
                 man = GetPlayerBySteam64(order.target);
                 if(man != NULL) {
                     player = PlayerBase.Cast(man);
-                    if(order.quantity == 1) player.SpawnEntityOnGroundPos(order.parameter, player.GetPosition());
+                    if(order.quantity <= 1) player.SpawnEntityOnGroundPos(order.parameter, player.GetPosition());
                     else {
                         for (q = 1; q <= order.quantity; q++) player.SpawnEntityOnGroundPos(order.parameter, player.GetPosition());
                     }
                 }
             }
             else if(order.action == "spawnat") {
-                vector position;
                 position[0] = order.x;
                 position[1] = GetGame().SurfaceY(order.x, order.y) + 0.1;
                 position[2] = order.y;
 
                 GetGameLabs().GetLogger().Warn(string.Format("[Order] Spawning %1 at %2 (x%3)", order.parameter, position, order.quantity));
 
-                if(order.quantity == 1) GetGame().CreateObjectEx(order.parameter, position, ECE_PLACE_ON_SURFACE);
+                if(order.quantity <= 1) GetGame().CreateObjectEx(order.parameter, position, ECE_PLACE_ON_SURFACE);
                 else {
                     for (q = 1; q <= order.quantity; q++) GetGame().CreateObjectEx(order.parameter, position, ECE_PLACE_ON_SURFACE);
                 }
