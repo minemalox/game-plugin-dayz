@@ -204,7 +204,7 @@ del %modBuildDirectory%%modName%\Addons\!pboName!.pbo.%keyName%.bisign
 
 echo Building PBO: !pboName!.pbo
 echo START /w %pboProject% %pboProject% +W "+^!" -F +Stop -P +Z +O -E=dayz +R "%workDrive%!prefixName!" "+Mod=%modBuildDirectory%%modName%" "+Key=F:\@DayZ\@Keys\cftoolsRoot.biprivatekey"
-echo ADD "+^!" AND +O to obfuscate
+echo ADD "+^!" +O to obfuscate
 START /w %pboProject% %pboProject% +K +W -F +Stop -P +Z "+^!" +O -E=dayz +R "%workDrive%!prefixName!" "+Mod=%modBuildDirectory%%modName%" "+Key=F:\@DayZ\@Keys\cftoolsRoot.biprivatekey"
 
 if not errorlevel 1 (
