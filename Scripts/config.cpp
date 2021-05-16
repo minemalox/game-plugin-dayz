@@ -7,6 +7,7 @@ class CfgPatches
         requiredVersion=0.1;
         requiredAddons[]=
         {
+            "Define",
             "DZ_Data",
             "DZ_Characters",
             "DZ_Characters_Tops",
