@@ -137,10 +137,11 @@ class _ServerEvent {
 };
 class _Payload_ServerEvents : _Payload {
     int initial;
+    int interval;
     ref array<ref _ServerEvent> added = new array<ref _ServerEvent>();
     ref array<ref _ServerEvent> removed = new array<ref _ServerEvent>();
 
-    void _Payload_ServerEvents(bool initial, ref array<ref _Event> added, ref array<ref _Event> removed) {
+    void _Payload_ServerEvents(bool initial, int interval, ref array<ref _Event> added, ref array<ref _Event> removed) {
         if(initial) { this.initial = 1; } else { this.initial = 0; }
 
         for(int i = 0; i < added.Count(); i++) {
@@ -179,11 +180,12 @@ class _ServerVehicle {
 };
 class _Payload_ServerVehicles : _Payload {
     int initial;
+    int interval;
     ref array<ref _ServerVehicle> added = new array<ref _ServerVehicle>();
     ref array<ref _ServerVehicle> updated = new array<ref _ServerVehicle>();
     ref array<ref _ServerVehicle> removed = new array<ref _ServerVehicle>();
 
-    void _Payload_ServerVehicles(bool initial, ref array<ref _Vehicle> added, ref array<ref _Vehicle> updated, ref array<ref _Vehicle> removed) {
+    void _Payload_ServerVehicles(bool initial, int interval, ref array<ref _Vehicle> added, ref array<ref _Vehicle> updated, ref array<ref _Vehicle> removed) {
         if(initial) { this.initial = 1; } else { this.initial = 0; }
 
         for(int i = 0; i < added.Count(); i++) {

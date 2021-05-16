@@ -158,7 +158,7 @@ class GameLabsReporter {
     private void serverReporting() {
         if(!this.processReporting  || !GetGameLabs()) return;
         if(GetGameLabs()._serverEventsBufferAdded.Count() || GetGameLabs()._serverEventsBufferRemoved.Count() || this.isFirstReport) {
-            ref _Payload_ServerEvents payloadEvents = new _Payload_ServerEvents(this.isFirstReport, GetGameLabs()._serverEventsBufferAdded, GetGameLabs()._serverEventsBufferRemoved);
+            ref _Payload_ServerEvents payloadEvents = new _Payload_ServerEvents(this.isFirstReport, this.effectiveInterval, GetGameLabs()._serverEventsBufferAdded, GetGameLabs()._serverEventsBufferRemoved);
 
             GetGameLabs().GetApi().ServerEvents(new _Callback_ServerDummy(), payloadEvents);
 
@@ -173,7 +173,7 @@ class GameLabsReporter {
         }
 
         if(GetGameLabs()._serverEventsBufferAdded.Count() || GetGameLabs()._serverEventsBufferRemoved.Count() || updated.Count() || this.isFirstReport) {
-            ref _Payload_ServerVehicles payloadVehicles = new _Payload_ServerVehicles(this.isFirstReport, GetGameLabs()._serverVehiclesBufferAdded, updated, GetGameLabs()._serverVehiclesBufferRemoved);
+            ref _Payload_ServerVehicles payloadVehicles = new _Payload_ServerVehicles(this.isFirstReport, this.effectiveInterval, GetGameLabs()._serverVehiclesBufferAdded, updated, GetGameLabs()._serverVehiclesBufferRemoved);
 
             GetGameLabs().GetApi().ServerVehicles(new _Callback_ServerDummy(), payloadVehicles);
 
