@@ -1,6 +1,6 @@
 class CfgPatches
 {
-    class Define
+    class GameLabsDefine
     {
         requiredVersion = 0.1;
         requiredAddons[] = {};
@@ -9,9 +9,9 @@ class CfgPatches
 
 class CfgMods
 {
-    class Define
+    class GameLabsDefine
     {
-        dir="Define";
+        dir="GameLabsDefine";
         name="GameLabs";
         type="mod";
         dependencies[]={"GameLib", "Game", "World", "Mission"};
@@ -21,14 +21,14 @@ class CfgMods
             {
                 value = "";
                 files[] = {
-                    "Define/Global"
+                    "GameLabsDefine/Global"
                 };
             };
             class gameScriptModule
             {
                 value = "";
                 files[]={
-                    "Define/Global"
+                    "GameLabsDefine/Global"
                 };
             };
 
@@ -36,7 +36,7 @@ class CfgMods
             {
                 value="";
                 files[]={
-                    "Define/Global"
+                    "GameLabsDefine/Global"
                 };
             };
 
@@ -44,7 +44,7 @@ class CfgMods
             {
                 value="";
                 files[]={
-                    "Define/Global"
+                    "GameLabsDefine/Global"
                 };
             };
         };
