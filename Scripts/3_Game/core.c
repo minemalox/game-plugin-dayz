@@ -70,6 +70,17 @@ class GameLabsCore {
             this.logger = GameLabsLogger("GameLabsCore", this.GetDebugStatus());
 
             this.api = GameLabsAPI(this.configuration.GetServerId(),this.configuration.GetApiKey(),this.configuration.GetBaseURL(),this.configuration.GetStoreURL());
+
+            // TODO: Move this somewhere else in the future
+            this.logger.Debug(string.Format("baseUrl=%1", this.configuration.GetBaseURL()));
+            if(this.configuration.GetBaseURL() != "https://api.cftools.cloud/gamelabs/dz") {
+                this.logger.Warn(string.Format("API Base URL has been modified, your data may get compromised! (%1)", this.configuration.GetBaseURL()));
+            }
+
+            this.logger.Debug(string.Format("storeUrl=%1", this.configuration.GetStoreURL()));
+            if(this.configuration.GetStoreURL() != "https://api.cftools.cloud/gamelabs/dz") {
+                this.logger.Warn(string.Format("API Store URL has been modified, your data may get compromised! (%1)", this.configuration.GetStoreURL()));
+            }
         }
     }
 
