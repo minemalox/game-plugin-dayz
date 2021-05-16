@@ -12,4 +12,13 @@ modded class TerritoryFlag {
         if(!GetGameLabs().IsServer()) return;
         if(this._registeredInstance) GetGameLabs().RemoveEvent(this._registeredInstance);
     }
+
+    // Public API
+    _Event _GetEventInstance() {
+        return this._registeredInstance;
+    }
+
+    void _SetEventInstance(ref _Event _registeredInstance) {
+        this._registeredInstance = _registeredInstance;
+    }
 };
