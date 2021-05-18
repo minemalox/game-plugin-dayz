@@ -143,6 +143,7 @@ class _Payload_ServerEvents : _Payload {
 
     void _Payload_ServerEvents(bool initial, int interval, ref array<ref _Event> added, ref array<ref _Event> removed) {
         if(initial) { this.initial = 1; } else { this.initial = 0; }
+        this.interval = interval;
 
         for(int i = 0; i < added.Count(); i++) {
             this.added.Insert(new _ServerEvent(added.Get(i)));
@@ -187,6 +188,7 @@ class _Payload_ServerVehicles : _Payload {
 
     void _Payload_ServerVehicles(bool initial, int interval, ref array<ref _Vehicle> added, ref array<ref _Vehicle> updated, ref array<ref _Vehicle> removed) {
         if(initial) { this.initial = 1; } else { this.initial = 0; }
+        this.interval = interval;
 
         for(int i = 0; i < added.Count(); i++) {
             this.added.Insert(new _ServerVehicle(added.Get(i)));
