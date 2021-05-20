@@ -34,7 +34,6 @@ class _Callback_ServerPoll : _Callback {
 
     override void OnSuccess(string data, int dataSize) {
         _Response_ServerPoll response = new _Response_ServerPoll(data);
-        GetGameLabs().GetLogger().Debug(string.Format("ServerPoll OnSuccess(%1) : %2", response, data));
 
         int q;
         Man man;
