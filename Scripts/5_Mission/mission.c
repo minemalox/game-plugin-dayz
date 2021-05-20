@@ -169,8 +169,8 @@ modded class MissionGameplay extends MissionBase {
     }
 
     void ~MissionGameplay() {
-        this.gameLabs.Exit();
-        this.gameLabsClient.Disable();
+        if(this.gameLabs) this.gameLabs.Exit();
+        if(this.gameLabsClient) this.gameLabsClient.Disable();
     }
 
     override void OnInit() {
