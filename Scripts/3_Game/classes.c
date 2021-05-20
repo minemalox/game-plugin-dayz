@@ -23,7 +23,7 @@ class _Vehicle {
     private string className;
     private vector _lastPos;
     private Object _reference;
-    void _Vehicle(Object _reference) { this._reference = _reference; this.className = this.Ref().GetDisplayName(); this.id = EntityAI.Cast(this._reference).GetNetworkIDString(); };
+    void _Vehicle(Object _reference) { this._reference = _reference; this.className = this.Ref().GetType(); this.id = EntityAI.Cast(this._reference).GetNetworkIDString(); };
     string GetID() { return this.id; }
     string Class() { return className; }
     Object Ref() { return this._reference; }
