@@ -49,7 +49,7 @@ modded class MissionServer {
             this.gameLabs.GetApi().Enable();
             int apiStatus = this.gameLabs.GetApi().Verify();
             if(apiStatus == 1) {
-                this.gameLabs.GetLogger().Info("Server up");
+                this.gameLabs.GetLogger().Info(string.Format("Server up (GameLabs v%1)", this.gameLabs.GetVersionIdentifier()));
                 this._Setup();
             } else {
                 this.gameLabs.GetLogger().Debug(string.Format("apiStatus=%1", apiStatus));
