@@ -64,7 +64,10 @@ modded class PlayerBase extends ManBase {
         super.EEHitBy(damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
         if(!GetGame().IsServer()) return;
         if(!GetGameLabs().IsStatReportingEnabled()) return;
-        if(!this.IsAlive()) return;
+
+        DayZPlayerImplement playerImplement = DayZPlayerImplement.Cast(this);
+        GetGameLabs().GetLogger().Debug(string.Format("EEHitBy.EVAL (deathSync=%1, suicide=%2)", this.m_DeathSyncSent, this.CommitedSuicide()));
+        if(this.m_DeathSyncSent || this.CommitedSuicide()) return;
 
         ref _Payload_PlayerDamage payload;
         ref _LogPlayerEx logObjectMurderer;
@@ -76,6 +79,7 @@ modded class PlayerBase extends ManBase {
         }
         if(!source || !murderer) return;
 
+        GetGameLabs().GetLogger().Debug(string.Format("EEHitBy(this=%1, murderer=%2, source=%3, component=%4, dmgZone=%5, ammo=%6, modelPos=%7, speedCoef=%8)", this, murderer, source, component, dmgZone, ammo, modelPos, speedCoef));
         logObjectMurderer = new _LogPlayerEx(murderer);
         payload = new _Payload_PlayerDamage(logObjectPlayer, logObjectMurderer, source, damageResult.GetDamage(dmgZone, "Health"), dmgZone);
         GetGameLabs().GetApi().PlayerDamage(new _Callback(), payload);
