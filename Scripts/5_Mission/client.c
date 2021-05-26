@@ -1,8 +1,4 @@
 class GameLabsClient {
-    /*
-     * TODO: PoC
-     */
-
     private bool processReporting = true;
     ref Timer timerSync;
 
@@ -13,9 +9,12 @@ class GameLabsClient {
 
     void Disable() {
         this.processReporting = false;
-        GetGameLabs().GetLogger().Info("(Client) Disabled");
-        this.timerSync.Stop();
-        GetGameLabs().GetLogger().Debug("(Client) Timers gracefully closed");
+        if(this.timerSync) this.timerSync.Stop();
+        if(GetGameLabs()) {
+            if(GetGameLabs().GetLogger()) {
+                GetGameLabs().GetLogger().Info("(Client) Disabled and timers gracefully closed");
+            }
+        }
     }
 
     void SyncExpansionChat(ChatMessageEventParams params) {
