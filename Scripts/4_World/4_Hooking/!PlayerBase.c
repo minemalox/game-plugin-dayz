@@ -18,6 +18,9 @@ modded class PlayerBase extends ManBase {
     string GetUpstreamIdentity() {
         return this.gl_cftoolsId;
     }
+    bool HasUpstreamIdentity() {
+        return (this.gl_cftoolsId == "");
+    }
 
     void GameLabs_OnConnect(string steam64, string name) {
         GetGameLabs().GetLogger().Debug(string.Format("GameLabs_OnConnect(this=%1, steam64=%2, name=%3)", this, steam64, name));
