@@ -9,9 +9,7 @@ modded class Weapon_Base {
         vector cameraDirection = GetGame().GetCurrentCameraDirection();
         vector cameraPosition = GetGame().GetCurrentCameraPosition();
         vector usti_hlavne_position = this.GetSelectionPositionMS( "usti hlavne" );//usti hlavne
-        vector konec_hlavne_position = this.GetSelectionPositionMS( "konec hlavne" );//konec hlavne
         usti_hlavne_position = this.ModelToWorld(usti_hlavne_position);
-        konec_hlavne_position = this.ModelToWorld(konec_hlavne_position);
 
         Debug_LogHit(usti_hlavne_position, cameraDirection, cameraPosition);
     }
