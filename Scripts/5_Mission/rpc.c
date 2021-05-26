@@ -40,6 +40,7 @@ class GameLabsRPC {
                 } else {
                     player.SetUpstreamIdentity(responseRESync.param2);
                     GetGameLabs().GetLogger().Debug(string.Format("Received upstream identity (cftoolsId=%1)", player.GetUpstreamIdentity()));
+                    player.OnUpstreamIdentityReceived();
                 }
                 return;
             }

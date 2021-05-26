@@ -22,6 +22,7 @@ modded class MissionServer {
         } else {
             GetGameLabs().GetLogger().Debug(string.Format("Player<%1> populated with CFTools Id from cache (%2)", player, cftoolsId));
             player.SetUpstreamIdentity(cftoolsId);
+            player.OnUpstreamIdentityReceived();
         }
 
         ref Param2<bool, string> payload = new Param2<bool, string>(GetGameLabs().GetDebugStatus(), player.GetUpstreamIdentity());
