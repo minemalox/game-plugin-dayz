@@ -100,9 +100,11 @@ modded class MissionServer {
         if(this.gameLabsReporter) {
             this.gameLabsReporter.Disable();
         }
-        this.gameLabs.Exit();
-        this.gameLabs.GetLogger().Debug("Gracefully closing core logger");
-        this.gameLabs.GetLogger().Close();
+        if(this.gameLabs) {
+            this.gameLabs.Exit();
+            this.gameLabs.GetLogger().Debug("Gracefully closing core logger");
+            this.gameLabs.GetLogger().Close();
+        }
     }
 
     private void PrivilegedEquip() {
