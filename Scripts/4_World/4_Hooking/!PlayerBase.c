@@ -25,6 +25,12 @@ modded class PlayerBase extends ManBase {
     // This is supposed to be overriden by third party mods instead of hooking into the workflow directly
     void OnUpstreamIdentityReceived() {}
 
+    void OnGameLabsSync() {
+        if(GetGameLabs().GetDebugStatus()) {
+            this.ShowWeaponDebug(true);
+        }
+    }
+
     void GameLabs_OnConnect(string steam64, string name) {
         GetGameLabs().GetLogger().Debug(string.Format("GameLabs_OnConnect(this=%1, steam64=%2, name=%3)", this, steam64, name));
         this.gl_steam64 = string.Format("%1", steam64);
