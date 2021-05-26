@@ -5,6 +5,10 @@ modded class DayZGame extends CGame {
     private bool _passthroughConnect = false;
     private bool _isLaunchConnect = false;
 
+    void DayZGame() {
+        Print(string.Format("[GameLabs] Retrieved steam64=%1 from BIOS", GetBIOSStoredSteam64()));
+    }
+
     override void ConnectLaunch() {
         this._isLaunchConnect = true;
         if(this._passthroughConnect) {
