@@ -29,4 +29,5 @@ class GameLabsConfiguration {
     string GetStoreURL() { return this.storeUrl; }
     bool GetConnectionVerificationStatus() { return this.connectionVerification; }
     bool GetDebugStatus() { return this.debugEnabled; }
+    void OverrideDebugStatus(bool debugEnabled) { this.debugEnabled = debugEnabled; }
 };

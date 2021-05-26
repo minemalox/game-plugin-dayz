@@ -14,12 +14,9 @@ class GameLabsLogger {
         this._Setup();
     }
 
-    /*
-    void ~GameLabsLogger() {
-        this._WriteClosingLine();
-        CloseFile(this.fh);
+    void OverrideDebugStatus(bool allowDebug) {
+        this.allowDebug = allowDebug;
     }
-     */
 
     void Debug(string message) {
         if(!this.allowDebug) return;
