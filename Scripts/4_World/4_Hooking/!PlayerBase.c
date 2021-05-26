@@ -67,7 +67,7 @@ modded class PlayerBase extends ManBase {
 
         DayZPlayerImplement playerImplement = DayZPlayerImplement.Cast(this);
         GetGameLabs().GetLogger().Debug(string.Format("EEHitBy.EVAL (deathSync=%1, suicide=%2)", this.m_DeathSyncSent, this.CommitedSuicide()));
-        if(this.m_DeathSyncSent || this.CommitedSuicide()) return;
+        if(this.m_DeathSyncSent || this.CommitedSuicide()) return; // Prevent logging of hits for dead bodies
 
         ref _Payload_PlayerDamage payload;
         ref _LogPlayerEx logObjectMurderer;
