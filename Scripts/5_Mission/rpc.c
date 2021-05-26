@@ -78,7 +78,9 @@ class GameLabsRPC {
                 if(!player) return;
 
                 string channel;
-                if(data.param1 == 128) {
+                if(data.param1 == 64) {
+                    channel = "vehicle";
+                } else if(data.param1 == 128) {
                     channel = "side";
                 } else if(data.param1 == 256){
                     channel = "team";
