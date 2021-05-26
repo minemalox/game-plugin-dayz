@@ -2,12 +2,21 @@ modded class PlayerBase extends ManBase {
     private string gl_steam64 = "";
     private string gl_name = "Survivor";
 
+    private string gl_cftoolsId = "";
+
     string GetPlainId() {
         return this.gl_steam64;
     }
 
     string GetPlayerName() {
         return this.gl_name;
+    }
+
+    void SetUpstreamIdentity(string cftoolsId) {
+        this.gl_cftoolsId = cftoolsId;
+    }
+    string GetUpstreamIdentity() {
+        return this.gl_cftoolsId;
     }
 
     void GameLabs_OnConnect(string steam64, string name) {
