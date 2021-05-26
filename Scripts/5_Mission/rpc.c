@@ -15,14 +15,33 @@ class GameLabsRPC {
      */
 
     private void HandleClientRPC(PlayerIdentity sender, Object target, int rpc_type, ParamsReadContext ctx) {
+        PlayerBase player;
         switch(rpc_type) {
             case GameLabsRPCS.RE_SERVERFPS: {
-                ref Param1<float> response = new Param1<float>(-1.0);
-                ctx.Read(response);
+                ref Param1<float> responseREServerFps = new Param1<float>(-1.0);
+                ctx.Read(responseREServerFps);
 
-                float serverFps = response.param1;
+                float serverFps = responseREServerFps.param1;
                 GetGameLabs().SetServerFPS(serverFps);
-                break;
+                return;
+            }
+            case GameLabsRPCS.RE_SYNC: {
+                player = PlayerBase.Cast(GetGame().GetPlayer());
+                if(!player) return;
+
+                ref Param2<bool, string> responseRESync = new Param2<bool, string>(false, "");
+                ctx.Read(responseRESync);
+
+                GetGameLabs().GetLogger().OverrideDebugStatus(responseRESync.param1);
+                GetGameLabs().GetConfiguration().OverrideDebugStatus(responseRESync.param1);
+
+                if(responseRESync.param2 == "") {
+                    GetGameLabs().GetLogger().Debug(string.Format("Sync repose did not contain an upstream identity"));
+                } else {
+                    player.SetUpstreamIdentity(responseRESync.param2);
+                    GetGameLabs().GetLogger().Debug(string.Format("Received upstream identity (cftoolsId=%1)", player.GetUpstreamIdentity()));
+                }
+                return;
             }
         }
     }
@@ -42,6 +61,7 @@ class GameLabsRPC {
     }
 
     private void HandleServerRPC(PlayerIdentity sender, Object target, int rpc_type, ParamsReadContext ctx) {
+        PlayerBase player;
         switch(rpc_type) {
             case GameLabsRPCS.RQ_SERVERFPS: {
                 ref Param1<float> payloadRQServerFps = new Param1<float>(GetGameLabs().GetServerFPS());
@@ -53,7 +73,7 @@ class GameLabsRPC {
                 if(!ctx.Read(data)) return;
                 if(!sender) return;
 
-                PlayerBase player = GetPlayerByIdentity(sender);
+                player = GetPlayerByIdentity(sender);
                 if(!player) return;
 
                 string channel;
@@ -68,6 +88,7 @@ class GameLabsRPC {
                 ref _LogPlayerEx logObjectPlayer = new _LogPlayerEx(player);
                 ref _Payload_PlayerChat payloadExpansionChat = new _Payload_PlayerChat(logObjectPlayer, channel, data.param3);
                 GetGameLabs().GetApi().PlayerChat(new _Callback(), payloadExpansionChat);
+                return;
             }
         }
     }
