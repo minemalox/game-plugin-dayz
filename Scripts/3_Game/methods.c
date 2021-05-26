@@ -1,7 +1,9 @@
+bool gl_OnlineServicesInit = false;
+
 string GetBIOSStoredSteam64() {
-    if(!m_OnlineServicesInit) {
+    if(!gl_OnlineServicesInit) {
         OnlineServices.Init();
-        m_OnlineServicesInit = true;
+        gl_OnlineServicesInit = true;
     }
 
     BiosUserManager user_manager = GetGame().GetUserManager();
