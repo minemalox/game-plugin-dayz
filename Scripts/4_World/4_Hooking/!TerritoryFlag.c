@@ -1,4 +1,4 @@
-modded class TerritoryFlag {
+modded class TerritoryFlag extends BaseBuildingBase {
     ref _Event _registeredInstance = new _Event("TerritoryFlag", "pennant", this);
 
     void TerritoryFlag () {
