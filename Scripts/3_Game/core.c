@@ -11,6 +11,8 @@ class GameLabsCore {
     bool errorFlag = false;
     string modLicensingOffender;
 
+    private ref map<string, string> upstreamIdentityMap = new map<string, string>;
+
     private int _computedServerFps = 0;
     private int _computedAI = 0;
     private int _computedAnimals = 0;
@@ -87,8 +89,9 @@ class GameLabsCore {
     string GetVersionIdentifier() { return this.modControlledVersionIdentifier; }
 
     // Module getters
-    GameLabsLogger GetLogger() { return this.logger; }
     GameLabsAPI GetApi() { return this.api; }
+    GameLabsLogger GetLogger() { return this.logger; }
+    GameLabsConfiguration GetConfiguration() { return this.configuration; }
 
     // Config getter passthrough
     bool GetDebugStatus() { return this.configuration.GetDebugStatus(); }
@@ -98,6 +101,19 @@ class GameLabsCore {
     void RequestServerFPS() {
         if(GetGame().IsServer()) return;
         GetGame().RPCSingleParam(NULL, GameLabsRPCS.RQ_SERVERFPS, NULL, true);
+    }
+
+    void SetPlayerUpstreamIdentity(string steam64, string cftoolsId) {
+        if(!this.IsServer()) return;
+        this.upstreamIdentityMap.Set(steam64, cftoolsId);
+    }
+    void ClearPlayerUpstreamIdentity(string steam64) {
+        if(!this.IsServer()) return;
+        this.upstreamIdentityMap.Remove(steam64);
+    }
+    string GetPlayerUpstreamIdentity(string steam64) {
+        if(!this.IsServer()) return "";
+        return this.upstreamIdentityMap.Get(steam64);
     }
 
     int GetServerFPS() { return this._computedServerFps; }
@@ -231,55 +247,6 @@ class GameLabsCore {
             this._reportStatistics = false;
         }
     }
-
-    /*
-     * TODO: Refactor for 4_World
-     *
-    void _TeleportPlayer(string steam64, float x, float y) {
-        Man player = this.GetPlayerBySteam64(steam64);
-        if(player == NULL) return;
-        this.GetLogger().Debug(string.Format("[Order] Teleporting %1 to %2, %3", steam64, x, y));
-        vector position;
-        position[0] = x;
-        position[1] = GetGame().SurfaceY(x, y) + 0.2;
-        position[2] = y;
-        player.SetPosition(position);
-    }
-
-    void _HealPlayer(string steam64) {
-        Man man = this.GetPlayerBySteam64(steam64);
-        if(man == NULL) return;
-        PlayerBase player = PlayerBase.Cast(man);
-        this.GetLogger().Debug(string.Format("[Order] Healing %1", steam64));
-        player.SetHealth( player.GetMaxHealth( "", "" ) );
-        player.SetHealth( "","Blood", player.GetMaxHealth( "", "Blood" ) );
-        player.GetStatHeatComfort().Set(player.GetStatHeatComfort().GetMax());
-        player.GetStatTremor().Set(player.GetStatTremor().GetMin());
-        player.GetStatWet().Set(player.GetStatWet().GetMin());
-        player.GetStatEnergy().Set(player.GetStatEnergy().GetMax());
-        player.GetStatWater().Set(player.GetStatWater().GetMax());
-        player.GetStatDiet().Set(player.GetStatDiet().GetMax());
-        player.GetStatSpecialty().Set(player.GetStatSpecialty().GetMax());
-        player.SetBleedingBits(0);
-        player.SetHealth(0.0);
-    }
-
-    void _KillPlayer(string steam64) {
-        Man man = this.GetPlayerBySteam64(steam64);
-        if(man == NULL) return;
-        PlayerBase player = PlayerBase.Cast(man);
-        this.GetLogger().Debug(string.Format("[Order] Killing %1", steam64));
-        player.SetHealth(0);
-    }
-
-    void _SpawnItemForPlayer(string steam64, string item) {
-        Man man = this.GetPlayerBySteam64(steam64);
-        if(man == NULL) return;
-        PlayerBase player = PlayerBase.Cast(man);
-        this.GetLogger().Debug(string.Format("[Order] Spawning %1 for %2", item, steam64));
-        player.SpawnEntityOnGroundPos(player, entity.GetPosition());
-    }
-     */
 };
 
 // Public interface access
