@@ -36,12 +36,14 @@ class GameLabsRPC {
                 GetGameLabs().GetConfiguration().OverrideDebugStatus(responseRESync.param1);
 
                 if(responseRESync.param2 == "") {
-                    GetGameLabs().GetLogger().Debug(string.Format("Sync repose did not contain an upstream identity"));
+                    GetGameLabs().GetLogger().Debug(string.Format("Sync response did not contain an upstream identity"));
                 } else {
                     player.SetUpstreamIdentity(responseRESync.param2);
                     GetGameLabs().GetLogger().Debug(string.Format("Received upstream identity (cftoolsId=%1)", player.GetUpstreamIdentity()));
                     player.OnUpstreamIdentityReceived();
                 }
+
+                player.OnGameLabsSync();
                 return;
             }
         }
