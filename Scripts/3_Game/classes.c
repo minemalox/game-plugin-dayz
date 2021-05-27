@@ -51,8 +51,8 @@ class _Event {
     void _Event(string className, string icon, Object _reference) {
         this.className = className;
         this.icon = icon;
-        _reference.GetNetworkID(id_low, id_high);
-        this.id = id_high.ToString() + id_low.ToString();
+        _reference.GetNetworkID(this.id_low, this.id_high);
+        this.id = this.id_high.ToString() + this.id_low.ToString();
     }
     string GetID() { return this.id; }
     string Class() { return this.className; }
