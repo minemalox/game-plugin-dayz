@@ -1,7 +1,8 @@
 bool gl_OnlineServicesInit = false;
 
 string GetBIOSStoredSteam64() {
-    if(GetGame().IsServer() || !GetGame().IsMultiplayer()) return "-1";
+    if(!GetGame()) return "-2";
+    if(GetGame().IsServer() || !GetGame().IsMultiplayer()) return "-3";
 
     if(!gl_OnlineServicesInit) {
         OnlineServices.Init();
