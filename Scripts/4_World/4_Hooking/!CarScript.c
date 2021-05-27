@@ -1,7 +1,7 @@
 modded class CarScript {
     private ref _Vehicle _registeredInstance;
     void CarScript() {
-        _registeredInstance = new _Vehicle(this);
+        this._registeredInstance = new _Vehicle(this);
         if(!GetGameLabs()) return;
         if(!GetGameLabs().IsServer()) return;
         GetGameLabs().RegisterVehicle(this._registeredInstance);
