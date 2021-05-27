@@ -59,7 +59,7 @@ class _Event {
     string Icon() { return this.icon; }
     Object Ref() { return GetGame().GetObjectByNetworkId(this.id_low, this.id_high); }
     bool Equals(_Event other) {
-        Object _reference = Ref();
+        Object _reference = this.Ref();
         Object _other_reference = other.Ref();
         if(!_reference || !_other_reference) return false;
         return _reference.GetPosition() == _other_reference.GetPosition();
