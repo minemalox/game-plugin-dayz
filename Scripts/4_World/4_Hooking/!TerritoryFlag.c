@@ -2,6 +2,10 @@ modded class TerritoryFlag {
     ref _Event _registeredInstance;
 
     void TerritoryFlag () {
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this._InitGameLabs);
+	}
+
+	void _InitGameLabs() {
         this._registeredInstance = new _Event("TerritoryFlag", "pennant", this);
         if(GetGameLabs()) {
             if(GetGameLabs().IsServer()) {
