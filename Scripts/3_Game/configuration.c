@@ -45,8 +45,8 @@ class GameLabsConfiguration {
     void OverrideDebugStatus(bool debugEnabled) { this.debugEnabled = debugEnabled; }
 
     void _ValidateAndExtend() {
-        if(this.speedCheckEnabled == NULL) this.speedCheckEnabled = true;
-        if(this.speedCheckThresholdFoot == 1) this.speedCheckThresholdFoot = 8.0;
-        if(this.speedCheckThresholdVehicle == 1) this.speedCheckThresholdVehicle = 100.0;
+        if(this.playerTickInterval < 1) this.playerTickInterval = 2.5;
+        if(this.speedCheckThresholdFoot <= 1) this.speedCheckThresholdFoot = 8.0;
+        if(this.speedCheckThresholdVehicle <= 1) this.speedCheckThresholdVehicle = 100.0;
     }
 };
