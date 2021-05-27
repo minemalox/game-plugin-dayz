@@ -40,17 +40,28 @@ class _Vehicle {
 };
 
 class _Event {
+    private int id_low;
+    private int id_high;
     private string id;
     private string icon;
     private string className;
-    private Object _reference;
-    void _Event(string className, string icon, Object _reference) {this.className = className; this.icon = icon; this._reference = _reference; this.id = EntityAI.Cast(this._reference).GetNetworkIDString(); }
+    //! Keeping object reference to class House (aka, wrecks from events) has weird side-effects for some reason,
+    //! it will break initialization of other, unrelated classes (EnfScript bug?).
+    //! Use network ID to get object dynamically when needed instead.
+    void _Event(string className, string icon, Object _reference) {
+        this.className = className;
+        this.icon = icon;
+        _reference.GetNetworkID(this.id_low, this.id_high);
+        this.id = this.id_high.ToString() + this.id_low.ToString();
+    }
     string GetID() { return this.id; }
     string Class() { return this.className; }
     string Icon() { return this.icon; }
-    Object Ref() { return this._reference; }
+    Object Ref() { return GetGame().GetObjectByNetworkId(this.id_low, this.id_high); }
     bool Equals(_Event other) {
-        if(this._reference == NULL) return false;
-        return this._reference.GetPosition() == other._reference.GetPosition();
+        Object _reference = this.Ref();
+        Object _other_reference = other.Ref();
+        if(!_reference || !_other_reference) return false;
+        return _reference.GetPosition() == _other_reference.GetPosition();
     }
 };

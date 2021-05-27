@@ -1,7 +1,8 @@
 modded class AnimalBase  {
-    private ref _AI _registeredInstance = new _AI(this, false);
+    private ref _AI _registeredInstance;
 
     void AnimalBase () {
+        this._registeredInstance = new _AI(this, false);
         if(!GetGameLabs()) return;
         if(!GetGameLabs().IsServer()) return;
         GetGameLabs().IncrAnimalCount();
