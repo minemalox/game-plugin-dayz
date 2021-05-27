@@ -1,8 +1,7 @@
-modded class TerritoryFlag {
-    ref _Event _registeredInstance;
+modded class TerritoryFlag extends BaseBuildingBase {
+    ref _Event _registeredInstance = new _Event("TerritoryFlag", "pennant", this);
 
     void TerritoryFlag () {
-        this._registeredInstance = new _Event("TerritoryFlag", "pennant", this);
         if(GetGameLabs()) {
             if(GetGameLabs().IsServer()) {
                 GetGameLabs().RegisterEvent(this._registeredInstance);

@@ -1,9 +1,8 @@
 class Land_Wreck_hb01_aban1_police extends House {
-    ref _Event _registeredInstance;
+    ref _Event _registeredInstance = new _Event(this.GetType(), "car", this);
 
     override void EEInit() {
         super.EEInit();
-        this._registeredInstance = new _Event(this.GetType(), "car", this);
         if(!GetGameLabs()) return;
         if(!GetGameLabs().IsServer()) return;
         vector position = GetPosition();
@@ -19,11 +18,10 @@ class Land_Wreck_hb01_aban1_police extends House {
 };
 
 class Land_Wreck_hb01_aban2_police extends House {
-    ref _Event _registeredInstance;
+    ref _Event _registeredInstance = new _Event(this.GetType(), "car", this);
 
     override void EEInit() {
         super.EEInit();
-        this._registeredInstance = new _Event(this.GetType(), "car", this);
         if(!GetGameLabs()) return;
         if(!GetGameLabs().IsServer()) return;
         vector position = GetPosition();
@@ -39,11 +37,10 @@ class Land_Wreck_hb01_aban2_police extends House {
 };
 
 class Land_Wreck_sed01_aban1_police extends House {
-    ref _Event _registeredInstance;
+    ref _Event _registeredInstance = new _Event(this.GetType(), "car", this);
 
     override void EEInit() {
         super.EEInit();
-        this._registeredInstance = new _Event(this.GetType(), "car", this);
         if(!GetGameLabs()) return;
         if(!GetGameLabs().IsServer()) return;
         vector position = GetPosition();
@@ -59,11 +56,10 @@ class Land_Wreck_sed01_aban1_police extends House {
 };
 
 class Land_Wreck_sed01_aban2_police extends House {
-    ref _Event _registeredInstance;
+    ref _Event _registeredInstance = new _Event(this.GetType(), "car", this);
 
     override void EEInit() {
         super.EEInit();
-        this._registeredInstance = new _Event(this.GetType(), "car", this);
         if(!GetGameLabs()) return;
         if(!GetGameLabs().IsServer()) return;
         vector position = GetPosition();
@@ -79,11 +75,10 @@ class Land_Wreck_sed01_aban2_police extends House {
 };
 
 class Land_Wreck_Volha_Police extends House {
-    ref _Event _registeredInstance;
+    ref _Event _registeredInstance = new _Event(this.GetType(), "car", this);
 
     override void EEInit() {
         super.EEInit();
-        this._registeredInstance = new _Event(this.GetType(), "car", this);
         if(!GetGame().IsServer()) return;
         if(!GetGameLabs()) return;
         vector position = GetPosition();
