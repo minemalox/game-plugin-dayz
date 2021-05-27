@@ -1,9 +1,8 @@
 modded class Wreck_UH1Y {
-    ref _Event _registeredInstance;
+    ref _Event _registeredInstance = new _Event(this.GetType(), "helicopter", this);
 
     override void EEInit() {
         super.EEInit();
-        this._registeredInstance = new _Event(this.GetType(), "helicopter", this);
         if(!GetGame().IsServer()) return;
         vector position = GetPosition();
         if(position[0] <= 0 && position[1] <= 0 && position[2] <= 0) return;
@@ -18,11 +17,10 @@ modded class Wreck_UH1Y {
 };
 
 class Wreck_Mi8 extends House {
-        ref _Event _registeredInstance;
+        ref _Event _registeredInstance = new _Event(this.GetType(), "helicopter", this);
 
         override void EEInit() {
             super.EEInit();
-            this._registeredInstance = new _Event(this.GetType(), "helicopter", this);
             if(!GetGame().IsServer()) return;
             vector position = GetPosition();
             if(position[0] <= 0 && position[1] <= 0 && position[2] <= 0) return;

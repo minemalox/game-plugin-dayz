@@ -1,8 +1,7 @@
 modded class ZombieBase  {
-    private ref _AI _registeredInstance;
+    private ref _AI _registeredInstance = new _AI(this, true);
 
     void ZombieBase () {
-        this._registeredInstance = new _AI(this, true);
         if(!GetGameLabs()) return;
         if(!GetGameLabs().IsServer()) return;
         GetGameLabs().IncrAICount();
