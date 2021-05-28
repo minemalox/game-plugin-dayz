@@ -2,10 +2,10 @@ modded class TerritoryFlag extends BaseBuildingBase {
     ref _Event _registeredInstance;
 
     void TerritoryFlag () {
-		    GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this._InitGameLabs);
-	  }
+        GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(this._InitGameLabs);
+	}
 
-	  private void _InitGameLabs() {
+    private void _InitGameLabs() {
         this._registeredInstance = new _Event("TerritoryFlag", "pennant", this);
 
         if(GetGameLabs()) {
