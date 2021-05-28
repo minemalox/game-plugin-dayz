@@ -19,14 +19,17 @@ modded class MissionServer {
         string cftoolsId = GetGameLabs().GetPlayerUpstreamIdentity(player.GetPlainId());
         if (!cftoolsId) {
             GetGameLabs().GetLogger().Debug(string.Format("Player<%1> no cached CFTools Id, contacting api", player));
+
+            ref _Payload_PlayerConnect payloadPlayerConnect = new _Payload_PlayerConnect(player.GetPlainId());
+            GetGameLabs().GetApi().PlayerConnect(new _Callback_PlayerConnect(), payloadPlayerConnect);
         } else {
             GetGameLabs().GetLogger().Debug(string.Format("Player<%1> populated with CFTools Id from cache (%2)", player, cftoolsId));
             player.SetUpstreamIdentity(cftoolsId);
             player.OnUpstreamIdentityReceived();
         }
 
-        ref Param2<bool, string> payload = new Param2<bool, string>(GetGameLabs().GetDebugStatus(), player.GetUpstreamIdentity());
-        GetGame().RPCSingleParam(null, GameLabsRPCS.RE_SYNC, payload, true, identity);
+        ref Param2<bool, string> payloadSync = new Param2<bool, string>(GetGameLabs().GetDebugStatus(), player.GetUpstreamIdentity());
+        GetGame().RPCSingleParam(null, GameLabsRPCS.RE_SYNC, payloadSync, true, identity);
     };
 
     override void PlayerDisconnected(PlayerBase player, PlayerIdentity identity, string uid) {

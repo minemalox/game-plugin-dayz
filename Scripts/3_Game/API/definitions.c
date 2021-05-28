@@ -339,3 +339,21 @@ class _Payload_PlayerChat : _Payload {
     string ToJson() { return JsonFileLoader<_Payload_PlayerChat>.JsonMakeData(this); }
 };
 // ************************
+
+// Register: /v1/player/connect
+//! Callback is located in 5_Mission/definitions
+class _Payload_PlayerConnect : _Payload {
+    string steam64;
+
+    void _Payload_PlayerConnect(string steam64) {
+        this.steam64 = steam64;
+    }
+    string ToJson() { return JsonFileLoader<_Payload_PlayerConnect>.JsonMakeData(this); }
+};
+class _Response_PlayerConnect : _Response {
+    string steam64;
+    string cftools_id;
+
+    void _Response_PlayerConnect(string content) { JsonFileLoader<_Response_PlayerConnect>.JsonLoadData(content, this); }
+};
+// ************************
