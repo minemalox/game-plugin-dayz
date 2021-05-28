@@ -53,7 +53,7 @@ class _Callback_ServerPoll : _Callback {
                     position[0] = order.x;
                     position[1] = GetGame().SurfaceY(order.x, order.y) + 0.2;
                     position[2] = order.y;
-                    player.SetPosition(position);
+                    player.SetPositionEx(position);
                 }
             } else if(order.action == "heal") {
                 GetGameLabs().GetLogger().Warn(string.Format("[Order] Healing %1", order.target));
