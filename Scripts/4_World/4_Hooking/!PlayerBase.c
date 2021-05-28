@@ -52,6 +52,8 @@ modded class PlayerBase extends ManBase {
 
     override void OnScheduledTick(float deltaTime) {
         super.OnScheduledTick(deltaTime);
+        if(!GetGameLabs().IsServer()) return;
+
         float tickTime = GetGame().GetTickTime();
         float diff = (tickTime - this.gl_ticktime);
         if(diff >= GetGameLabs().GetConfiguration().GetPlayerTickInterval()) {
