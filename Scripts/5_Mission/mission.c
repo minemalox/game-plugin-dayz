@@ -18,7 +18,7 @@ modded class MissionServer {
 
         string cftoolsId = GetGameLabs().GetPlayerUpstreamIdentity(player.GetPlainId());
         if (!cftoolsId) {
-            GetGameLabs().GetLogger().Debug(string.Format("Player<%1> no cached CFTools Id, contacting api", player));
+            GetGameLabs().GetLogger().Debug(string.Format("Player<%1> no cached CFTools Id for steam64=%2, contacting api", player, player.GetPlainId()));
 
             ref _Payload_PlayerConnect payloadPlayerConnect = new _Payload_PlayerConnect(player.GetPlainId());
             GetGameLabs().GetApi().PlayerConnect(new _Callback_PlayerConnect(), payloadPlayerConnect);
