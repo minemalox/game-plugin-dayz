@@ -98,13 +98,10 @@ modded class MissionServer {
         }
     }
 
-
     void ~MissionServer() {
-        if(this.gameLabsReporter) {
-            this.gameLabsReporter.Disable();
-        }
-        if(this.gameLabs) {
-            this.gameLabs.Exit();
+        if(this.gameLabsReporter) this.gameLabsReporter.Disable();
+        if(this.gameLabs) this.gameLabs.Exit();
+        if(this.gameLabs.GetLogger()) {
             this.gameLabs.GetLogger().Debug("Gracefully closing core logger");
             this.gameLabs.GetLogger().Close();
         }
