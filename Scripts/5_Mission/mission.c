@@ -1,4 +1,6 @@
 modded class MissionServer {
+    ScriptModule GLScript;
+
     private ref GameLabsCore gameLabs;
 
     private ref GameLabsRPC gameLabsRPC;
