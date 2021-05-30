@@ -100,6 +100,10 @@ modded class MissionServer {
             GetGame().AdminLog(shutdownHeader); GetGame().AdminLog(shutdownTitle); GetGame().AdminLog(shutdownContent); GetGame().AdminLog(shutdownFooter);
             GetGame().RequestExit(1);
         }
+
+        if(GetGameLabs().GetConfiguration().GetSpeedCheckStatus()) {
+            GetGameLabs().GetLogger().Info("Experimental speed check is enabled");
+        }
     }
 
     void ~MissionServer() {
