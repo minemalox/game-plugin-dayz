@@ -1,5 +1,5 @@
 class GameLabsCore {
-    private const string modControlledVersionIdentifier = "1.4";
+    private const string modControlledVersionIdentifier = "1.5";
 
     private ref GameLabsAPI api;
     private ref GameLabsLogger logger;
@@ -11,6 +11,7 @@ class GameLabsCore {
     bool errorFlag = false;
     string modLicensingOffender;
 
+    private ref map<string, string> gamesessionIdMap = new map<string, string>;
     private ref map<string, string> upstreamIdentityMap = new map<string, string>;
 
     private int _computedServerFps = 0;
@@ -114,6 +115,19 @@ class GameLabsCore {
     string GetPlayerUpstreamIdentity(string steam64) {
         if(!this.IsServer()) return "";
         return this.upstreamIdentityMap.Get(steam64);
+    }
+
+    void SetPlayerGamesessionId(string steam64, string gamesessionId) {
+        if(!this.IsServer()) return;
+        this.gamesessionIdMap.Set(steam64, gamesessionId);
+    }
+    void ClearPlayerGamesessionId(string steam64) {
+        if(!this.IsServer()) return;
+        this.gamesessionIdMap.Remove(steam64);
+    }
+    string GetPlayerGamesessionId(string steam64) {
+        if(!this.IsServer()) return "";
+        return this.gamesessionIdMap.Get(steam64);
     }
 
     int GetServerFPS() { return this._computedServerFps; }

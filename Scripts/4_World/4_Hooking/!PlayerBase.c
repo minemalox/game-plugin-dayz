@@ -3,6 +3,7 @@ modded class PlayerBase extends ManBase {
     private string gl_name = "Survivor";
 
     private string gl_cftoolsId = "";
+    private string gl_gamesessionId = "";
 
     private int gl_speedHackTriggers = 0;
     private float gl_ticktime = 0.0;
@@ -24,6 +25,13 @@ modded class PlayerBase extends ManBase {
     }
     bool HasUpstreamIdentity() {
         return (this.gl_cftoolsId == "");
+    }
+
+    void SetGamesessionId(string gamesessionId) {
+        this.gl_gamesessionId = gamesessionId;
+    }
+    string GetGamesessionId() {
+        return this.gl_gamesessionId;
     }
 
     // This is supposed to be overriden by third party mods instead of hooking into the workflow directly
@@ -84,7 +92,7 @@ modded class PlayerBase extends ManBase {
                 warningThreshold = GetGameLabs().GetConfiguration().GetSpeedCheckThresholdFoot();
             }
 
-            if (unitsPerSecond >= warningThreshold) {
+            if(unitsPerSecond >= warningThreshold) {
                 this.gl_speedHackTriggers++;
                 GetGameLabs().GetLogger().Warn("********* EXPERIMENTAL FEATURE *********");
                 GetGameLabs().GetLogger().Warn("THIS MAY BE A FALSE POSITIVE; DO NOT BLANKET BAN");

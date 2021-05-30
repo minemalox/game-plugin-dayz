@@ -27,6 +27,7 @@ modded class MissionServer {
         } else {
             GetGameLabs().GetLogger().Debug(string.Format("Player<%1> populated with CFTools Id from cache (%2)", player, cftoolsId));
             player.SetUpstreamIdentity(cftoolsId);
+            player.SetGamesessionId(GetGameLabs().GetPlayerGamesessionId(player.GetPlainId()));
             player.OnUpstreamIdentityReceived();
         }
 
@@ -37,6 +38,7 @@ modded class MissionServer {
     override void PlayerDisconnected(PlayerBase player, PlayerIdentity identity, string uid) {
         super.PlayerDisconnected(player, identity, uid);
         if(!GetGameLabs().IsServer()) return;
+        GetGameLabs().ClearPlayerGamesessionId(player.GetPlainId());
         GetGameLabs().ClearPlayerUpstreamIdentity(player.GetPlainId());
     }
 

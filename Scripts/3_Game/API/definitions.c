@@ -353,6 +353,7 @@ class _Payload_PlayerConnect : _Payload {
 class _Response_PlayerConnect : _Response {
     string steam64;
     string cftools_id;
+    string gamesession_id;
 
     void _Response_PlayerConnect(string content) { JsonFileLoader<_Response_PlayerConnect>.JsonLoadData(content, this); }
 };
