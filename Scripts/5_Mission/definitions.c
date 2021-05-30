@@ -18,7 +18,7 @@ class _Callback_PlayerConnect : _Callback {
         player.SetGamesessionId(response.gamesession_id);
         player.OnUpstreamIdentityReceived();
 
-        GetGameLabs().GetLogger().Debug(string.Format("Player<%1> received CFTools Id from API cftools_id=%2", player, response.cftools_id));
+        GetGameLabs().GetLogger().Debug(string.Format("Player<%1> received CFTools Id from API cftools_id=%2, gamesession_id=%3", player, response.cftools_id, response.gamesession_id));
     };
 };
 // ************************
