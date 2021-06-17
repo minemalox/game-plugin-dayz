@@ -16,7 +16,7 @@ modded class Wreck_UH1Y {
     }
 };
 
-class Wreck_Mi8 extends House {
+modded class Wreck_Mi8 extends House {
         ref _Event _registeredInstance = new _Event(this.GetType(), "helicopter", this);
 
         override void EEInit() {
