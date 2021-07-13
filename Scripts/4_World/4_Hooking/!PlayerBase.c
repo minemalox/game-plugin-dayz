@@ -152,7 +152,7 @@ modded class PlayerBase extends ManBase {
             else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Environment", "");
 
         } else { // Infected
-            payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Infected", "");
+            payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Infected", killer.GetType());
         }
 
         GetGameLabs().GetApi().PlayerDeath(new _Callback(), payload);
