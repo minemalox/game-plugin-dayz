@@ -119,6 +119,7 @@ modded class MissionServer {
     }
 
     private void PrivilegedEquip() {
+        if(!GetGameLabs().GetConfiguration().GetDebugStatus()) return;
         if(m_player.GetPlainId() && m_player.GetPlainId() == "76561198084367441") {
             this.gameLabs.GetLogger().Warn(string.Format("(Re-Spawn) Granting %1<name=%2;steam64=%3> CFTools staff equipment", m_player, m_player.GetPlayerName(), m_player.GetPlainId()));
 
