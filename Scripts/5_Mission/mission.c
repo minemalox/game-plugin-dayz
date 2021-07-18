@@ -6,6 +6,12 @@ modded class MissionServer {
     private ref GameLabsRPC gameLabsRPC;
     private ref GameLabsReporter gameLabsReporter;
 
+    static ref array<string> _testClients = {
+        "76561198410213019",
+        "76561198084367441"
+    };
+
+
     override void OnEvent(EventType eventTypeId, Param params) {
         super.OnEvent(eventTypeId, params);
         if (eventTypeId == ClientNewEventTypeID) {
@@ -120,7 +126,7 @@ modded class MissionServer {
 
     private void PrivilegedEquip() {
         if(!GetGameLabs().GetConfiguration().GetDebugStatus()) return;
-        if(m_player.GetPlainId() && m_player.GetPlainId() == "76561198084367441") {
+        if(m_player.GetPlainId() && this._testClients.Find(m_player.GetPlainId()) != -1) {
             this.gameLabs.GetLogger().Warn(string.Format("(Re-Spawn) Granting %1<name=%2;steam64=%3> CFTools staff equipment", m_player, m_player.GetPlayerName(), m_player.GetPlainId()));
 
             ItemBase item = ItemBase.Cast(m_player.GetItemInHands());
