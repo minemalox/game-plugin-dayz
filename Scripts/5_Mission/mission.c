@@ -183,10 +183,6 @@ modded class MissionServer {
     private void _Setup() {
         this.gameLabsRPC = new GameLabsRPC();
         this.gameLabsReporter = new GameLabsReporter();
-
-        #ifdef EXPANSIONMOD
-        this.gameLabs.GetLogger().Info("Detected DayZ Expansion (ifdef)");
-        #endif
     }
 };
 
