@@ -70,8 +70,8 @@ class GameLabsAPI {
     int Register() {
         this.restContext.SetHeader("application/json"); // Expected for auth request
 
-        ref _Payload_Register payload = new ref _Payload_Register(this.serverId, this.apiKey);
-        ref _Response_Register response = new _Response_Register(this.restContext.POST_now("/v1/auth/register", payload.ToJson()));
+        _Payload_Register payload = new _Payload_Register(this.serverId, this.apiKey);
+        _Response_Register response = new _Response_Register(this.restContext.POST_now("/v1/auth/register", payload.ToJson()));
         if(response.status == 2) {
             GetGameLabs()._PropagateFeatures(response); // Access features outside of API class
 
@@ -82,64 +82,64 @@ class GameLabsAPI {
 
     void RegisterAsync() {
         this.restContext.SetHeader("application/json"); // Expected for auth request
-        ref _Payload_Register payload = new ref _Payload_Register(this.serverId, this.apiKey);
+        _Payload_Register payload = new _Payload_Register(this.serverId, this.apiKey);
         this.restContext.POST(new _Callback_RegisterAsync(), "/v1/auth/register", payload.ToJson());
     }
 
     int Verify() {
         if(!this.IsEnabled()) return -1;
 
-        ref _Payload payload = new ref _Payload();
+        _Payload payload = new _Payload();
         _Response response = new _Response(this.restContext.POST_now("/v1/auth/verify", payload.ToJson()));
         return response.status;
     }
 
-    void ServerPoll(ref Managed cb, ref _Payload_ServerPoll payload) {
+    void ServerPoll(Managed cb, _Payload_ServerPoll payload) {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/server/poll", payload.ToJson());
     }
 
-    void ServerEvents(ref Managed cb, ref _Payload_ServerEvents payload) {
+    void ServerEvents(Managed cb, _Payload_ServerEvents payload) {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/server/events", payload.ToJson());
     }
 
-    void ServerVehicles(ref Managed cb, ref _Payload_ServerVehicles payload) {
+    void ServerVehicles(Managed cb, _Payload_ServerVehicles payload) {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/server/vehicles", payload.ToJson());
     }
 
-    void ServerPlayers(ref Managed cb, ref _Payload_ServerPlayers payload) {
+    void ServerPlayers(Managed cb, _Payload_ServerPlayers payload) {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/server/players", payload.ToJson());
     }
 
-    void PlayerConnect(ref Managed cb, ref _Payload_PlayerConnect payload) {
+    void PlayerConnect(Managed cb, _Payload_PlayerConnect payload) {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/player/connect", payload.ToJson());
     }
 
-    void PlayerDeath(ref Managed cb, ref _Payload_PlayerDeath payload) {
+    void PlayerDeath(Managed cb, _Payload_PlayerDeath payload) {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/player/death", payload.ToJson());
     }
 
-    void PlayerDamage(ref Managed cb, ref _Payload_PlayerDamage payload) {
+    void PlayerDamage(Managed cb, _Payload_PlayerDamage payload) {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/player/damage", payload.ToJson());
     }
 
-    void PlayerChat(ref Managed cb, ref _Payload_PlayerChat payload) {
+    void PlayerChat(Managed cb, _Payload_PlayerChat payload) {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/player/chat", payload.ToJson());
     }
 
-    void ItemInteract(ref Managed cb, ref _Payload_ItemInteract payload) {
+    void ItemInteract(Managed cb, _Payload_ItemInteract payload) {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/item/interact", payload.ToJson());
     }
 
-    void ItemPlace(ref Managed cb, ref _Payload_ItemPlace payload) {
+    void ItemPlace(Managed cb, _Payload_ItemPlace payload) {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/item/place", payload.ToJson());
     }
