@@ -126,7 +126,7 @@ class _ServerEvent {
     string className;
     vector position;
 
-    void _ServerEvent(ref _Event _event) {
+    void _ServerEvent(_Event _event) {
         this.id = _event.ToString();
         this.icon = _event.Icon();
         this.className = _event.Class();
@@ -141,7 +141,7 @@ class _Payload_ServerEvents : _Payload {
     ref array<ref _ServerEvent> added = new array<ref _ServerEvent>();
     ref array<ref _ServerEvent> removed = new array<ref _ServerEvent>();
 
-    void _Payload_ServerEvents(bool initial, int interval, ref array<ref _Event> added, ref array<ref _Event> removed) {
+    void _Payload_ServerEvents(bool initial, int interval, array<ref _Event> added, array<ref _Event> removed) {
         if(initial) { this.initial = 1; } else { this.initial = 0; }
         this.interval = interval;
 
@@ -168,7 +168,7 @@ class _ServerVehicle {
     int health;
     int speed;
 
-    void _ServerVehicle(ref _Vehicle vehicle) {
+    void _ServerVehicle(_Vehicle vehicle) {
         this.id = vehicle.ToString();
         this.className = vehicle.Class();
         if(vehicle != NULL && vehicle.Ref() != NULL) {
@@ -186,7 +186,7 @@ class _Payload_ServerVehicles : _Payload {
     ref array<ref _ServerVehicle> updated = new array<ref _ServerVehicle>();
     ref array<ref _ServerVehicle> removed = new array<ref _ServerVehicle>();
 
-    void _Payload_ServerVehicles(bool initial, int interval, ref array<ref _Vehicle> added, ref array<ref _Vehicle> updated, ref array<ref _Vehicle> removed) {
+    void _Payload_ServerVehicles(bool initial, int interval, array<ref _Vehicle> added, array<ref _Vehicle> updated, array<ref _Vehicle> removed) {
         if(initial) { this.initial = 1; } else { this.initial = 0; }
         this.interval = interval;
 
@@ -227,7 +227,7 @@ class _Payload_ServerPlayers : _Payload {
     int interval;
     ref array<ref _ServerPlayer> updated = new array<ref _ServerPlayer>();
 
-    void _Payload_ServerPlayers(bool initial, int interval, ref array<ref _ServerPlayer> updated) {
+    void _Payload_ServerPlayers(bool initial, int interval, array<ref _ServerPlayer> updated) {
         if(initial) { this.initial = 1; } else { this.initial = 0; }
         this.interval = interval;
         this.updated = updated;
@@ -249,7 +249,7 @@ class _Payload_PlayerDeath : _Payload {
     ref _LogPlayer player;
     ref _LogPlayer murderer;
 
-    void _Payload_PlayerDeath(ref _LogPlayer player, ref _LogPlayer murderer, string weapon, string weaponNiceName) {
+    void _Payload_PlayerDeath(_LogPlayer player, _LogPlayer murderer, string weapon, string weaponNiceName) {
         this.player = player;
         this.murderer = murderer;
 

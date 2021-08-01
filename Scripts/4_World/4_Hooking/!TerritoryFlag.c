@@ -30,7 +30,7 @@ modded class TerritoryFlag extends BaseBuildingBase {
         return this._registeredInstance;
     }
 
-    void _SetEventInstance(ref _Event _registeredInstance) {
+    void _SetEventInstance(_Event _registeredInstance) {
         this._registeredInstance = _registeredInstance;
     }
 };

@@ -28,7 +28,7 @@ modded class MissionServer {
         if (!cftoolsId) {
             GetGameLabs().GetLogger().Debug(string.Format("Player<%1> no cached CFTools Id for steam64=%2, contacting api", player, player.GetPlainId()));
 
-            ref _Payload_PlayerConnect payloadPlayerConnect = new _Payload_PlayerConnect(player.GetPlainId());
+            _Payload_PlayerConnect payloadPlayerConnect = new _Payload_PlayerConnect(player.GetPlainId());
             GetGameLabs().GetApi().PlayerConnect(new _Callback_PlayerConnect(), payloadPlayerConnect);
         } else {
             GetGameLabs().GetLogger().Debug(string.Format("Player<%1> populated with CFTools Id from cache (%2)", player, cftoolsId));
@@ -37,7 +37,7 @@ modded class MissionServer {
             player.OnUpstreamIdentityReceived();
         }
 
-        ref Param2<bool, string> payloadSync = new Param2<bool, string>(GetGameLabs().GetDebugStatus(), player.GetUpstreamIdentity());
+        Param2<bool, string> payloadSync = new Param2<bool, string>(GetGameLabs().GetDebugStatus(), player.GetUpstreamIdentity());
         GetGame().RPCSingleParam(null, GameLabsRPCS.RE_SYNC, payloadSync, true, identity);
     };
 

@@ -163,14 +163,14 @@ class GameLabsCore {
     void IncrVehicleCount() { this._computedVehicles++; }
     void DecrVehicleCount() { this._computedVehicles--; }
 
-    ref array<ref _AI> GetAI() {
+    array<ref _AI> GetAI() {
         return this._serverAI;
     }
-    void RegisterAI(ref _AI _reference) {
+    void RegisterAI(_AI _reference) {
         if(IsProcessingBlocked()) return;
         this._serverAI.Insert(_reference);
     }
-    void RemoveAI(ref _AI _reference) {
+    void RemoveAI(_AI _reference) {
         if(IsProcessingBlocked()) return;
         for(int i = 0; i < this._serverAI.Count(); i++) {
             if(this._serverAI.Get(i) == _reference) {
@@ -179,15 +179,15 @@ class GameLabsCore {
         }
     }
 
-    ref array<ref _Vehicle> GetVehicles() {
+    array<ref _Vehicle> GetVehicles() {
         return this._serverVehicles;
     }
-    void RegisterVehicle(ref _Vehicle _reference) {
+    void RegisterVehicle(_Vehicle _reference) {
         if(IsProcessingBlocked()) return;
         this._serverVehicles.Insert(_reference);
         this._serverVehiclesBufferAdded.Insert(_reference);
     }
-    void RemoveVehicle(ref _Vehicle _reference) {
+    void RemoveVehicle(_Vehicle _reference) {
         if(IsProcessingBlocked()) return;
         for(int i = 0; i < this._serverVehicles.Count(); i++) {
             if(this._serverVehicles.Get(i) == _reference) {
@@ -197,10 +197,10 @@ class GameLabsCore {
         }
     }
 
-    ref array<ref _Event> GetEvents() {
+    array<ref _Event> GetEvents() {
         return this._serverEvents;
     }
-    void RegisterEvent(ref _Event _reference) {
+    void RegisterEvent(_Event _reference) {
         if(IsProcessingBlocked()) return;
         for(int i = 0; i < this._serverEvents.Count(); i++) {
             if(this._serverEvents.Get(i).Equals(_reference)) {
@@ -210,7 +210,7 @@ class GameLabsCore {
         this._serverEvents.Insert(_reference);
         this._serverEventsBufferAdded.Insert(_reference);
     }
-    void RemoveEvent(ref _Event _reference) {
+    void RemoveEvent(_Event _reference) {
         if(IsProcessingBlocked()) return;
         for(int i = 0; i < this._serverEvents.Count(); i++) {
             if(this._serverEvents.Get(i) == _reference) {
@@ -233,7 +233,7 @@ class GameLabsCore {
     }
 
     // Private calls, do not access
-    void _PropagateFeatures(ref _Response_Register registerResponse) {
+    void _PropagateFeatures(_Response_Register registerResponse) {
         if(registerResponse.modLicensingStatus == 1) {
             this.errorFlag = true;
             this.modLicensingOffender = registerResponse.modLicensingOffender;

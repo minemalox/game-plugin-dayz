@@ -125,9 +125,9 @@ modded class PlayerBase extends ManBase {
         if(!GetGame().IsServer()) return;
         if(!GetGameLabs().IsStatReportingEnabled()) return;
 
-        ref _Payload_PlayerDeath payload;
-        ref _LogPlayerEx logObjectMurderer;
-        ref _LogPlayerEx logObjectPlayer = new _LogPlayerEx(this);
+        _Payload_PlayerDeath payload;
+        _LogPlayerEx logObjectMurderer;
+        _LogPlayerEx logObjectPlayer = new _LogPlayerEx(this);
 
         EntityAI weapon;
 
@@ -167,9 +167,9 @@ modded class PlayerBase extends ManBase {
         GetGameLabs().GetLogger().Debug(string.Format("EEHitBy.EVAL (deathSync=%1, suicide=%2)", this.m_DeathSyncSent, this.CommitedSuicide()));
         if(this.m_DeathSyncSent || this.CommitedSuicide()) return; // Prevent logging of hits for dead bodies
 
-        ref _Payload_PlayerDamage payload;
-        ref _LogPlayerEx logObjectMurderer;
-        ref _LogPlayerEx logObjectPlayer = new _LogPlayerEx(this);
+        _Payload_PlayerDamage payload;
+        _LogPlayerEx logObjectMurderer;
+        _LogPlayerEx logObjectPlayer = new _LogPlayerEx(this);
 
         PlayerBase murderer;
         if(source) {

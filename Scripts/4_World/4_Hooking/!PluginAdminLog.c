@@ -34,8 +34,8 @@ modded class PluginAdminLog extends PluginBase {
             }
         }
 
-        ref _LogPlayerEx logObjectPlayer = new _LogPlayerEx(player);
-        ref _Payload_ItemInteract payload = new _Payload_ItemInteract(logObjectPlayer, item, target, action);
+        _LogPlayerEx logObjectPlayer = new _LogPlayerEx(player);
+        _Payload_ItemInteract payload = new _Payload_ItemInteract(logObjectPlayer, item, target, action);
         GetGameLabs().GetApi().ItemInteract(new _Callback(), payload);
     };
 
@@ -45,8 +45,8 @@ modded class PluginAdminLog extends PluginBase {
 
         PlayerBase _player = PlayerBase.Cast(player);
 
-        ref _LogPlayerEx logObjectPlayer = new _LogPlayerEx(_player);
-        ref _Payload_ItemPlace payload = new _Payload_ItemPlace(logObjectPlayer, item.GetType());
+        _LogPlayerEx logObjectPlayer = new _LogPlayerEx(_player);
+        _Payload_ItemPlace payload = new _Payload_ItemPlace(logObjectPlayer, item.GetType());
         GetGameLabs().GetApi().ItemPlace(new _Callback(), payload);
     };
 };

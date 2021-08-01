@@ -148,7 +148,7 @@ class GameLabsReporter {
 
     private void activePolling() {
         if(!this.processReporting || !GetGameLabs()) return;
-        ref _Payload_ServerPoll payload = new ref _Payload_ServerPoll(this.isFirstEventsReport);
+        _Payload_ServerPoll payload = new _Payload_ServerPoll(this.isFirstEventsReport);
         GetGameLabs().GetApi().Enable(); // Enable to check if api is back
         GetGameLabs().GetApi().ServerPoll(new _Callback_ServerPoll(), payload);
         if(this.isFirstEventsReport) this.isFirstEventsReport = false;
@@ -157,7 +157,7 @@ class GameLabsReporter {
     private void serverReporting() {
         if(!this.processReporting  || !GetGameLabs()) return;
         if(GetGameLabs()._serverEventsBufferAdded.Count() || GetGameLabs()._serverEventsBufferRemoved.Count() || this.isFirstReport) {
-            ref _Payload_ServerEvents payloadEvents = new _Payload_ServerEvents(this.isFirstReport, this.effectiveInterval, GetGameLabs()._serverEventsBufferAdded, GetGameLabs()._serverEventsBufferRemoved);
+            _Payload_ServerEvents payloadEvents = new _Payload_ServerEvents(this.isFirstReport, this.effectiveInterval, GetGameLabs()._serverEventsBufferAdded, GetGameLabs()._serverEventsBufferRemoved);
 
             GetGameLabs().GetApi().ServerEvents(new _Callback_ServerDummy(), payloadEvents);
 
@@ -165,14 +165,14 @@ class GameLabsReporter {
             GetGameLabs()._serverEventsBufferRemoved.Clear();
         }
 
-        ref array<ref _Vehicle> updated = new array<ref _Vehicle>();
+        array<ref _Vehicle> updated = new array<ref _Vehicle>();
         for(int i = 0; i < GetGameLabs().GetVehicles().Count(); i++) {
-            ref _Vehicle vehicle = GetGameLabs().GetVehicles().Get(i);
+            _Vehicle vehicle = GetGameLabs().GetVehicles().Get(i);
             if(vehicle.HasUpdated()) updated.Insert(vehicle);
         }
 
         if(GetGameLabs()._serverEventsBufferAdded.Count() || GetGameLabs()._serverEventsBufferRemoved.Count() || updated.Count() || this.isFirstReport) {
-            ref _Payload_ServerVehicles payloadVehicles = new _Payload_ServerVehicles(this.isFirstReport, this.effectiveInterval, GetGameLabs()._serverVehiclesBufferAdded, updated, GetGameLabs()._serverVehiclesBufferRemoved);
+            _Payload_ServerVehicles payloadVehicles = new _Payload_ServerVehicles(this.isFirstReport, this.effectiveInterval, GetGameLabs()._serverVehiclesBufferAdded, updated, GetGameLabs()._serverVehiclesBufferRemoved);
 
             GetGameLabs().GetApi().ServerVehicles(new _Callback_ServerDummy(), payloadVehicles);
 
@@ -181,17 +181,17 @@ class GameLabsReporter {
         }
 
         PlayerBase player;
-        ref array<Man> players = new array<Man>;
+        array<Man> players = new array<Man>;
         GetGame().GetPlayers( players );
 
-        ref array<ref _ServerPlayer> updatedPlayers = new array<ref _ServerPlayer>();
+        array<ref _ServerPlayer> updatedPlayers = new array<ref _ServerPlayer>();
         for ( int x = 0; x < players.Count(); x++ ) {
             player = PlayerBase.Cast(players.Get(x));
             updatedPlayers.Insert(new _ServerPlayerEx(player));
         }
         if(players.Count() || players.Count() != this.lastReportedPlayerCount || this.isFirstReport) {
             this.lastReportedPlayerCount = players.Count();
-            ref _Payload_ServerPlayers payloadPlayers = new _Payload_ServerPlayers(this.isFirstReport, this.effectiveInterval, updatedPlayers);
+            _Payload_ServerPlayers payloadPlayers = new _Payload_ServerPlayers(this.isFirstReport, this.effectiveInterval, updatedPlayers);
             GetGameLabs().GetApi().ServerPlayers(new _Callback_ServerDummy(), payloadPlayers);
         }
 

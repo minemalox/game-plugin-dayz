@@ -25,7 +25,7 @@ modded class Weapon_Base {
         Object player_o;
         Class.CastTo(player_o, player);
 
-        ref set<Object> results = new set<Object>;
+        set<Object> results = new set<Object>;
 
         if(DayZPhysics.RaycastRV(camera_pos, end_point, contact_point_cam_trace, contact_dir_camera, contact_component, results, null, player_o , false, false, CollisionFlags.ALLOBJECTS, 0.1)){
             for(int j = 0; j < results.Count(); ++j) {
