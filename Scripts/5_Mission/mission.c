@@ -28,7 +28,7 @@ modded class MissionServer {
         if (!cftoolsId) {
             GetGameLabs().GetLogger().Debug(string.Format("Player<%1> no cached CFTools Id for steam64=%2, contacting api", player, player.GetPlainId()));
 
-            _Payload_PlayerConnect payloadPlayerConnect = new _Payload_PlayerConnect(player.GetPlainId());
+            _Payload_PlayerConnect payloadPlayerConnect = new _Payload_PlayerConnect(player.GetPlainId(), player.GetPosition());
             GetGameLabs().GetApi().PlayerConnect(new _Callback_PlayerConnect(), payloadPlayerConnect);
         } else {
             GetGameLabs().GetLogger().Debug(string.Format("Player<%1> populated with CFTools Id from cache (%2)", player, cftoolsId));
@@ -45,9 +45,15 @@ modded class MissionServer {
         super.PlayerDisconnected(player, identity, uid);
 
         if(GetGameLabs().IsServer()) {
+            string gamesessionId = GetGameLabs().GetPlayerGamesessionId(player.GetPlainId());
+
             GetGameLabs().ClearPlayerGamesessionId(player.GetPlainId());
             GetGameLabs().ClearPlayerUpstreamIdentity(player.GetPlainId());
-            //GetGameLabs().GetLogger().Debug(string.Format("Player<%1> disconnected at %2", player, player.GetPosition()));
+
+            _Payload_PlayerDisconnect payloadPlayerDisconnect = new _Payload_PlayerDisconnect(gamesessionId, player.GetPosition());
+            GetGameLabs().GetApi().PlayerDisconnect(new _Callback_PlayerDisconnect(), payloadPlayerDisconnect);
+
+            GetGameLabs().GetLogger().Debug(string.Format("Player<%1> disconnected at %2", player, player.GetPosition()));
         }
     }
 

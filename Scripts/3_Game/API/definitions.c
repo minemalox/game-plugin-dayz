@@ -344,9 +344,11 @@ class _Payload_PlayerChat : _Payload {
 //! Callback is located in 5_Mission/definitions
 class _Payload_PlayerConnect : _Payload {
     string steam64;
+    vector position;
 
-    void _Payload_PlayerConnect(string steam64) {
+    void _Payload_PlayerConnect(string steam64, vector position) {
         this.steam64 = steam64;
+        this.position = position;
     }
     string ToJson() { return JsonFileLoader<_Payload_PlayerConnect>.JsonMakeData(this); }
 };
@@ -356,5 +358,22 @@ class _Response_PlayerConnect : _Response {
     string gamesession_id;
 
     void _Response_PlayerConnect(string content) { JsonFileLoader<_Response_PlayerConnect>.JsonLoadData(content, this); }
+};
+// ************************
+
+// Register: /v1/player/disconnect
+//! Callback is located in 5_Mission/definitions
+class _Payload_PlayerDisconnect : _Payload {
+    string gamesession_id;
+    vector position;
+
+    void _Payload_PlayerDisconnect(string gamesession_id, vector position) {
+        this.gamesession_id = gamesession_id;
+        this.position = position;
+    }
+    string ToJson() { return JsonFileLoader<_Payload_PlayerDisconnect>.JsonMakeData(this); }
+};
+class _Response_PlayerDisconnect : _Response {
+    void _Response_PlayerDisconnect(string content) { JsonFileLoader<_Response_PlayerDisconnect>.JsonLoadData(content, this); }
 };
 // ************************

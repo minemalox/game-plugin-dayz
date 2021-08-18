@@ -22,3 +22,19 @@ class _Callback_PlayerConnect : _Callback {
     };
 };
 // ************************
+
+// /v1/player/disconnect
+class _Callback_PlayerDisconnect : _Callback {
+    override void OnError(int errorCode) {
+        GetGameLabs().GetLogger().Error(string.Format("PlayerDisconnect errorCode(%1)", errorCode));
+    };
+
+    override void OnTimeout() {
+        GetGameLabs().GetLogger().Error(string.Format("PlayerDisconnect timed out"));
+    };
+
+    override void OnSuccess(string data, int dataSize) {
+        // TODO: Something here?
+    };
+};
+// ************************

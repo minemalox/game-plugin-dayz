@@ -119,6 +119,11 @@ class GameLabsAPI {
         this.restContext.POST(RestCallback.Cast(cb), "/v1/player/connect", payload.ToJson());
     }
 
+    void PlayerDisconnect(Managed cb, _Payload_PlayerDisconnect payload) {
+        if(!this.IsEnabled()) return;
+        this.restContext.POST(RestCallback.Cast(cb), "/v1/player/disconnect", payload.ToJson());
+    }
+
     void PlayerDeath(Managed cb, _Payload_PlayerDeath payload) {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/player/death", payload.ToJson());
