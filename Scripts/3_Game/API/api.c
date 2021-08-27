@@ -41,6 +41,7 @@ class GameLabsAPI {
     private string serverId;
     private string apiKey;
     private string authKey;
+    private string gamePort = "-1";
 
     private bool active = false;
 
@@ -55,6 +56,8 @@ class GameLabsAPI {
         this.restContext = this.restApi.GetRestContext(this.baseUrl);
 
         this.restApi.EnableDebug(false);
+
+        GetGame().CommandlineGetParam("port", this.gamePort);
     }
 
     void Enable() { this.active = true; }
@@ -71,7 +74,7 @@ class GameLabsAPI {
         this.restContext.SetHeader("application/json"); // Expected for auth request
 
         _Payload_Register payload = new _Payload_Register(this.serverId, this.apiKey);
-        _Response_Register response = new _Response_Register(this.restContext.POST_now("/v1/auth/register", payload.ToJson()));
+        _Response_Register response = new _Response_Register(this.restContext.POST_now("/v1/auth/register?trace="+this.gamePort, payload.ToJson()));
         if(response.status == 2) {
             GetGameLabs()._PropagateFeatures(response); // Access features outside of API class
 
@@ -83,20 +86,20 @@ class GameLabsAPI {
     void RegisterAsync() {
         this.restContext.SetHeader("application/json"); // Expected for auth request
         _Payload_Register payload = new _Payload_Register(this.serverId, this.apiKey);
-        this.restContext.POST(new _Callback_RegisterAsync(), "/v1/auth/register", payload.ToJson());
+        this.restContext.POST(new _Callback_RegisterAsync(), "/v1/auth/register?trace="+this.gamePort, payload.ToJson());
     }
 
     int Verify() {
         if(!this.IsEnabled()) return -1;
 
         _Payload payload = new _Payload();
-        _Response response = new _Response(this.restContext.POST_now("/v1/auth/verify", payload.ToJson()));
+        _Response response = new _Response(this.restContext.POST_now("/v1/auth/verify?trace="+this.gamePort, payload.ToJson()));
         return response.status;
     }
 
     void ServerPoll(Managed cb, _Payload_ServerPoll payload) {
         if(!this.IsEnabled()) return;
-        this.restContext.POST(RestCallback.Cast(cb), "/v1/server/poll", payload.ToJson());
+        this.restContext.POST(RestCallback.Cast(cb), "/v1/server/poll?trace="+this.gamePort, payload.ToJson());
     }
 
     void ServerEvents(Managed cb, _Payload_ServerEvents payload) {
