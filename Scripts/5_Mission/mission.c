@@ -42,8 +42,6 @@ modded class MissionServer {
     };
 
     override void PlayerDisconnected(PlayerBase player, PlayerIdentity identity, string uid) {
-        super.PlayerDisconnected(player, identity, uid);
-
         if(GetGameLabs().IsServer()) {
             string gamesessionId = GetGameLabs().GetPlayerGamesessionId(player.GetPlainId());
 
@@ -55,6 +53,8 @@ modded class MissionServer {
 
             GetGameLabs().GetLogger().Debug(string.Format("Player<%1> disconnected at %2", player, player.GetPosition()));
         }
+
+        super.PlayerDisconnected(player, identity, uid);
     }
 
     void MissionServer() {
