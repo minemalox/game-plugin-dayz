@@ -58,6 +58,11 @@ modded class MissionServer {
     }
 
     void MissionServer() {
+        if(this.gameLabs != NULL) {
+            this.gameLabs.GetLogger().Error("MissionServer attempted to initiate twice! Review mod list for faulty mod.");
+            return;
+        }
+
         this.gameLabs = GetGameLabs();
         string shutdownHeader, shutdownTitle, shutdownContent, shutdownFooter;
         shutdownHeader = "************* GAME LABS *************";
@@ -200,6 +205,11 @@ modded class MissionGameplay extends MissionBase {
     private ref GameLabsRPC gameLabsRPC;
 
     void MissionGameplay() {
+        if(this.gameLabs != NULL) {
+            this.gameLabs.GetLogger().Error("MissionServer attempted to initiate twice! Review mod list for faulty mod.");
+            return;
+        }
+
         GetGame().GetPlayerName(this.name);
         this.gameLabs = GetGameLabs();
         this.gameLabsClient = new GameLabsClient();
