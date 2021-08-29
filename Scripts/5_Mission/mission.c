@@ -11,7 +11,6 @@ modded class MissionServer {
         "76561198084367441"
     };
 
-
     override void OnEvent(EventType eventTypeId, Param params) {
         super.OnEvent(eventTypeId, params);
         if (eventTypeId == ClientNewEventTypeID) {
