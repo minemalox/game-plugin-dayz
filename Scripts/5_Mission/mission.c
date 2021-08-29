@@ -42,15 +42,19 @@ modded class MissionServer {
 
     override void PlayerDisconnected(PlayerBase player, PlayerIdentity identity, string uid) {
         if(GetGameLabs().IsServer()) {
-            string gamesessionId = GetGameLabs().GetPlayerGamesessionId(player.GetPlainId());
+            string gamesessionId;
+            gamesessionId = GetGameLabs().GetPlayerGamesessionId(player.GetPlainId());
+            if(gamesessionId) {
+                GetGameLabs().ClearPlayerGamesessionId(player.GetPlainId());
+                GetGameLabs().ClearPlayerUpstreamIdentity(player.GetPlainId());
 
-            GetGameLabs().ClearPlayerGamesessionId(player.GetPlainId());
-            GetGameLabs().ClearPlayerUpstreamIdentity(player.GetPlainId());
+                _Payload_PlayerDisconnect payloadPlayerDisconnect = new _Payload_PlayerDisconnect(gamesessionId, player.GetPosition());
+                GetGameLabs().GetApi().PlayerDisconnect(new _Callback_PlayerDisconnect(), payloadPlayerDisconnect);
 
-            _Payload_PlayerDisconnect payloadPlayerDisconnect = new _Payload_PlayerDisconnect(gamesessionId, player.GetPosition());
-            GetGameLabs().GetApi().PlayerDisconnect(new _Callback_PlayerDisconnect(), payloadPlayerDisconnect);
-
-            GetGameLabs().GetLogger().Debug(string.Format("Player<%1> disconnected at %2", player, player.GetPosition()));
+                GetGameLabs().GetLogger().Debug(string.Format("Player<%1> disconnected at %2", player, player.GetPosition()));
+            } else {
+                this.gameLabs.GetLogger().Error(string.Format("PlayerDisconnected<%1> fired for already disconnected player [steam64=%2]", player, player.GetPlainId()));
+            }
         }
 
         super.PlayerDisconnected(player, identity, uid);
