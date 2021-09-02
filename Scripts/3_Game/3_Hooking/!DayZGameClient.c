@@ -42,7 +42,8 @@ modded class DayZGame extends CGame {
         switch(option) {
             case GL_DIAGRESULT.AGREE: {
                 NotificationSystem.AddNotificationExtended(3.0, "GameLabs license agreement", "You have accepted the license agreement", "set:ccgui_enforce image:Icon40Emergency");
-                this.dialogGDPR = GameLabsDialog.CreateDialog("Privacy disclaimer", "You are about to connect to a remote game server. Due to the nature of online play, some personal information will be transmitted to the game server operator.", "OnCallBackGDPR", this);
+                //this.dialogGDPR = GameLabsDialog.CreateDialog("Privacy disclaimer", "You are about to connect to a remote game server. Due to the nature of online play, some personal information will be transmitted to the game server operator.", "OnCallBackGDPR", this);
+                this.OnCallBackGDPR(GL_DIAGRESULT.AGREE);
                 delete this.dialogEULA;
                 break;
             }
@@ -73,7 +74,7 @@ modded class DayZGame extends CGame {
                 } else {
                     this.TryConnect();
                 }
-                delete this.dialogGDPR;
+                if(this.dialogGDPR) delete this.dialogGDPR;
                 break;
             }
 
