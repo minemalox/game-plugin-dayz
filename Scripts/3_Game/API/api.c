@@ -4,6 +4,15 @@
  * REST style is not available due to header limitations
  */
 
+class RegisterResult {
+    int status;
+    string error;
+    void RegisterResult(int status, string error) {
+        this.status = status;
+        this.error = error;
+    }
+};
+
 class _Callback_RegisterAsync : _Callback {
     override void OnError(int errorCode) {
         GetGameLabs().GetLogger().Error(string.Format("RegisterAsync errorCode(%1)", errorCode));
@@ -24,7 +33,7 @@ class _Callback_RegisterAsync : _Callback {
             GetGameLabs().GetApi().SetAuthkey(response.authKey);
             GetGameLabs().GetApi().Enable();
         } else {
-            GetGameLabs().GetLogger().Warn(string.Format("RegisterAsync auth failed"));
+            GetGameLabs().GetLogger().Warn(string.Format("RegisterAsync auth failed (%1)", response.error));
             GetGameLabs().GetApi().Disable();
         }
     };
@@ -70,7 +79,7 @@ class GameLabsAPI {
         GetGameLabs().GetLogger().Debug(string.Format("authKey=%1", authKey));
     }
 
-    int Register() {
+    RegisterResult Register() {
         this.restContext.SetHeader("application/json"); // Expected for auth request
 
         _Payload_Register payload = new _Payload_Register(this.serverId, this.apiKey);
@@ -80,7 +89,7 @@ class GameLabsAPI {
 
             this.SetAuthkey(response.authKey);
         }
-        return response.status;
+        return new RegisterResult(response.status, response.error);
     }
 
     void RegisterAsync() {

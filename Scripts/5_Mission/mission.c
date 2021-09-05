@@ -82,9 +82,9 @@ modded class MissionServer {
             this.gameLabs.GetLogger().Debug("Loaded MissionServer");
         }
 
-        int apiRegisterStatus = this.gameLabs.GetApi().Register();
-        this.gameLabs.GetLogger().Debug(string.Format("apiRegisterStatus=%1", apiRegisterStatus));
-        if(apiRegisterStatus == 2) { // Credentials OK
+        RegisterResult apiRegisterResult = this.gameLabs.GetApi().Register();
+        this.gameLabs.GetLogger().Debug(string.Format("API-Register status=%1, error=%2", apiRegisterResult.status, apiRegisterResult.error));
+        if(apiRegisterResult.status == 2) { // Credentials OK
             if(this.gameLabs.errorFlag) { // Mod licensing error
                 shutdownTitle = string.Format("Server not authorized to use %1", this.gameLabs.modLicensingOffender);
                 shutdownContent = "Contact the mod author for details";
@@ -105,23 +105,52 @@ modded class MissionServer {
             }
         } else { // Unreachable
             this.gameLabs.GetApi().Disable();
-            if(apiRegisterStatus == 1) { // Credentials invalid
-                shutdownTitle = "SERVER CLOSED BY GAMELABS";
-                shutdownContent = "GameLabs credentials are invalid";
-            } else {
-                if(this.gameLabs.GetConnectionVerificationStatus() == true) {
-                    shutdownTitle = "SERVER CLOSED BY GAMELABS";
-                    shutdownContent = "GameLabs API is unreachable - Server was stopped according to configuration";
-                } else {
-                    this.gameLabs.GetLogger().Warn(string.Format("GameLabs API is unreachable - Server was NOT stopped according to configuration"));
-                    return;
+
+            bool ignoreConnectionVerification = false;
+            if(apiRegisterResult.error) {
+                switch(apiRegisterResult.error) {
+                    case "outdated": {
+                        ignoreConnectionVerification = true; // Outdated versions may cause detrimental effects on server performance
+
+                        shutdownTitle = "GAMELABS OUTDATED";
+                        shutdownContent = string.Format("Your current installed GameLabs version (version=%1) is outdated", this.gameLabs.GetVersionIdentifier());
+                        break;
+                    }
+
+                    case "invalid": {
+                        shutdownTitle = "INTERNAL ERROR";
+                        shutdownContent = "GameLabs API encountered an error while attempting to initiate the connection. Please contact CFTools Cloud support for more details.";
+                        break;
+                    }
+
+                    case "bad-key": {
+                        shutdownTitle = "INVALID CREDENTIALS";
+                        shutdownContent = "The configured GameLabs API credentials do not match any of our records. Please review your configuration";
+                        break;
+                    }
+
+                    case "bad-server": {
+                        shutdownTitle = "BAD SERVER CONFIGURATION";
+                        shutdownContent = "You are attempting to start GameLabs with API credentials of a different server. Startup is denied to ensure data integrity.";
+                        break;
+                    }
                 }
+            } else if(apiRegisterResult.status == 0) {
+                shutdownTitle = "GAMELABS API UNREACHABLE";
+                shutdownContent = "GameLabs API is unreachable";
             }
+
             this.gameLabs.GetLogger().Error(shutdownContent);
             Print(shutdownHeader); Print(shutdownTitle); Print(shutdownContent); Print(shutdownFooter);
             PrintToRPT(shutdownHeader); PrintToRPT(shutdownTitle); PrintToRPT(shutdownContent); PrintToRPT(shutdownFooter);
             GetGame().AdminLog(shutdownHeader); GetGame().AdminLog(shutdownTitle); GetGame().AdminLog(shutdownContent); GetGame().AdminLog(shutdownFooter);
-            GetGame().RequestExit(1);
+
+            if(this.gameLabs.GetConnectionVerificationStatus() == false && !ignoreConnectionVerification) {
+                this.gameLabs.GetLogger().Warn(string.Format("CONNECTION VERIFICATION DISABLED - SERVER WILL NOT EXIT"));
+            } else {
+                GetGame().RequestExit(1);
+            }
+            return;
         }
 
         if(GetGameLabs().GetConfiguration().GetSpeedCheckStatus()) {
