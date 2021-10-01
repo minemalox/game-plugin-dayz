@@ -1,118 +1,3 @@
-class _ServerPlayerEx : _ServerPlayer {
-    void _ServerPlayerEx(PlayerBase player) {
-        if(player != NULL) {
-            this.id = player.GetPlainId(); // Steam64
-            this.name = player.GetPlayerName();
-
-            this.position = player.GetPosition();
-            this.health = player.GetHealth("GlobalHealth", "Health");
-            if(GetGame().GetMission().IsPlayerDisconnecting(player))
-                this.loggingOut = 1;
-
-            if(player.IsInVehicle())
-                this.insideVehicle = 1;
-        }
-
-        if(player.GetItemInHands())
-            this.item = player.GetItemInHands().GetType();
-    };
-};
-
-class _Callback_ServerPoll : _Callback {
-    override void OnError(int errorCode) {
-        GetGameLabs().GetLogger().Error(string.Format("ServerPoll errorCode(%1)", errorCode));
-        if(errorCode == 6 || errorCode == 5) {
-            // Server side error, only thrown when either offline or authentication error
-            GetGameLabs().GetLogger().Error(string.Format("GameLabs API error, reauthenticating..."));
-            GetGameLabs().GetApi().RegisterAsync();
-        }
-    };
-
-    override void OnTimeout() {
-        GetGameLabs().GetLogger().Error(string.Format("ServerPoll timed out"));
-    };
-
-    override void OnSuccess(string data, int dataSize) {
-        _Response_ServerPoll response = new _Response_ServerPoll(data);
-
-        int q;
-        Man man;
-        vector position;
-        PlayerBase player;
-        ServerPollItem order;
-
-        for ( int i = 0; i < response.orders.Count(); i++ ) {
-            order = response.orders.Get(i);
-            // TODO: Add new abstraction layer in 4_World
-            if(order.action == "teleport") { //GetGameLabs()._TeleportPlayer(order.target, order.x, order.y);
-                GetGameLabs().GetLogger().Warn(string.Format("[Order] Teleporting %1 to %2, %3", order.target, order.x, order.y));
-                man = GetPlayerBySteam64(order.target);
-                if(man != NULL) {
-                    player = PlayerBase.Cast(man);
-
-                    position[0] = order.x;
-                    position[1] = GetGame().SurfaceY(order.x, order.y) + 0.2;
-                    position[2] = order.y;
-                    player.SetPositionEx(position);
-                }
-            } else if(order.action == "heal") {
-                GetGameLabs().GetLogger().Warn(string.Format("[Order] Healing %1", order.target));
-                // GetGameLabs()._KillPlayer(order.target);
-                man = GetPlayerBySteam64(order.target);
-                if(man != NULL) {
-                    player = PlayerBase.Cast(man);
-
-                    player.SetHealth(player.GetMaxHealth("", ""));
-                    player.SetHealth("", "Blood", player.GetMaxHealth("", "Blood"));
-                    player.GetStatHeatComfort().Set(player.GetStatHeatComfort().GetMax());
-                    player.GetStatTremor().Set(player.GetStatTremor().GetMin());
-                    player.GetStatWet().Set(player.GetStatWet().GetMin());
-                    player.GetStatEnergy().Set(player.GetStatEnergy().GetMax());
-                    player.GetStatWater().Set(player.GetStatWater().GetMax());
-                    player.GetStatDiet().Set(player.GetStatDiet().GetMax());
-                    player.GetStatSpecialty().Set(player.GetStatSpecialty().GetMax());
-                    player.SetBleedingBits(0);
-                }
-            }
-            else if(order.action == "kill") {
-                GetGameLabs().GetLogger().Warn(string.Format("[Order] Killing %1", order.target));
-                // GetGameLabs()._HealPlayer(order.target);
-                man = GetPlayerBySteam64(order.target);
-                if(man != NULL) {
-                    player = PlayerBase.Cast(man);
-                    player.SetHealth(0);
-                }
-            }
-            else if(order.action == "spawn") {
-                GetGameLabs().GetLogger().Warn(string.Format("[Order] Spawning %1 for %2 (x%3)", order.parameter, order.target, order.quantity));
-                // GetGameLabs()._SpawnItemForPlayer(order.target, order.item);
-                man = GetPlayerBySteam64(order.target);
-                if(man != NULL) {
-                    player = PlayerBase.Cast(man);
-                    if(order.quantity <= 1) player.SpawnEntityOnGroundPos(order.parameter, player.GetPosition());
-                    else {
-                        for (q = 1; q <= order.quantity; q++) player.SpawnEntityOnGroundPos(order.parameter, player.GetPosition());
-                    }
-                }
-            }
-            else if(order.action == "spawnat") {
-                position[0] = order.x;
-                position[1] = GetGame().SurfaceY(order.x, order.y) + 0.1;
-                position[2] = order.y;
-
-                GetGameLabs().GetLogger().Warn(string.Format("[Order] Spawning %1 at %2 (x%3)", order.parameter, position, order.quantity));
-
-                if(order.quantity <= 1) GetGame().CreateObjectEx(order.parameter, position, ECE_PLACE_ON_SURFACE);
-                else {
-                    for (q = 1; q <= order.quantity; q++) GetGame().CreateObjectEx(order.parameter, position, ECE_PLACE_ON_SURFACE);
-                }
-            }
-        }
-    };
-};
-
-class _Callback_ServerDummy : _Callback {};
-
 class GameLabsReporter {
     private bool processReporting = true;
 
@@ -150,7 +35,15 @@ class GameLabsReporter {
         if(!this.processReporting || !GetGameLabs()) return;
         _Payload_ServerPoll payload = new _Payload_ServerPoll(this.isFirstEventsReport);
         GetGameLabs().GetApi().Enable(); // Enable to check if api is back
-        GetGameLabs().GetApi().ServerPoll(new _Callback_ServerPoll(), payload);
+        switch(GetGameLabs().GetApi().GetPollProtocolVersion()) {
+            case 2: {
+                GetGameLabs().GetApi().ServerPoll(new _Callback_ServerPoll2(), payload);
+                break;
+            }
+            default: {
+                GetGameLabs().GetApi().ServerPoll(new _Callback_ServerPoll(), payload);
+            }
+        }
         if(this.isFirstEventsReport) this.isFirstEventsReport = false;
     }
 
