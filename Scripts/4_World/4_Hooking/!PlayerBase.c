@@ -115,6 +115,27 @@ modded class PlayerBase extends ManBase {
         this.SetPosition(position);
     }
 
+    void HealEx() {
+        this.SetHealth(player.GetMaxHealth("", ""));
+        this.SetHealth("", "Blood", player.GetMaxHealth("", "Blood"));
+        this.SetHealth("", "Shock", player.GetMaxHealth("", "Shock"));
+        this.GetStatHeatComfort().Set(player.GetStatHeatComfort().GetMax());
+        this.GetStatTremor().Set(player.GetStatTremor().GetMin());
+        this.GetStatWet().Set(player.GetStatWet().GetMin());
+        this.GetStatEnergy().Set(player.GetStatEnergy().GetMax());
+        this.GetStatWater().Set(player.GetStatWater().GetMax());
+        this.GetStatDiet().Set(player.GetStatDiet().GetMax());
+        this.GetStatSpecialty().Set(player.GetStatSpecialty().GetMax());
+        this.SetBleedingBits(0);
+
+        if(this.m_BrokenLegState == eBrokenLegs.BROKEN_LEGS) {
+            AddHealth("LeftLeg","Health",   GetMaxHealth("LeftLeg", "Health")  - GetHealth("LeftLeg", "Health"));
+            AddHealth("RightLeg","Health",  GetMaxHealth("RightLeg", "Health") - GetHealth("RightLeg", "Health"));
+            AddHealth("RightFoot","Health", GetMaxHealth("RightFoot", "Health") - GetHealth("RightFoot", "Health"));
+            AddHealth("LeftFoot","Health",  GetMaxHealth("LeftFoot", "Health") - GetHealth("LeftFoot", "Health"));
+        }
+    }
+
     override void OnVehicleSwitchSeat(int seatIndex) {
         super.OnVehicleSwitchSeat(seatIndex);
         GetGameLabs().GetLogger().Debug(string.Format("OnVehicleSwitchSeat(this=%1, seatIndex=%2)", this, seatIndex));
