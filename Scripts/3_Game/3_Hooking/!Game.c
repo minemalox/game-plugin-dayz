@@ -16,8 +16,4 @@ modded class DayZGame {
             }
         }
     }
-
-    void ~DayZGame() {
-        //GetGameLabs().Exit();
-    }
 };
