@@ -79,6 +79,15 @@ class GameLabsAPI {
         GetGameLabs().GetLogger().Debug(string.Format("authKey=%1", authKey));
     }
 
+    private void SetPollProtocolVersion(int version) {
+        // Does only need to be set during initial verification to ensure compatability with local mod
+        this.pollProtocolVersion = version;
+    }
+
+    int GetPollProtocolVersion() {
+        return this.pollProtocolVersion;
+    }
+
     RegisterResult Register() {
         this.restContext.SetHeader("application/json"); // Expected for auth request
 
@@ -86,7 +95,7 @@ class GameLabsAPI {
         _Response_Register response = new _Response_Register(this.restContext.POST_now("/v1/auth/register?trace="+this.gamePort, payload.ToJson()));
         if(response.status == 2) {
             GetGameLabs()._PropagateFeatures(response); // Access features outside of API class
-
+            this.SetPollProtocolVersion(features.response.pollProtocolVersion);
             this.SetAuthkey(response.authKey);
         }
         return new RegisterResult(response.status, response.error);

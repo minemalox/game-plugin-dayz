@@ -54,6 +54,8 @@ class _Response_Register_Features {
 
     int metricsInterval = 5;
     int reportingInterval = 10;
+
+    int pollProtocolVersion = 1;
 };
 class _Response_Register : _Response {
     string authKey;
