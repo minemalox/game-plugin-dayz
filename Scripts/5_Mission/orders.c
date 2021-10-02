@@ -11,7 +11,8 @@ enum GameLabsOrders {
 };
 
 enum OrderParamFlags {
-    DEBUG_SPAWN,
+    INVALID = 0,
+    DEBUG_SPAWN = 1,
 };
 
 bool _ProcessTeleportPlayer(PlayerBase player, vector position, _SP2OrderParams params) {
@@ -45,20 +46,13 @@ bool _ProcessNukePlayer(PlayerBase player, vector position, _SP2OrderParams para
 };
 
 bool _ProcessSpawnPlayer(PlayerBase player, vector position, _SP2OrderParams params) {
-    GetGameLabs().GetLogger().Warn(string.Format("[Spawn] Spawning %1 (x%2) for %3 [flags=%4]", params.class, params.quantity, player, params.flags));
+    GetGameLabs().GetLogger().Warn(string.Format("[Spawn] Spawning %1 (x%2) for %3 [flags=%4]", params.gameClass, params.quantity, player, params.flags));
 
     EntityAI entity;
-    if(order.quantity <= 1) {
-        entity = player.SpawnEntityOnGroundPos(params.class, player.GetPosition());
+    for(int i = 1; i <= params.quantity; i++) {
+        entity = player.SpawnEntityOnGroundPos(params.gameClass, player.GetPosition());
         if(params.flags & OrderParamFlags.DEBUG_SPAWN) {
             entity.OnDebugSpawn();
-        }
-    } else {
-        for(int i = 1; i <= order.quantity; i++) {
-            entity = player.SpawnEntityOnGroundPos(params.class, player.GetPosition());
-            if(params.flags & OrderParamFlags.DEBUG_SPAWN) {
-                entity.OnDebugSpawn();
-            }
         }
     }
 
@@ -106,7 +100,7 @@ bool APIOrderHandler(int action, PlayerBase player, vector position, _SP2OrderPa
 
         default: {
             status = false;
-            GetGameLabs().GetLogger().Warning(string.Format("action=%1 has no processor", action));
+            GetGameLabs().GetLogger().Warn(string.Format("action=%1 has no processor", action));
             break;
         }
     }

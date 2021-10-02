@@ -17,6 +17,7 @@ class GameLabsReporter {
         this.timerPoll.Run(GetGameLabs().GetMetricsInterval(), this, "activePolling", NULL, true);
 
         if(GetGameLabs().IsReportingEnabled()) {
+            GetGameLabs().GetLogger().Debug(string.Format("(Reporter) pollProtocolVersion=%1", GetGameLabs().GetApi().GetPollProtocolVersion()));
             this.effectiveInterval = GetGameLabs().GetReportingInterval();
             this.timerServer = new Timer(CALL_CATEGORY_SYSTEM);
             this.timerServer.Run(GetGameLabs().GetReportingInterval(), this, "serverReporting", NULL, true);

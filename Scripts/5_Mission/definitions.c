@@ -170,8 +170,11 @@ class _SP2OrderParams {
     int type;
     int quantity = 1;
 
-    string class;
+    string gameClass;
     string entityId;
+
+    int hour;
+    int minute;
 
     array<float> overcast;
     array<float> fog;
@@ -181,9 +184,9 @@ class _SP2OrderParams {
     _SP2Position position;
 };
 class ServerPoll2Item {
-        int action;
-        string target;
-        _SP2OrderParams params;
+    int action;
+    string target;
+    _SP2OrderParams params;
 };
 class _Response_ServerPoll2 : _Response {
     ref array<ServerPoll2Item> orders;
@@ -205,6 +208,7 @@ class _Callback_ServerPoll2 : _Callback {
     };
 
     override void OnSuccess(string data, int dataSize) {
+        GetGameLabs().GetLogger().Debug(string.Format("ServerPoll2.OnSuccess()\ndataSize=%1\ndata=%2", dataSize, data));
         _Response_ServerPoll2 response = new _Response_ServerPoll2(data);
 
         Man man;
@@ -221,8 +225,8 @@ class _Callback_ServerPoll2 : _Callback {
             GetGameLabs().GetLogger().Debug(string.Format("Processing order %1/%2 action=%3", i+1, response.orders.Count(), order.action));
 
             position[0] = order.params.position.x;
-            if(order.params.position.z == NULL) {
-                position[1] = GetGame().SurfaceY(order.x, order.y) + 0.2;
+            if(!order.params.position.z) {
+                position[1] = GetGame().SurfaceY(order.params.position.x, order.params.position.y) + 0.2;
             } else {
                 position[1] = order.params.position.z;
             }
@@ -247,7 +251,7 @@ class _Callback_ServerPoll2 : _Callback {
                 orderStatus = APIOrderHandler(order.action, player, position, order.params);
                 GetGameLabs().GetLogger().Debug(string.Format("Order %1/%2 [action=%3] status=%4", i+1, response.orders.Count(), order.action, orderStatus));
                 if(!orderStatus) {
-                    GetGameLabs().GetLogger().Warning(string.Format("Order %1/%2 [action=%3] failed", i+1, response.orders.Count(), order.action));
+                    GetGameLabs().GetLogger().Warn(string.Format("Order %1/%2 [action=%3] failed", i+1, response.orders.Count(), order.action));
                 }
             }
         }

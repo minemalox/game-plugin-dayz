@@ -116,16 +116,16 @@ modded class PlayerBase extends ManBase {
     }
 
     void HealEx() {
-        this.SetHealth(player.GetMaxHealth("", ""));
-        this.SetHealth("", "Blood", player.GetMaxHealth("", "Blood"));
-        this.SetHealth("", "Shock", player.GetMaxHealth("", "Shock"));
-        this.GetStatHeatComfort().Set(player.GetStatHeatComfort().GetMax());
-        this.GetStatTremor().Set(player.GetStatTremor().GetMin());
-        this.GetStatWet().Set(player.GetStatWet().GetMin());
-        this.GetStatEnergy().Set(player.GetStatEnergy().GetMax());
-        this.GetStatWater().Set(player.GetStatWater().GetMax());
-        this.GetStatDiet().Set(player.GetStatDiet().GetMax());
-        this.GetStatSpecialty().Set(player.GetStatSpecialty().GetMax());
+        this.SetHealth(this.GetMaxHealth("", ""));
+        this.SetHealth("", "Blood", this.GetMaxHealth("", "Blood"));
+        this.SetHealth("", "Shock", this.GetMaxHealth("", "Shock"));
+        this.GetStatHeatComfort().Set(this.GetStatHeatComfort().GetMax());
+        this.GetStatTremor().Set(this.GetStatTremor().GetMin());
+        this.GetStatWet().Set(this.GetStatWet().GetMin());
+        this.GetStatEnergy().Set(this.GetStatEnergy().GetMax());
+        this.GetStatWater().Set(this.GetStatWater().GetMax());
+        this.GetStatDiet().Set(this.GetStatDiet().GetMax());
+        this.GetStatSpecialty().Set(this.GetStatSpecialty().GetMax());
         this.SetBleedingBits(0);
 
         if(this.m_BrokenLegState == eBrokenLegs.BROKEN_LEGS) {
