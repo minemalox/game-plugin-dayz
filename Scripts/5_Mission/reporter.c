@@ -37,7 +37,7 @@ class GameLabsReporter {
         GetGameLabs().GetApi().Enable(); // Enable to check if api is back
         switch(GetGameLabs().GetApi().GetPollProtocolVersion()) {
             case 2: {
-                GetGameLabs().GetApi().ServerPoll(new _Callback_ServerPoll2(), payload);
+                GetGameLabs().GetApi().ServerPoll2(new _Callback_ServerPoll2(), payload);
                 break;
             }
             default: {

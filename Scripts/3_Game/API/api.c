@@ -122,6 +122,11 @@ class GameLabsAPI {
         this.restContext.POST(RestCallback.Cast(cb), "/v1/server/poll?trace="+this.gamePort, payload.ToJson());
     }
 
+    void ServerPoll2(Managed cb, _Payload_ServerPoll payload) {
+        if(!this.IsEnabled()) return;
+        this.restContext.POST(RestCallback.Cast(cb), "/v2/server/poll?trace="+this.gamePort, payload.ToJson());
+    }
+
     void ServerEvents(Managed cb, _Payload_ServerEvents payload) {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/server/events", payload.ToJson());
