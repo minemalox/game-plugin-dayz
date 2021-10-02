@@ -20,28 +20,31 @@ modded class MissionServer {
     };
 
     override void InvokeOnConnect(PlayerBase player, PlayerIdentity identity) {
-        super.InvokeOnConnect(player, identity);
-        player.GameLabs_OnConnect(identity.GetPlainId(), identity.GetName());
+        if(GetGameLabs().IsServer() && player && identity) {
+            player.GameLabs_OnConnect(identity.GetPlainId(), identity.GetName());
 
-        string cftoolsId = GetGameLabs().GetPlayerUpstreamIdentity(player.GetPlainId());
-        if (!cftoolsId) {
-            GetGameLabs().GetLogger().Debug(string.Format("Player<%1> no cached CFTools Id for steam64=%2, contacting api", player, player.GetPlainId()));
+            string cftoolsId = GetGameLabs().GetPlayerUpstreamIdentity(player.GetPlainId());
+            if (!cftoolsId) {
+                GetGameLabs().GetLogger().Debug(string.Format("Player<%1> no cached CFTools Id for steam64=%2, contacting api", player, player.GetPlainId()));
 
-            _Payload_PlayerConnect payloadPlayerConnect = new _Payload_PlayerConnect(player.GetPlainId(), player.GetPosition());
-            GetGameLabs().GetApi().PlayerConnect(new _Callback_PlayerConnect(), payloadPlayerConnect);
-        } else {
-            GetGameLabs().GetLogger().Debug(string.Format("Player<%1> populated with CFTools Id from cache (%2)", player, cftoolsId));
-            player.SetUpstreamIdentity(cftoolsId);
-            player.SetGamesessionId(GetGameLabs().GetPlayerGamesessionId(player.GetPlainId()));
-            player.OnUpstreamIdentityReceived();
+                _Payload_PlayerConnect payloadPlayerConnect = new _Payload_PlayerConnect(player.GetPlainId(), player.GetPosition());
+                GetGameLabs().GetApi().PlayerConnect(new _Callback_PlayerConnect(), payloadPlayerConnect);
+            } else {
+                GetGameLabs().GetLogger().Debug(string.Format("Player<%1> populated with CFTools Id from cache (%2)", player, cftoolsId));
+                player.SetUpstreamIdentity(cftoolsId);
+                player.SetGamesessionId(GetGameLabs().GetPlayerGamesessionId(player.GetPlainId()));
+                player.OnUpstreamIdentityReceived();
+            }
+
+            Param2 < bool, string > payloadSync = new Param2<bool, string>(GetGameLabs().GetDebugStatus(), player.GetUpstreamIdentity());
+            GetGame().RPCSingleParam(null, GameLabsRPCS.RE_SYNC, payloadSync, true, identity);
         }
 
-        Param2<bool, string> payloadSync = new Param2<bool, string>(GetGameLabs().GetDebugStatus(), player.GetUpstreamIdentity());
-        GetGame().RPCSingleParam(null, GameLabsRPCS.RE_SYNC, payloadSync, true, identity);
+        super.InvokeOnConnect(player, identity);
     };
 
     override void PlayerDisconnected(PlayerBase player, PlayerIdentity identity, string uid) {
-        if(GetGameLabs().IsServer()) {
+        if(GetGameLabs().IsServer() && player) {
             string gamesessionId;
             gamesessionId = GetGameLabs().GetPlayerGamesessionId(player.GetPlainId());
             if(gamesessionId) {
