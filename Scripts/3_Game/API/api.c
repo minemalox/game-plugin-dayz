@@ -54,6 +54,8 @@ class GameLabsAPI {
 
     private bool active = false;
 
+    private int pollProtocolVersion = 0;
+
     void GameLabsAPI(string serverId, string apiKey, string baseUrl = "https://api.cftools.cloud/gamelabs/dz", string storeUrl = "https://api.cftools.cloud/gamelabs/dz") {
         this.serverId = serverId;
         this.apiKey = apiKey;
@@ -95,7 +97,7 @@ class GameLabsAPI {
         _Response_Register response = new _Response_Register(this.restContext.POST_now("/v1/auth/register?trace="+this.gamePort, payload.ToJson()));
         if(response.status == 2) {
             GetGameLabs()._PropagateFeatures(response); // Access features outside of API class
-            this.SetPollProtocolVersion(features.response.pollProtocolVersion);
+            this.SetPollProtocolVersion(response.features.pollProtocolVersion);
             this.SetAuthkey(response.authKey);
         }
         return new RegisterResult(response.status, response.error);
