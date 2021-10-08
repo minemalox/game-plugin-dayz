@@ -13,7 +13,7 @@ modded class MissionServer {
 
     override void OnEvent(EventType eventTypeId, Param params) {
         super.OnEvent(eventTypeId, params);
-        if (eventTypeId == ClientNewEventTypeID) {
+        if(eventTypeId == ClientNewEventTypeID) {
             m_player.GameLabs_MakeReady(m_player.GetIdentity().GetPlainId(), m_player.GetIdentity().GetName());
             this.PrivilegedEquip();
         }
@@ -24,7 +24,7 @@ modded class MissionServer {
             player.GameLabs_OnConnect(identity.GetPlainId(), identity.GetName());
 
             string cftoolsId = GetGameLabs().GetPlayerUpstreamIdentity(player.GetPlainId());
-            if (!cftoolsId) {
+            if(!cftoolsId) {
                 GetGameLabs().GetLogger().Debug(string.Format("Player<%1> no cached CFTools Id for steam64=%2, contacting api", player, player.GetPlainId()));
 
                 _Payload_PlayerConnect payloadPlayerConnect = new _Payload_PlayerConnect(player.GetPlainId(), player.GetPosition());
@@ -36,7 +36,7 @@ modded class MissionServer {
                 player.OnUpstreamIdentityReceived();
             }
 
-            Param2 < bool, string > payloadSync = new Param2<bool, string>(GetGameLabs().GetDebugStatus(), player.GetUpstreamIdentity());
+            Param2 <bool, string> payloadSync = new Param2<bool, string>(GetGameLabs().GetDebugStatus(), player.GetUpstreamIdentity());
             GetGame().RPCSingleParam(null, GameLabsRPCS.RE_SYNC, payloadSync, true, identity);
         }
 
