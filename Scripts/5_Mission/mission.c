@@ -63,11 +63,16 @@ modded class MissionServer {
         super.PlayerDisconnected(player, identity, uid);
     }
 
+    // Override to register your actions
+    void GLActionRegisterHook() {}
+
     void MissionServer() {
         if(this.gameLabs != NULL) {
             this.gameLabs.GetLogger().Error("MissionServer attempted to initiate twice! Review mod list for faulty mod.");
             return;
         }
+
+        this.GLActionRegisterHook();
 
         this.gameLabs = GetGameLabs();
         string shutdownHeader, shutdownTitle, shutdownContent, shutdownFooter;
