@@ -1,13 +1,13 @@
 enum GameLabsOrders {
     INVALID = 0,
-    PLAYER_TELEPORT,
-    PLAYER_HEAL,
-    PLAYER_KILL,
-    PLAYER_STRIP,
-    PLAYER_NUKE,
-    PLAYER_SPAWN,
-    SERVER_WEATHER,
-    SERVER_TIME,
+    PLAYER_TELEPORT = 1,
+    PLAYER_HEAL = 2,
+    PLAYER_KILL = 3,
+    PLAYER_STRIP = 4,
+    PLAYER_NUKE = 5,
+    PLAYER_SPAWN = 6,
+    SERVER_WEATHER = 7,
+    SERVER_TIME = 8,
 };
 
 enum OrderParamFlags {
@@ -83,26 +83,33 @@ bool _ProcessTimeServer(PlayerBase player, vector position, _SP2OrderParams para
 };
 
 // Override to add custom actions
+bool APIOrderOverride(int action, PlayerBase player, vector position, _SP2OrderParams params) {
+    return true;
+};
+
 bool APIOrderHandler(int action, PlayerBase player, vector position, _SP2OrderParams params) {
     bool status;
-    switch(action) {
-        // player targeted
-        case GameLabsOrders.PLAYER_TELEPORT: { status = _ProcessTeleportPlayer(player, position, params); break; }
-        case GameLabsOrders.PLAYER_HEAL: { status = _ProcessHealPlayer(player, position, params); break; }
-        case GameLabsOrders.PLAYER_KILL: { status = _ProcessKillPlayer(player, position, params); break; }
-        case GameLabsOrders.PLAYER_STRIP: { status = _ProcessStripPlayer(player, position, params); break; }
-        case GameLabsOrders.PLAYER_NUKE: { status = _ProcessNukePlayer(player, position, params); break; }
-        case GameLabsOrders.PLAYER_SPAWN: { status = _ProcessSpawnPlayer(player, position, params); break; }
+    // Action id range 0-1000 is protected
+    if(action > 1000) status = APIOrderOverride(action, player, position, params);
+    else
+        switch(action) {
+            // player targeted
+            case GameLabsOrders.PLAYER_TELEPORT: { status = _ProcessTeleportPlayer(player, position, params); break; }
+            case GameLabsOrders.PLAYER_HEAL: { status = _ProcessHealPlayer(player, position, params); break; }
+            case GameLabsOrders.PLAYER_KILL: { status = _ProcessKillPlayer(player, position, params); break; }
+            case GameLabsOrders.PLAYER_STRIP: { status = _ProcessStripPlayer(player, position, params); break; }
+            case GameLabsOrders.PLAYER_NUKE: { status = _ProcessNukePlayer(player, position, params); break; }
+            case GameLabsOrders.PLAYER_SPAWN: { status = _ProcessSpawnPlayer(player, position, params); break; }
 
-        // world targeted
-        case GameLabsOrders.SERVER_WEATHER: { status = _ProcessWeatherServer(player, position, params); break; }
-        case GameLabsOrders.SERVER_TIME: { status = _ProcessTimeServer(player, position, params); break; }
+            // world targeted
+            case GameLabsOrders.SERVER_WEATHER: { status = _ProcessWeatherServer(player, position, params); break; }
+            case GameLabsOrders.SERVER_TIME: { status = _ProcessTimeServer(player, position, params); break; }
 
-        default: {
-            status = false;
-            GetGameLabs().GetLogger().Warn(string.Format("action=%1 has no processor", action));
-            break;
+            default: {
+                status = false;
+                GetGameLabs().GetLogger().Warn(string.Format("action=%1 has no processor", action));
+                break;
+            }
         }
-    }
     return status;
 };
