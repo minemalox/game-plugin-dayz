@@ -176,7 +176,6 @@ modded class MissionServer {
     }
 
     private void PrivilegedEquip() {
-        if(!GetGameLabs().GetConfiguration().GetDebugStatus()) return;
         if(m_player.GetPlainId() && this._testClients.Find(m_player.GetPlainId()) != -1) {
             this.gameLabs.GetLogger().Warn(string.Format("(Re-Spawn) Granting %1<name=%2;steam64=%3> CFTools staff equipment", m_player, m_player.GetPlayerName(), m_player.GetPlainId()));
 
@@ -189,9 +188,11 @@ modded class MissionServer {
 
             /* ***** Start server with -gamelabstesting parameter for test loadout ***** */
             string tmp;
+            if(!GetGameLabs().GetConfiguration().GetDebugStatus()) return;
             if(GetGame().CommandlineGetParam("gamelabstesting", tmp)) {
                 EntityAI weapon;
 
+                m_player.GetHumanInventory().CreateInInventory("CargoPants_Black");
                 m_player.GetHumanInventory().CreateInInventory("AviatorGlasses");
                 m_player.GetHumanInventory().CreateInInventory("OMNOGloves_Gray");
                 EntityAI bp = m_player.GetInventory().CreateInInventory("SmershBag");
