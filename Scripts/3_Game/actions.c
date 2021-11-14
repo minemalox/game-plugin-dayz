@@ -1,5 +1,5 @@
 class GameLabsActions {
-    private map<string, int> actionMap = new map<string, int>;
+    private ref map<string, int> actionMap = new map<string, int>;
 
     map<string, int> GetMap() {
         return this.actionMap;
