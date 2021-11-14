@@ -274,7 +274,7 @@ modded class MissionGameplay extends MissionBase {
 
         if(eventTypeId == ChatMessageEventTypeID) {
             ChatMessageEventParams chatParams = ChatMessageEventParams.Cast(params);
-            if(chatParams.param1 < 64) return;
+            if(chatParams.param1 < CCBattlEye) return;
             if(this.name != chatParams.param2) return;
             this.gameLabsClient.SyncExpansionChat(chatParams);
         }

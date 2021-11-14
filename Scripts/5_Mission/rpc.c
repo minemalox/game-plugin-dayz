@@ -71,6 +71,7 @@ class GameLabsRPC {
                 GetGame().RPCSingleParam(null, GameLabsRPCS.RE_SERVERFPS, payloadRQServerFps, true, sender);
                 return;
             }
+            #ifdef EXPANSIONMODCORE
             case GameLabsRPCS.SY_EXPANSIONCHAT: {
                 ChatMessageEventParams data;
                 if(!ctx.Read(data)) return;
@@ -80,11 +81,11 @@ class GameLabsRPC {
                 if(!player) return;
 
                 string channel;
-                if(data.param1 == 64) {
+                if(data.param1 == ExpansionChatChannels.CCTransport) {
                     channel = "vehicle";
-                } else if(data.param1 == 128) {
+                } else if(data.param1 == ExpansionChatChannels.CCGlobal) {
                     channel = "side";
-                } else if(data.param1 == 256){
+                } else if(data.param1 == ExpansionChatChannels.CCTeam){
                     channel = "team";
                 } else {
                     channel = "external";
@@ -95,6 +96,7 @@ class GameLabsRPC {
                 GetGameLabs().GetApi().PlayerChat(new _Callback(), payloadExpansionChat);
                 return;
             }
+            #endif
         }
     }
 };
