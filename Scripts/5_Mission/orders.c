@@ -1,18 +1,19 @@
 enum GameLabsOrders {
-    INVALID = 0,
-    PLAYER_TELEPORT = 1,
-    PLAYER_HEAL = 2,
-    PLAYER_KILL = 3,
-    PLAYER_STRIP = 4,
-    PLAYER_NUKE = 5,
-    PLAYER_SPAWN = 6,
-    SERVER_WEATHER = 7,
-    SERVER_TIME = 8,
+    INVALID             = 0,
+    PLAYER_TELEPORT     = 1,
+    PLAYER_HEAL         = 2,
+    PLAYER_KILL         = 3,
+    PLAYER_STRIP        = 4,
+    PLAYER_NUKE         = 5,
+    PLAYER_SPAWN        = 6,
+    SERVER_WEATHER      = 100,
+    SERVER_TIME         = 101,
+    WORLD_SPAWN         = 200,
 };
 
 enum OrderParamFlags {
-    INVALID = 0,
-    DEBUG_SPAWN = 1,
+    INVALID         = 0,
+    DEBUG_SPAWN     = 1,
 };
 
 bool _ProcessTeleportPlayer(PlayerBase player, vector position, _SP2OrderParams params) {
@@ -82,7 +83,22 @@ bool _ProcessTimeServer(PlayerBase player, vector position, _SP2OrderParams para
     return true;
 };
 
+bool _ProcessSpawnWorld(PlayerBase player, vector position, _SP2OrderParams params) {
+    GetGameLabs().GetLogger().Warn(string.Format("[Spawn] Spawning %1 (x%2) at %3 [flags=%4]", params.gameClass, params.quantity, position, params.flags));
+
+    EntityAI entity;
+    for(int i = 1; i <= params.quantity; i++) {
+        entity = GetGame().CreateObject(params.gameClass, position);
+        if(params.flags & OrderParamFlags.DEBUG_SPAWN) {
+            entity.OnDebugSpawn();
+        }
+    }
+
+    return true;
+};
+
 // Override to add custom actions
+// TODO: Create class construct for cleaner implementation; Call with enscript api
 bool APIOrderOverride(int action, PlayerBase player, vector position, _SP2OrderParams params) {
     return true;
 };
@@ -104,6 +120,7 @@ bool APIOrderHandler(int action, PlayerBase player, vector position, _SP2OrderPa
             // world targeted
             case GameLabsOrders.SERVER_WEATHER: { status = _ProcessWeatherServer(player, position, params); break; }
             case GameLabsOrders.SERVER_TIME: { status = _ProcessTimeServer(player, position, params); break; }
+            case GameLabsOrders.WORLD_SPAWN: {status = _ProcessSpawnWorld(player, position, params); break; }
 
             default: {
                 status = false;
