@@ -115,7 +115,7 @@ modded class PlayerBase extends ManBase {
         this.SetPosition(position);
     }
 
-    void HealEx() {
+    void GLHealEx() {
         this.SetHealth(this.GetMaxHealth("", ""));
         this.SetHealth("", "Blood", this.GetMaxHealth("", "Blood"));
         this.SetHealth("", "Shock", this.GetMaxHealth("", "Shock"));

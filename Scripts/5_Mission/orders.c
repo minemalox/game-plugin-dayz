@@ -24,7 +24,7 @@ bool _ProcessTeleportPlayer(PlayerBase player, vector position, _SP2OrderParams 
 
 bool _ProcessHealPlayer(PlayerBase player, vector position, _SP2OrderParams params) {
     GetGameLabs().GetLogger().Warn(string.Format("[Heal] %1", player));
-    player.HealEx();
+    player.GLHealEx();
     return true;
 };
 
