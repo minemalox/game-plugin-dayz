@@ -96,6 +96,31 @@ class GameLabsRPC {
                 GetGameLabs().GetApi().PlayerChat(new _Callback(), payloadExpansionChat);
                 return;
             }
+            #else
+            case GameLabsRPCS.SY_EXPANSIONCHAT: {
+                ChatMessageEventParams data;
+                if(!ctx.Read(data)) return;
+                if(!sender) return;
+
+                player = GetPlayerByIdentity(sender);
+                if(!player) return;
+
+                string channel;
+                if(data.param1 == 64) {
+                    channel = "vehicle";
+                } else if(data.param1 == 128) {
+                    channel = "side";
+                } else if(data.param1 == 256){
+                    channel = "team";
+                } else {
+                    channel = "external";
+                }
+
+                _LogPlayerEx logObjectPlayer = new _LogPlayerEx(player);
+                _Payload_PlayerChat payloadExpansionChat = new _Payload_PlayerChat(logObjectPlayer, channel, data.param3);
+                GetGameLabs().GetApi().PlayerChat(new _Callback(), payloadExpansionChat);
+                return;
+            }
             #endif
         }
     }
