@@ -381,3 +381,17 @@ class _Response_PlayerDisconnect : _Response {
     void _Response_PlayerDisconnect(string content) { JsonFileLoader<_Response_PlayerDisconnect>.JsonLoadData(content, this); }
 };
 // ************************
+
+// Register: /v1/item/list
+class _Payload_ItemList : _Payload {
+    ref array<ref string> items = new array<ref string>();
+
+    void _Payload_ItemList(array<ref string> items) {
+        this.items = items;
+    }
+    string ToJson() { return JsonFileLoader<_Payload_ItemList>.JsonMakeData(this); }
+};
+class _Response_ItemList : _Response {
+    void _Response_ItemList(string content) { JsonFileLoader<_Response_ItemList>.JsonLoadData(content, this); }
+};
+// ************************

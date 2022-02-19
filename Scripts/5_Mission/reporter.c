@@ -13,6 +13,37 @@ class GameLabsReporter {
     private ref Timer timerPlayers;
 
     void GameLabsReporter() {
+        TStringArray cfgPaths = new TStringArray;
+        cfgPaths.Insert("CfgWeapons");
+        cfgPaths.Insert("CfgVehicles");
+        cfgPaths.Insert("CfgMagazines");
+
+        int itemCount = 0;
+        ref array<ref string> items = new array<ref string>();
+
+        for(int i = 0; i < cfgPaths.Count(); ++i) {
+            string cfgPath = cfgPaths.Get(i);
+            int nClasses = g_Game.ConfigGetChildrenCount(cfgPath);
+
+            for(int nClass = 0; nClass < nClasses; ++nClass) {
+                string strName;
+                GetGame().ConfigGetChildName(cfgPath, nClass, strName);
+
+                int scope = GetGame().ConfigGetInt(cfgPath + " " + strName + " scope");
+
+                if(scope <= 0)
+                    continue;
+
+                itemCount++;
+                items.Insert(strName);
+            }
+        }
+
+        GetGameLabs().GetLogger().Debug(string.Format("(ItemDiscovery) Discovered %1 items", itemCount));
+
+        _Payload_ItemList payloadItemList = new _Payload_ItemList(items);
+        GetGameLabs().GetApi().ItemList(new _Callback_ServerDummy(), payloadItemList);
+
         this.timerPoll = new Timer(CALL_CATEGORY_SYSTEM);
         this.timerPoll.Run(GetGameLabs().GetMetricsInterval(), this, "activePolling", NULL, true);
 
