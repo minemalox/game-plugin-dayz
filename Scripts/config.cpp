@@ -3,7 +3,7 @@ class CfgPatches
     class GameLabs_Scripts
     {
         units[]={};
-        weapons[]={};
+        weapons[] = {"M4A1_CFTools","AKM_CFTools","Scout_CFTools","Saiga_CFTools"};
         requiredVersion=0.1;
         requiredAddons[]=
         {
@@ -11,9 +11,12 @@ class CfgPatches
             "DZ_Data",
             "DZ_Characters",
             "DZ_Characters_Tops",
-            "DZ_Characters_Headgear",
             "DZ_Characters_Heads",
-
+            "DZ_Characters_Headgear",
+            "DZ_Weapons_Firearms_M4",
+            "DZ_Weapons_Firearms_AKM",
+            "DZ_Weapons_Firearms_Scout",
+            "DZ_Weapons_Firearms_SaigaK"
         };
     };
 };
@@ -195,5 +198,58 @@ class CfgVehicles
                 };
             };
         };
+    };
+};
+
+class CfgWeapons
+{
+    class M4A1;
+    class AKM;
+    class Scout;
+    class Saiga;
+    class M4A1_CFTools: M4A1
+    {
+        scope = 2;
+        displayName = "M4-A1 (CFTools)";
+        descriptionShort="M4-A1 in a tactical CFTools finish";
+        hiddenSelectionsTextures[] = {"GameLabs\Scripts\Assets\M4A1_CF.paa"};
+        color = "CF";
+    };
+    class AKM_CFTools: AKM
+    {
+        scope = 2;
+        displayName = "AK-M (CFTools)";
+        descriptionShort="AK-M in a tactical CFTools finish";
+        hiddenSelectionsTextures[] = {"GameLabs\Scripts\Assets\AKM_CF.paa"};
+        hiddenSelectionsMaterials[] = {"GameLabs\Scripts\Assets\AKM_CF.rvmat"};
+        class DamageSystem
+        {
+            class GlobalHealth
+            {
+                class Health
+                {
+                    hitpoints = 300;
+                    healthLevels[] = {{1.0,{"DZ\weapons\firearms\AKM\data\AKM.rvmat"}},{0.7,{"DZ\weapons\firearms\AKM\data\AKM.rvmat"}},{0.5,{"DZ\weapons\firearms\AKM\data\AKM_damage.rvmat"}},{0.3,{"DZ\weapons\firearms\AKM\data\AKM_damage.rvmat"}},{0.0,{"DZ\weapons\firearms\AKM\data\AKM_destruct.rvmat"}}};
+                };
+            };
+        };
+        color = "CF";
+    };
+    class Scout_CFTools: Scout
+    {
+        scope = 2;
+        displayName = "Pioneer (CFTools)";
+        descriptionShort="Pioneer in a tactical CFTools finish";
+        hiddenSelectionsTextures[] = {"GameLabs\Scripts\Assets\Scout_CF",""};
+        color = "CF";
+    };
+    class Saiga_CFTools: Saiga
+    {
+        scope = 2;
+        displayName = "Vaiga (CFTools)";
+        descriptionShort="Vaiga in a tactical CFTools finish";
+        hiddenSelections[] = {"camo"};
+        hiddenSelectionsTextures[] = {"GameLabs\Scripts\Assets\Saiga_CF"};
+        color = "CF";
     };
 };
