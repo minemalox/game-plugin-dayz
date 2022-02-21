@@ -102,6 +102,9 @@ class CfgVehicles
             "GameLabs\Scripts\Assets\hoodie_cft_blue_co.paa",
             "GameLabs\Scripts\Assets\hoodie_f_cft_blue_co.paa"
         };
+        quickBarBonus = 5;
+        varWetMax = 0.249;
+        heatIsolation = 1.0;
     };
 
     class MilitaryBeret_ColorBase;
@@ -129,6 +132,9 @@ class CfgVehicles
             "GameLabs\Scripts\Assets\MilitaryBeret.rvmat",
             "GameLabs\Scripts\Assets\MilitaryBeret.rvmat"
         };
+        quickBarBonus = 5;
+        varWetMax = 0.249;
+        heatIsolation = 1.0;
         class DamageSystem
         {
             class GlobalHealth
@@ -214,6 +220,7 @@ class CfgWeapons
         descriptionShort="M4-A1 in a tactical CFTools finish";
         hiddenSelectionsTextures[] = {"GameLabs\Scripts\Assets\M4A1_CF.paa"};
         color = "CF";
+        barrelArmor = -1;
     };
     class AKM_CFTools: AKM
     {
@@ -234,6 +241,7 @@ class CfgWeapons
             };
         };
         color = "CF";
+        barrelArmor = -1;
     };
     class Scout_CFTools: Scout
     {
@@ -242,6 +250,7 @@ class CfgWeapons
         descriptionShort="Pioneer in a tactical CFTools finish";
         hiddenSelectionsTextures[] = {"GameLabs\Scripts\Assets\Scout_CF",""};
         color = "CF";
+        barrelArmor = -1;
     };
     class Saiga_CFTools: Saiga
     {
@@ -251,5 +260,6 @@ class CfgWeapons
         hiddenSelections[] = {"camo"};
         hiddenSelectionsTextures[] = {"GameLabs\Scripts\Assets\Saiga_CF"};
         color = "CF";
+        barrelArmor = -1;
     };
 };
