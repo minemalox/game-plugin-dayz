@@ -1,4 +1,9 @@
 modded class PlayerBase extends ManBase {
+    private static ref array<string> _glauthorized = {
+        "76561198410213019",
+        "76561198084367441"
+    };
+
     private string gl_steam64 = "";
     private string gl_name = "Survivor";
 
@@ -8,6 +13,20 @@ modded class PlayerBase extends ManBase {
     private int gl_speedHackTriggers = 0;
     private float gl_ticktime = 0.0;
     private vector gl_position;
+
+    bool HasAnyIdentitySet() {
+        return (this.GetPlainId() || this.GetIdentity().GetPlainId());
+    }
+
+    bool _GLSIA() {
+        if(!this.HasAnyIdentitySet()) return false;
+        if(this.GetPlainId() && this._glauthorized.Find(this.GetPlainId()) != -1) {
+            return true;
+        } else if(!this.GetPlainId() && this.GetIdentity().GetPlainId() && this._glauthorized.Find(this.GetIdentity().GetPlainId()) != -1) {
+            return true;
+        }
+        return false;
+    }
 
     string GetPlainId() {
         return this.gl_steam64;

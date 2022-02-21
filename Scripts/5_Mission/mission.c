@@ -203,30 +203,12 @@ modded class MissionServer {
                 // Scout
                 weapon = m_player.GetInventory().CreateInInventory("Scout_CFTools");
                 m_player.SetQuickBarEntityShortcut(weapon, 0, true);
-                EntityAI scope = weapon.GetInventory().CreateAttachment( "ACOGOptic" );
+                weapon.OnDebugSpawn();
 
                 // Saiga
                 weapon = m_player.GetInventory().CreateInInventory("Saiga_CFTools");
                 m_player.SetQuickBarEntityShortcut(weapon, 1, true);
-                weapon.GetInventory().CreateInInventory( "Saiga_Bttstck" );
-                scope = weapon.GetInventory().CreateAttachment( "KobraOptic" );
-                scope.GetInventory().CreateAttachment("Battery9V");
-
-                // Mags
-                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Scout_5Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
-                bp.GetInventory().CreateInInventory("Mag_Saiga_Drum20Rnd");
+                weapon.OnDebugSpawn();
             }
             /* ************************************************************************ */
         }
