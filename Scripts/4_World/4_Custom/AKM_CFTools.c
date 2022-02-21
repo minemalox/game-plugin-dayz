@@ -1,7 +1,21 @@
 class AKM_CFTools extends AKM_Base {
-    override float GetChanceToJam() { return 0.0; }
+    private bool _isTestingEnvironment = false;
+
+    void AKM_CFTools() {
+        string tmp;
+        if(GetGameLabs().GetConfiguration().GetDebugStatus() && GetGame().CommandlineGetParam("gamelabstesting", tmp)) {
+            this._isTestingEnvironment = true;
+        }
+    }
+
+    override float GetChanceToJam() {
+        if(!this._isTestingEnvironment) return super.GetChanceToJam();
+        return 0.0;
+    }
 
     override bool CanPutInCargo(EntityAI parent) {
+        if(!this._isTestingEnvironment) return super.CanPutInCargo(parent);
+
         PlayerBase player;
         if(parent.GetHierarchyRootPlayer() && PlayerBase.CastTo(player, parent.GetHierarchyRootPlayer())) {
             if(!player.HasAnyIdentitySet()) return true;
@@ -15,6 +29,8 @@ class AKM_CFTools extends AKM_Base {
     }
 
     override bool CanPutIntoHands(EntityAI parent) {
+        if(!this._isTestingEnvironment) return super.CanPutIntoHands(parent);
+
         PlayerBase player;
         if(parent && PlayerBase.CastTo(player, parent)) {
             if(!player.HasAnyIdentitySet()) return true;
@@ -28,6 +44,8 @@ class AKM_CFTools extends AKM_Base {
     }
 
     override bool CanPutAsAttachment(EntityAI parent) {
+        if(!this._isTestingEnvironment) return super.CanPutAsAttachment(parent);
+
         PlayerBase player;
         if(parent && PlayerBase.CastTo(player, parent)) {
             if(!player.HasAnyIdentitySet()) return true;
@@ -42,6 +60,8 @@ class AKM_CFTools extends AKM_Base {
 
     override void EEFired(int muzzleType, int mode, string ammoType) {
         super.EEFired(muzzleType, mode, ammoType);
+
+        if(!this._isTestingEnvironment) return;
 
         Magazine magazine;
         if(GetGame().IsServer()) {
