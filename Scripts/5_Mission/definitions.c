@@ -23,7 +23,7 @@ class _Callback_PlayerConnect : _Callback {
 };
 // ************************
 
-// /v1/player/disconnect
+// Register: /v1/player/disconnect
 class _Callback_PlayerDisconnect : _Callback {
     override void OnError(int errorCode) {
         GetGameLabs().GetLogger().Error(string.Format("PlayerDisconnect errorCode(%1)", errorCode));
@@ -36,6 +36,35 @@ class _Callback_PlayerDisconnect : _Callback {
     override void OnSuccess(string data, int dataSize) {
         // TODO: Something here?
     };
+};
+class PlayerDisconnectStatistics {
+    string distance;
+    string playtime;
+    string killedPlayers;
+    string killedInfected;
+    string hitLongestSurvivor;
+
+    void PlayerDisconnectStatistics(PlayerBase player) {
+        this.distance = player.StatGet("dist").ToString();
+        this.playtime = player.StatGet("playtime").ToString();
+        this.killedPlayers = player.StatGet("players_killed").ToString();
+        this.killedInfected = player.StatGet("infected_killed").ToString();
+        this.hitLongestSurvivor = player.StatGet("longest_survivor_hit").ToString();
+    }
+};
+class _Payload_PlayerDisconnectEx : _Payload_PlayerDisconnect {
+    string gamesession_id;
+    vector position;
+
+    ref PlayerDisconnectStatistics statistics;
+
+    void _Payload_PlayerDisconnectEx(string gamesession_id, PlayerBase player) {
+        this.gamesession_id = gamesession_id;
+        this.position = player.GetPosition();
+
+        this.statistics = new PlayerDisconnectStatistics(player);
+    }
+    string ToJson() { return JsonFileLoader<_Payload_PlayerDisconnectEx>.JsonMakeData(this); }
 };
 // ************************
 
@@ -208,7 +237,7 @@ class _Callback_ServerPoll2 : _Callback {
     };
 
     override void OnSuccess(string data, int dataSize) {
-        GetGameLabs().GetLogger().Debug(string.Format("ServerPoll2.OnSuccess()\ndataSize=%1\ndata=%2", dataSize, data));
+        //GetGameLabs().GetLogger().Debug(string.Format("ServerPoll2.OnSuccess()\ndataSize=%1\ndata=%2", dataSize, data));
         _Response_ServerPoll2 response = new _Response_ServerPoll2(data);
 
         Man man;

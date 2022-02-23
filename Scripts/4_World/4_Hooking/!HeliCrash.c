@@ -1,4 +1,4 @@
-modded class Wreck_UH1Y {
+modded class Wreck_UH1Y extends CrashBase {
     ref _Event _registeredInstance = new _Event(this.GetType(), "helicopter", this);
 
     override void EEInit() {
@@ -16,7 +16,7 @@ modded class Wreck_UH1Y {
     }
 };
 
-modded class Wreck_Mi8 extends House {
+modded class Wreck_Mi8 extends CrashBase {
         ref _Event _registeredInstance = new _Event(this.GetType(), "helicopter", this);
 
         override void EEInit() {
@@ -34,7 +34,7 @@ modded class Wreck_Mi8 extends House {
         }
 };
 
-modded class Wreck_Mi8_Crashed extends House {
+modded class Wreck_Mi8_Crashed extends CrashBase {
     ref _Event _registeredInstance = new _Event(this.GetType(), "helicopter", this);
 
     override void EEInit() {
@@ -52,7 +52,9 @@ modded class Wreck_Mi8_Crashed extends House {
     }
 };
 
-modded class Wreck_SantasSleigh extends House {
+/*
+ * TODO: Investigate crash issue
+class Wreck_SantasSleigh extends House {
     ref _Event _registeredInstance = new _Event(this.GetType(), "sleigh", this);
 
     override void EEInit() {
@@ -69,4 +71,4 @@ modded class Wreck_SantasSleigh extends House {
         if(this._registeredInstance) GetGameLabs().RemoveEvent(this._registeredInstance);
     }
 };
-
+ */

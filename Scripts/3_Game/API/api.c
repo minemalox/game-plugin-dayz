@@ -176,4 +176,9 @@ class GameLabsAPI {
         if(!this.IsEnabled()) return;
         this.restContext.POST(RestCallback.Cast(cb), "/v1/item/place", payload.ToJson());
     }
+
+    void ItemList(Managed cb, _Payload_ItemList payload) {
+        if(!this.IsEnabled()) return;
+        this.restContext.POST(RestCallback.Cast(cb), "/v1/item/list", payload.ToJson());
+    }
 };

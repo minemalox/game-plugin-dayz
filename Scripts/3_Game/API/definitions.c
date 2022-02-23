@@ -366,18 +366,32 @@ class _Response_PlayerConnect : _Response {
 // ************************
 
 // Register: /v1/player/disconnect
-//! Callback is located in 5_Mission/definitions
-class _Payload_PlayerDisconnect : _Payload {
-    string gamesession_id;
-    vector position;
-
-    void _Payload_PlayerDisconnect(string gamesession_id, vector position) {
-        this.gamesession_id = gamesession_id;
-        this.position = position;
-    }
-    string ToJson() { return JsonFileLoader<_Payload_PlayerDisconnect>.JsonMakeData(this); }
-};
+//! Everything else is located in 5_Mission/definitions
+class _Payload_PlayerDisconnect : _Payload {};
 class _Response_PlayerDisconnect : _Response {
     void _Response_PlayerDisconnect(string content) { JsonFileLoader<_Response_PlayerDisconnect>.JsonLoadData(content, this); }
+};
+// ************************
+
+// Register: /v1/item/list
+class TrackedItem {
+    string className;
+    string displayName;
+
+    void TrackedItem(string className, string displayName) {
+        this.className = className;
+        this.displayName = displayName;
+    }
+};
+class _Payload_ItemList : _Payload {
+    ref array<ref TrackedItem> items = new array<ref TrackedItem>();
+
+    void _Payload_ItemList(array<ref TrackedItem> items) {
+        this.items = items;
+    }
+    string ToJson() { return JsonFileLoader<_Payload_ItemList>.JsonMakeData(this); }
+};
+class _Response_ItemList : _Response {
+    void _Response_ItemList(string content) { JsonFileLoader<_Response_ItemList>.JsonLoadData(content, this); }
 };
 // ************************
