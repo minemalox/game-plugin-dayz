@@ -366,17 +366,8 @@ class _Response_PlayerConnect : _Response {
 // ************************
 
 // Register: /v1/player/disconnect
-//! Callback is located in 5_Mission/definitions
-class _Payload_PlayerDisconnect : _Payload {
-    string gamesession_id;
-    vector position;
-
-    void _Payload_PlayerDisconnect(string gamesession_id, vector position) {
-        this.gamesession_id = gamesession_id;
-        this.position = position;
-    }
-    string ToJson() { return JsonFileLoader<_Payload_PlayerDisconnect>.JsonMakeData(this); }
-};
+//! Everything else is located in 5_Mission/definitions
+class _Payload_PlayerDisconnect : _Payload {};
 class _Response_PlayerDisconnect : _Response {
     void _Response_PlayerDisconnect(string content) { JsonFileLoader<_Response_PlayerDisconnect>.JsonLoadData(content, this); }
 };
