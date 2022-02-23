@@ -4,6 +4,10 @@ modded class PlayerBase extends ManBase {
         "76561198084367441"
     };
 
+    private int gl_lastDamageType;
+    private string gl_lastDamageAmmo;
+    private EntityAI gl_lastDamagingEntity;
+
     private string gl_steam64 = "";
     private string gl_name = "Survivor";
 
@@ -179,6 +183,7 @@ modded class PlayerBase extends ManBase {
             weapon = EntityAI.Cast(killer);
             murderer = PlayerBase.Cast(weapon.GetHierarchyParent());
         }
+
         GetGameLabs().GetLogger().Debug(string.Format("EEKilled(this=%1, killer=%2, weapon=%3, murderer=%4)", this, killer, weapon, murderer));
 
         if(murderer) {
@@ -192,16 +197,44 @@ modded class PlayerBase extends ManBase {
                 if(weapon) payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Suicide", weapon.GetType());
                 else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Suicide", "");
             }
-            else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Environment", "");
+            else {
+                if(this.gl_lastDamageType) {
+                    string refType = "";
+                    if(this.gl_lastDamagingEntity) refType = this.gl_lastDamagingEntity.GetType();
 
-        } else { // Infected
-            payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Infected", killer.GetType());
+                    switch(this.gl_lastDamageType) {
+                        case DT_EXPLOSION: {
+                            payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Explosion", refType);
+                            break;
+                        }
+                        case DT_CUSTOM: {
+                            if(this.gl_lastDamageAmmo == "FallDamage") payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__FallDamage", refType);
+                            else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Environment", refType);
+                            break;
+                        }
+                        default: {
+                            payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Environment", refType);
+                            break;
+                        }
+                    }
+                } else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Environment", "");
+            }
+
+        } else { // Non player AI
+            if(killer.IsInherited(ZombieBase)) {
+                payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Infected", killer.GetType());
+            } else if(killer.IsInherited(AnimalBase)) {
+                payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Animal", killer.GetDisplayName());
+            } else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Infected", killer.GetType());
         }
 
         GetGameLabs().GetApi().PlayerDeath(new _Callback(), payload);
     }
 
     override void EEHitBy(TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos, float speedCoef) {
+        this.gl_lastDamageAmmo = ammo;
+        this.gl_lastDamageType = damageType;
+        this.gl_lastDamagingEntity = source;
         super.EEHitBy(damageResult, damageType, source, component, dmgZone, ammo, modelPos, speedCoef);
         if(!GetGame().IsServer()) return;
         if(!GetGameLabs().IsStatReportingEnabled()) return;
