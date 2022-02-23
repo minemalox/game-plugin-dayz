@@ -19,7 +19,7 @@ class GameLabsReporter {
         cfgPaths.Insert("CfgMagazines");
 
         int itemCount = 0;
-        ref array<ref string> items = new array<ref string>();
+        ref array<ref TrackedItem> items = new array<ref TrackedItem>();
 
         for(int i = 0; i < cfgPaths.Count(); ++i) {
             string cfgPath = cfgPaths.Get(i);
@@ -34,8 +34,11 @@ class GameLabsReporter {
                 if(scope <= 0)
                     continue;
 
+                string displayName;
+                if(scope == 2) GetGame().ConfigGetText(cfgPath + " " + strName + " displayName", displayName);
+
                 itemCount++;
-                items.Insert(strName);
+                items.Insert(new TrackedItem(strName, displayName));
             }
         }
 

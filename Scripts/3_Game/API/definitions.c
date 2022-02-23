@@ -374,10 +374,19 @@ class _Response_PlayerDisconnect : _Response {
 // ************************
 
 // Register: /v1/item/list
-class _Payload_ItemList : _Payload {
-    ref array<ref string> items = new array<ref string>();
+class TrackedItem {
+    string className;
+    string displayName;
 
-    void _Payload_ItemList(array<ref string> items) {
+    void TrackedItem(string className, string displayName) {
+        this.className = className;
+        this.displayName = displayName;
+    }
+};
+class _Payload_ItemList : _Payload {
+    ref array<ref TrackedItem> items = new array<ref TrackedItem>();
+
+    void _Payload_ItemList(array<ref TrackedItem> items) {
         this.items = items;
     }
     string ToJson() { return JsonFileLoader<_Payload_ItemList>.JsonMakeData(this); }
