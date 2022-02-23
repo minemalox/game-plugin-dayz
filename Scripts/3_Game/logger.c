@@ -6,9 +6,12 @@ class GameLabsLogger {
     private FileHandle fh;
 
     private bool allowDebug;
+    private bool logrotate;
 
-    void GameLabsLogger(string modIdentifier, bool allowDebug = false) {
+    void GameLabsLogger(string modIdentifier, bool allowDebug = false, bool logrotate = true) {
         this.allowDebug = allowDebug;
+        this.logrotate  = logrotate;
+
         this.modIdentifier = modIdentifier;
 
         this._Setup();
@@ -67,6 +70,27 @@ class GameLabsLogger {
     private void _Setup() {
         this.fullPath = this.basePath + "/" + this.modIdentifier + ".log";
         if(!FileExist(this.basePath)) MakeDirectory(basePath);
+
+        if(this.logrotate && FileExist(this.fullPath)) {
+            string pattern = this.fullPath + "*";
+            string fileName;
+            FileAttr fileAttributes;
+            FindFileHandle fileSearch = FindFile(pattern, fileName, fileAttributes, FindFileFlags.ALL);
+
+            int resultsCounter = 0;
+
+            bool hasResults = true;
+            while(hasResults) {
+                resultsCounter++;
+                hasResults = FindNextFile(fileSearch, fileName, fileAttributes);
+            }
+            CloseFindFile(fileSearch);
+
+            string archive_name = this.fullPath + "." + resultsCounter;
+            CopyFile(this.fullPath, archive_name);
+            DeleteFile(this.fullPath);
+        }
+
         this.fh = OpenFile(this.fullPath, FileMode.APPEND);
 
         this._WriteDTSeperator();
