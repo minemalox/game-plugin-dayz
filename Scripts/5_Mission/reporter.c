@@ -35,7 +35,9 @@ class GameLabsReporter {
                     continue;
 
                 string displayName;
-                if(scope == 2) GetGame().ConfigGetText(cfgPath + " " + strName + " displayName", displayName);
+                if(scope == 2) {
+                    if(!GetGame().ConfigGetText(cfgPath + " " + strName + " displayName", displayName)) displayName = "";
+                }
 
                 itemCount++;
                 items.Insert(new TrackedItem(strName, displayName));
