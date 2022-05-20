@@ -41,7 +41,7 @@ bool _ProcessStripPlayer(PlayerBase player, vector position, _SP2OrderParams par
 };
 
 bool _ProcessNukePlayer(PlayerBase player, vector position, _SP2OrderParams params) {
-    GetGameLabs().GetLogger().Warn(string.Format("[Strip] %1", player));
+    GetGameLabs().GetLogger().Warn(string.Format("[Nuke] %1", player));
     player.Explode(DT_EXPLOSION, "LandFuelFeed_Ammo");
     return true;
 };
