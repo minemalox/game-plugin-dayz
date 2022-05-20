@@ -34,7 +34,7 @@ class GameLabsReporter {
                 if(scope <= 0)
                     continue;
 
-                string displayName;
+                string displayName = "";
                 if(scope == 2) {
                     if(!GetGame().ConfigGetText(cfgPath + " " + strName + " displayName", displayName)) displayName = "";
                 }
