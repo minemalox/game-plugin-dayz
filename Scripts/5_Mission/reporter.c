@@ -13,41 +13,44 @@ class GameLabsReporter {
     private ref Timer timerPlayers;
 
     void GameLabsReporter() {
-        TStringArray cfgPaths = new TStringArray;
-        cfgPaths.Insert("CfgWeapons");
-        cfgPaths.Insert("CfgVehicles");
-        cfgPaths.Insert("CfgMagazines");
+        if(GetGameLabs().GetConfiguration().CanSendDynamicItemList()) {
+            TStringArray cfgPaths = new TStringArray;
+            cfgPaths.Insert("CfgWeapons");
+            cfgPaths.Insert("CfgVehicles");
+            cfgPaths.Insert("CfgMagazines");
 
-        int itemCount = 0;
-        ref array<ref TrackedItem> items = new array<ref TrackedItem>();
+            int itemCount = 0;
+            ref array < ref TrackedItem > items = new array < ref TrackedItem > ();
 
-        for(int i = 0; i < cfgPaths.Count(); ++i) {
-            string cfgPath = cfgPaths.Get(i);
-            int nClasses = g_Game.ConfigGetChildrenCount(cfgPath);
+            for (int i = 0; i < cfgPaths.Count(); ++i) {
+                string cfgPath = cfgPaths.Get(i);
+                int nClasses = g_Game.ConfigGetChildrenCount(cfgPath);
 
-            for(int nClass = 0; nClass < nClasses; ++nClass) {
-                string strName;
-                GetGame().ConfigGetChildName(cfgPath, nClass, strName);
+                for (int nClass = 0; nClass < nClasses; ++nClass) {
+                    string strName;
+                    GetGame().ConfigGetChildName(cfgPath, nClass, strName);
 
-                int scope = GetGame().ConfigGetInt(cfgPath + " " + strName + " scope");
+                    int scope = GetGame().ConfigGetInt(cfgPath + " " + strName + " scope");
 
-                if(scope <= 0)
-                    continue;
+                    if (scope <= 0)
+                        continue;
 
-                string displayName = "";
-                if(scope == 2) {
-                    if(!GetGame().ConfigGetText(cfgPath + " " + strName + " displayName", displayName)) displayName = "";
+                    string displayName = "";
+                    if (scope == 2) {
+                        if (!GetGame().ConfigGetText(cfgPath + " " + strName + " displayName", displayName))
+                            displayName = "";
+                    }
+
+                    itemCount++;
+                    items.Insert(new TrackedItem(strName, displayName));
                 }
-
-                itemCount++;
-                items.Insert(new TrackedItem(strName, displayName));
             }
+
+            GetGameLabs().GetLogger().Debug(string.Format("(ItemDiscovery) Discovered %1 items", itemCount));
+
+            _Payload_ItemList payloadItemList = new _Payload_ItemList(items);
+            GetGameLabs().GetApi().ItemList(new _Callback_ServerDummy(), payloadItemList);
         }
-
-        GetGameLabs().GetLogger().Debug(string.Format("(ItemDiscovery) Discovered %1 items", itemCount));
-
-        _Payload_ItemList payloadItemList = new _Payload_ItemList(items);
-        GetGameLabs().GetApi().ItemList(new _Callback_ServerDummy(), payloadItemList);
 
         this.timerPoll = new Timer(CALL_CATEGORY_SYSTEM);
         this.timerPoll.Run(GetGameLabs().GetMetricsInterval(), this, "activePolling", NULL, true);
