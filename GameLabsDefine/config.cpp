@@ -23,14 +23,14 @@ class CfgMods
             {
                 value = "";
                 files[] = {
-                    "GameLabsDefine/Global"
+                    "GameLabs/GameLabsDefine/Global"
                 };
             };
             class gameScriptModule
             {
                 value = "";
                 files[]={
-                    "GameLabsDefine/Global"
+                    "GameLabs/GameLabsDefine/Global"
                 };
             };
 
@@ -38,7 +38,7 @@ class CfgMods
             {
                 value="";
                 files[]={
-                    "GameLabsDefine/Global"
+                    "GameLabs/GameLabsDefine/Global"
                 };
             };
 
@@ -46,7 +46,7 @@ class CfgMods
             {
                 value="";
                 files[]={
-                    "GameLabsDefine/Global"
+                    "GameLabs/GameLabsDefine/Global"
                 };
             };
         };
