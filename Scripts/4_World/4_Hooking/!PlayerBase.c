@@ -225,7 +225,7 @@ modded class PlayerBase extends ManBase {
                 payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Infected", killer.GetType());
             } else if(killer.IsInherited(AnimalBase)) {
                 payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Animal", killer.GetDisplayName());
-            } else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Infected", killer.GetType());
+            } else payload = new _Payload_PlayerDeath(logObjectPlayer, NULL, "__Object", killer.GetType());
         }
 
         GetGameLabs().GetApi().PlayerDeath(new _Callback(), payload);

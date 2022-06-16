@@ -14,6 +14,8 @@ class GameLabsConfiguration {
 
     private float playerTickInterval = 2.5;
 
+    private bool preventDynamicItemPopulation = false;
+
     [NonSerialized()]
     private const string path = "$profile:gamelabs.cfg";
 
@@ -42,6 +44,7 @@ class GameLabsConfiguration {
     string GetStoreURL() { return this.storeUrl; }
     bool GetConnectionVerificationStatus() { return this.connectionVerification; }
     bool GetDebugStatus() { return this.debugEnabled; }
+    bool CanSendDynamicItemList() { return !this.preventDynamicItemPopulation; }
     void OverrideDebugStatus(bool debugEnabled) { this.debugEnabled = debugEnabled; }
 
     void _ValidateAndExtend() {
